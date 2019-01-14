@@ -1,0 +1,8 @@
+*.pyc
+tags
+*.zip
+*.o
+*.javac
+*.sh
+*.bin
+
