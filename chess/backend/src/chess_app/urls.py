@@ -1,5 +1,5 @@
-from django.urls import url, include
+from django.urls import path, include
 
 urlpatterns = [
-    url('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
