@@ -7,4 +7,5 @@ tags
 *.bin
 __pycache__
 *.pages
+db.sqlite3
 
