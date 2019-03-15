@@ -1,5 +1,5 @@
 import React from "react";
-import { Board } from "./subcomponents";
+import { Board, LeftSidebar, RightSidebar } from "./subcomponents";
 import {
   Pawn,
   Knight,
@@ -26,12 +26,16 @@ import {
   BLACK
 } from "./constants";
 
+import "./game.css";
+
 export default class Game extends React.Component {
   constructor(props) {
     super();
     this.state = {
       squares: this.initBoard(),
       selected: NOT_SELECTED,
+      capturedWhitePieces: [],
+      capturedBlackPieces: [],
       turn: WHITE,
       count: 0
     };
@@ -112,12 +116,26 @@ export default class Game extends React.Component {
     let preMovePosition = this.state.squares;
     let pieceToMove = this.state.squares[this.state.selected];
     let postMovePosition = preMovePosition;
+    let capturedB = this.state.capturedBlackPieces;
+    let capturedW = this.state.capturedWhitePieces;
+    // If the piece was captured and it is White's turn then the
+    // captured piece is black
+    if (capture && this.state.turn === WHITE) {
+      capturedB.push(preMovePosition[index]);
+    }
+    // If the piece was captured and it is Black's turn then the
+    // captured piece is white
+    else if (capture && this.state.turn === BLACK) {
+      capturedW.push(preMovePosition[index]);
+    }
     pieceToMove.deselectPiece();
     postMovePosition[index] = pieceToMove;
     postMovePosition[this.state.selected] = null;
     this.setState({
       squares: postMovePosition,
       selected: NOT_SELECTED,
+      capturedBlackPieces: capturedB,
+      capturedWhitePieces: capturedW,
       turn: this.state.turn === WHITE ? BLACK : WHITE,
       count: this.state.count + 1
     });
@@ -151,8 +169,15 @@ export default class Game extends React.Component {
 
   render() {
     return (
-      <div>
-        <Board squares={this.state.squares} handleClick={this.handleClick} />;
+      <div className="game-container">
+        <div className="spacer" />
+        <LeftSidebar
+          white={this.state.capturedWhitePieces}
+          black={this.state.capturedBlackPieces}
+        />
+        <Board squares={this.state.squares} handleClick={this.handleClick} />
+        <RightSidebar turn={this.state.turn} count={this.state.count} />
+        <div className="spacer" />
       </div>
     );
   }
