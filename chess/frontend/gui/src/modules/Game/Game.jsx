@@ -37,7 +37,8 @@ export default class Game extends React.Component {
       capturedWhitePieces: [],
       capturedBlackPieces: [],
       turn: WHITE,
-      count: 0
+      count: 0,
+      error: ""
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleMove = this.handleMove.bind(this);
@@ -137,14 +138,23 @@ export default class Game extends React.Component {
       capturedBlackPieces: capturedB,
       capturedWhitePieces: capturedW,
       turn: this.state.turn === WHITE ? BLACK : WHITE,
-      count: this.state.count + 1
+      count: this.state.count + 1,
+      error: ""
     });
   }
 
   // Function that is passed down to the child components used
   // to handle moving the pieces
   handleClick(index) {
-    if (this.state.selected !== NOT_SELECTED) {
+    // If the user selects the oponent's peice first
+    if (
+      this.state.selected === NOT_SELECTED &&
+      this.state.turn !== this.state.squares[index].player
+    ) {
+      this.setState({
+        error: "Cannot move opponent's piece"
+      });
+    } else if (this.state.selected !== NOT_SELECTED) {
       this.handleMove(this.state.squares[index] !== null, index);
     }
     // If the user selects a spot on the board that has a piece
@@ -155,13 +165,15 @@ export default class Game extends React.Component {
         newState[index].deselectPiece();
         this.setState({
           squares: newState,
-          selected: NOT_SELECTED
+          selected: NOT_SELECTED,
+          error: ""
         });
       } else {
         newState[index].selectPiece();
         this.setState({
           squares: newState,
-          selected: index
+          selected: index,
+          error: ""
         });
       }
     }
@@ -176,7 +188,11 @@ export default class Game extends React.Component {
           black={this.state.capturedBlackPieces}
         />
         <Board squares={this.state.squares} handleClick={this.handleClick} />
-        <RightSidebar turn={this.state.turn} count={this.state.count} />
+        <RightSidebar
+          turn={this.state.turn}
+          count={this.state.count}
+          error={this.state.error}
+        />
         <div className="spacer" />
       </div>
     );

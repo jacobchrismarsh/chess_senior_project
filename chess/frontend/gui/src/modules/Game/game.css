@@ -53,3 +53,7 @@ li {
 .color-black {
   background-color: black;
 }
+
+.error {
+  color: red;
+}

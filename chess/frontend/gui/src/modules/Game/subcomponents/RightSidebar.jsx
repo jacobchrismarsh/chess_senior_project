@@ -10,6 +10,10 @@ export class RightSidebar extends React.Component {
           <div>Move Count: {this.props.count}</div>
           <br />
           <div>Turn: {this.props.turn}</div>
+          <br />
+          <div className={`error ${this.props.error === "" ? "" : "hidden"}`}>
+            {this.props.error}
+          </div>
         </div>
       </div>
     );
