@@ -55,11 +55,6 @@ function handleClick(event) {
 }
 
 class SignIn extends Component {
-  constructor(props) {
-    super(props);
-    // TODO
-  }
-
   render() {
     let { classes } = this.props;
     return (
