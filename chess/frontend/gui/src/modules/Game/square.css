@@ -1,0 +1,28 @@
+.square {
+  background: transparent;
+  border: 2px;
+  border-color: RGB(0, 0, 0);
+  float: left;
+  height: 50px;
+  margin-right: -1px;
+  margin-top: -1px;
+  padding: 0;
+  text-align: center;
+  width: 50px;
+}
+
+.selected {
+  background-color: beige !important;
+}
+
+.square:focus {
+  outline: none;
+}
+
+.light {
+  background-color: RGB(255, 255, 255);
+}
+
+.dark {
+  background-color: RGB(75, 75, 75);
+}
