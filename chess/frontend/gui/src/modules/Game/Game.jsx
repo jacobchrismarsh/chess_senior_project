@@ -128,22 +128,7 @@ export default class Game extends React.Component {
   handleClick(index) {
     if (this.state.selected !== NOT_SELECTED) {
       this.handleMove(this.state.squares[index] !== null, index);
-    } else if (
-      this.state.squares[index] !== null &&
-      this.state.selected !== NOT_SELECTED
-    ) {
-      let preMove = this.state.squares;
-      let pieceToMove = this.state.squares[this.state.selected];
-      let postMove = preMove;
-      pieceToMove.deselectPiece();
-      postMove[index] = pieceToMove;
-      postMove[this.state.selected] = null;
-      this.setState({
-        squares: postMove,
-        selected: NOT_SELECTED
-      });
     }
-
     // If the user selects a spot on the board that has a piece
     else if (this.state.squares[index] != null) {
       let newState = this.state.squares;
