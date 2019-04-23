@@ -1,5 +1,6 @@
-from django.shortcuts import render
+from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
+from django.shortcuts import render
 
 def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
@@ -13,7 +14,7 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
             black_user_id: str
             id: int
     """
-    return JsonResponse(json.dumps([1, 2, 3]))
+    return JsonResponse({1: 2})
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
-    return JsonResponse(json.dumps([1, 2, 3]))
+    return JsonResponse({1: 2})
