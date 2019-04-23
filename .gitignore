@@ -8,4 +8,8 @@ tags
 __pycache__
 *.pages
 db.sqlite3
-
+/src/
+/chess/backend/env
+/mac_stockfish
+/chess/frontend/node_modules
+/chess/frontend/yarn.lock
