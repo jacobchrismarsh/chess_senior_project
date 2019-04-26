@@ -15,6 +15,10 @@
   background-color: beige !important;
 }
 
+.movable {
+  background-color: lightgreen !important;
+}
+
 .square:focus {
   outline: none;
 }
