@@ -3,15 +3,15 @@ export default class Piece {
     this.player = player;
     this.svg = svg;
     this.selected = false;
-    this.moveable = false;
+    this.movable = false;
   }
-
+ß
   canMovePiece() {
-    this.moveable = true;
+    this.movable = true;
   }
 
   cannotMovePiece() {
-    this.moveable = false;
+    this.movable = false;
   }
 
   selectPiece() {

@@ -5,10 +5,9 @@ function selected(selected) {
   return selected ? "selected" : "";
 }
 
-function movable(moveable) {
-  return moveable ? "movable" : "";
+function movable(selected) {
+  return selected ? "movable" : "";
 }
-
 export function Square(props) {
   return (
     <button
