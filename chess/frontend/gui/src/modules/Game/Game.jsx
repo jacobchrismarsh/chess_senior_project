@@ -6,7 +6,8 @@ import {
   Rook,
   Bishop,
   Queen,
-  King
+  King,
+  Empty
 } from "./subcomponents/Pieces";
 import {
   NOT_SELECTED,
@@ -23,9 +24,11 @@ import {
   BLACK_KING_INIT,
   WHITE_KING_INIT,
   WHITE,
-  BLACK
+  BLACK,
+  TRANSLATE_POSITION
 } from "./constants";
 
+import $ from "jquery";
 import "./game.css";
 
 export default class Game extends React.Component {
@@ -38,7 +41,8 @@ export default class Game extends React.Component {
       capturedBlackPieces: [],
       turn: WHITE,
       count: 0,
-      error: ""
+      error: "",
+      movableSquares: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.handleMove = this.handleMove.bind(this);
@@ -107,6 +111,12 @@ export default class Game extends React.Component {
       squares[WHITE_KING_INIT[i]] = new King(WHITE);
     }
 
+    for (let i = 0; i < 64; i++) {
+      if (squares[i] === null) {
+        squares[i] = new Empty(null);
+      }
+    }
+
     return squares;
   }
 
@@ -143,20 +153,47 @@ export default class Game extends React.Component {
     });
   }
 
+  opponentColor() {
+    return this.state.turn === WHITE ? BLACK : WHITE
+  }
+
+  checkPossibleMoves(index) {
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/get_moves/",
+      method: "GET",
+      data: { index: index }
+    }).then(response => {
+      this.highlightMoves(response.moves)
+    });
+  }
+
+  highlightMoves(moves) {
+    let newSquares = this.state.squares;
+
+    moves.forEach(move => {
+      newSquares[TRANSLATE_POSITION[move]].canMovePiece()
+    });
+
+    this.setState({
+      squares: newSquares
+    });
+  }
+
   // Function that is passed down to the child components used
   // to handle moving the pieces
   handleClick(index) {
+    this.checkPossibleMoves(index);
     // If the user selects the oponent's peice first
     if (
-      this.state.selected === NOT_SELECTED &&
-      this.state.turn !== this.state.squares[index].player
-    ) {
+      this.state.selected === NOT_SELECTED && this.state.turn !== this.state.squares[index].player) {
       this.setState({
         error: "Cannot move opponent's piece"
       });
     } else if (this.state.selected !== NOT_SELECTED) {
-      this.handleMove(this.state.squares[index] !== null, index);
+      let captured = this.state.squares[index].player === this.opponentColor()
+      this.handleMove(captured, index);
     }
+
     // If the user selects a spot on the board that has a piece
     else if (this.state.squares[index] != null) {
       let newState = this.state.squares;

@@ -19,4 +19,4 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
-    return JsonResponse({1: 2})
+    return JsonResponse({"moves": [ 1, 2, 3]})

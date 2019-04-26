@@ -9,6 +9,7 @@ export class Board extends React.Component {
         key={i}
         piece={this.props.squares[i] ? this.props.squares[i].svg : null}
         selected={this.props.squares[i] ? this.props.squares[i].selected : null}
+        movable={this.props.squares[i] ? this.props.squares[i].movable : null}
         squareColor={squareColor}
         onClick={() => this.props.handleClick(i)}
       />
