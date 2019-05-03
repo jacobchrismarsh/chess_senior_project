@@ -26,7 +26,7 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
-    from_coord = request.move
+    from_coord = request.index
 
     potential_moves = [Move(newMove(from_coord, to_coord)) for to_coord in range(64)]
 
