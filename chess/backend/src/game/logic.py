@@ -1,8 +1,12 @@
+from typing import Tuple
+
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
 from django.shortcuts import render
-from context import pychess
+from .context import pychess
 from pychess.Utils.Board import Board
+from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
+from pychess.Utils.Move import Move
 
 FROM_COORD = 0
 TO_COORD = 1
