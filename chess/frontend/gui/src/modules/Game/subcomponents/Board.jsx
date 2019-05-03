@@ -1,6 +1,11 @@
 import React from "react";
 import { Square } from "./Square";
+import { Clock } from "./Clock";
+import { WHITE, BLACK } from '../constants';
 import "../board.css";
+
+const START_MIN = 10;
+const START_SECONDS = 0;
 
 export class Board extends React.Component {
   renderSquare(i, squareColor) {
@@ -42,6 +47,26 @@ export class Board extends React.Component {
         </div>
       );
     }
-    return <div className="game-board">{board}</div>;
+    return (
+      <div className="tri-list">
+        <Clock
+          turn={this.props.turn}
+          minutes={START_MIN}
+          seconds={START_SECONDS}
+          player={BLACK}
+          move={this.props.move}
+        />
+        <br />
+        {board}
+        <br />
+        <Clock
+          turn={this.props.turn}
+          minutes={START_MIN}
+          seconds={START_SECONDS}
+          player={WHITE}
+          move={this.props.move}
+        />
+      </div>
+    );
   }
 }
