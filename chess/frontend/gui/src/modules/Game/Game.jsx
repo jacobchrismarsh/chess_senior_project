@@ -161,7 +161,7 @@ export default class Game extends React.Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/get_moves/",
       method: "GET",
-      data: { index: index }
+      data: { index: TRANSLATE_POSITION[index] }
     }).then(response => {
       this.highlightMoves(response.moves)
     });
