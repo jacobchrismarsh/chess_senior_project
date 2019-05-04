@@ -13,6 +13,8 @@ TO_COORD = 1
 BOARD_WIDTH = 8
 
 
+global_board = Board(setup=True)
+
 def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
         Takes the appropriate information from `request` and creates a new
@@ -30,11 +32,11 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
-    from_coord = request.index
+    from_coord = int(request.GET.get("index"))
 
     potential_moves = [Move(newMove(from_coord, to_coord)) for to_coord in range(64)]
 
-    all_legal_moves = genAllMoves(board.board)
+    all_legal_moves = [Move(move) for move in genAllMoves(global_board.board)]
 
     legal_moves_for_piece = [
         move for move in potential_moves if move in all_legal_moves
