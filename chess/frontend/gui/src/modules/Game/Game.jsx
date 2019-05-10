@@ -222,7 +222,7 @@ export default class Game extends React.Component {
       pieceToMove.deselectPiece();
       this.dehighlightMoves();
       postMovePosition[index] = pieceToMove;
-      postMovePosition[this.state.selected] = null;
+      postMovePosition[this.state.selected] = new Empty(null);
       this.setState({
         squares: postMovePosition,
         selected: NOT_SELECTED,
