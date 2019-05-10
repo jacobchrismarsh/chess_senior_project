@@ -56,3 +56,17 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
     from_coord = move.cord0.y * BOARD_WIDTH + move.cord0.x
     to_coord = move.cord1.y * BOARD_WIDTH + move.cord1.x
     return (from_coord, to_coord)
+
+def make_move(request: WSGIRequest) -> JsonResponse:
+    from_coord = int(request.GET.get("from_coord"))
+    to_coord = int(request.GET.get("to_coord"))
+
+    player_move = Move(newMove(from_coord, to_coord))
+
+    global_board = global_board.move(player_move)
+    return _get_opponent_move()
+
+def _get_opponent_move():
+    # TODO
+    return JsonResponse({"1": 2})
+
