@@ -238,6 +238,7 @@ export default class Game extends React.Component {
         // if the spot selected is the current selected piece, then we just need to
         // deselect the piece
         if (this.state.selected === index) {
+          this.dehighlightMoves();
           newState[index].deselectPiece();
           this.setState({
             squares: newState,
