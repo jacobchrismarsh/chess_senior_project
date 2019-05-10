@@ -1,4 +1,5 @@
 import React from "react";
+import autoBind from 'react-autobind';
 import { Board, LeftSidebar, RightSidebar } from "./subcomponents";
 import {
   Pawn,
@@ -44,8 +45,8 @@ export default class Game extends React.Component {
       error: "",
       movableSquares: []
     };
-    this.handleClick = this.handleClick.bind(this);
-    this.handleMove = this.handleMove.bind(this);
+
+    autoBind(this);
   }
 
   initBoard() {
@@ -125,59 +126,36 @@ export default class Game extends React.Component {
     return this.state.squares[index].movable;
   }
 
-  // Function used to handle the piece moving, rn the
-  // capture boolean doesn't do anything but I will use
-  // it to keep track of pieces that have been captured
-  handleMove(capture, index) {
-    let preMovePosition = this.state.squares;
-    let pieceToMove = this.state.squares[this.state.selected];
-    let postMovePosition = preMovePosition;
-    let capturedB = this.state.capturedBlackPieces;
-    let capturedW = this.state.capturedWhitePieces;
-    // If the piece was captured and it is White's turn then the
-    // captured piece is black
-    if (capture && this.state.turn === WHITE) {
-      capturedB.push(preMovePosition[index]);
-    }
-    // If the piece was captured and it is Black's turn then the
-    // captured piece is white
-    else if (capture && this.state.turn === BLACK) {
-      capturedW.push(preMovePosition[index]);
-    }
-
-    if (!this.checkIfMoveValid(index)) {
-      this.setState({
-        error: "Cannot move piece there"
-      });
-    } else {
-      pieceToMove.deselectPiece();
-      this.dehighlightMoves();
-      postMovePosition[index] = pieceToMove;
-      postMovePosition[this.state.selected] = null;
-      this.setState({
-        squares: postMovePosition,
-        selected: NOT_SELECTED,
-        capturedBlackPieces: capturedB,
-        capturedWhitePieces: capturedW,
-        turn: this.state.turn === WHITE ? BLACK : WHITE,
-        count: this.state.count + 1,
-        error: ""
-      });
-    }
-  }
-
+  // returns the color of the opponent
   opponentColor() {
     return this.state.turn === WHITE ? BLACK : WHITE;
   }
 
-  checkPossibleMoves(index) {
-    return $.ajax({
-      url: "http://127.0.0.1:8000/game/get_moves/",
-      method: "GET",
-      data: { index: TRANSLATE_POSITION[index] }
-    }).then(response => {
-      this.highlightMoves(response.moves);
+  // sets the error message to the string that is passed in
+  setError(message) {
+    this.setState({
+      error: message
     });
+  }
+
+  // returns true if the square at spot index belongs to the current player
+  checkIfPieceBelongsToCurrentPlayer(index) {
+    return this.state.squares[index].player === this.state.turn;
+  }
+
+  // returns true if the square at the spot index belongs to the opponent player
+  checkIfPieceBelongsToOpponentPlayer(index) {
+    return this.state.squares[index].player === this.opponentColor();
+  }
+
+  // returns true if the square at spot index is already selected
+  checkIfSelectedPieceIsAlreadySelected(index) {
+    return this.state.selected === index;
+  }
+
+  // returns true if the square at spot index is empty
+  checkIfSelectedIsEmpty(index) {
+    return this.state.squares[index].player === null;
   }
 
   // highlights the squares on the board that are 'movable' according
@@ -208,56 +186,103 @@ export default class Game extends React.Component {
     });
   }
 
+  checkPossibleMoves(index) {
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/get_moves/",
+      method: "GET",
+      data: { index: TRANSLATE_POSITION[index] }
+    }).then(response => {
+      this.highlightMoves(response.moves);
+    });
+  }
+
+  // Function used to handle the piece moving, rn the
+  // capture boolean doesn't do anything but I will use
+  // it to keep track of pieces that have been captured
+  handleMove(capture, index) {
+    let preMovePosition = this.state.squares;
+    let pieceToMove = this.state.squares[this.state.selected];
+    let postMovePosition = preMovePosition;
+    let capturedB = this.state.capturedBlackPieces;
+    let capturedW = this.state.capturedWhitePieces;
+    // If the piece was captured and it is White's turn then the
+    // captured piece is black
+    if (capture && this.state.turn === WHITE) {
+      capturedB.push(preMovePosition[index]);
+    }
+    // If the piece was captured and it is Black's turn then the
+    // captured piece is white
+    else if (capture && this.state.turn === BLACK) {
+      capturedW.push(preMovePosition[index]);
+    }
+
+    if (!this.checkIfMoveValid(index)) {
+      this.setError("Cannot move piece there");
+    } else {
+      pieceToMove.deselectPiece();
+      this.dehighlightMoves();
+      postMovePosition[index] = pieceToMove;
+      postMovePosition[this.state.selected] = null;
+      this.setState({
+        squares: postMovePosition,
+        selected: NOT_SELECTED,
+        capturedBlackPieces: capturedB,
+        capturedWhitePieces: capturedW,
+        turn: this.state.turn === WHITE ? BLACK : WHITE,
+        count: this.state.count + 1,
+        error: ""
+      });
+    }
+  }
+
   // Function that is passed down to the child components used
   // to handle moving the pieces
   handleClick(index) {
-    let newState = this.state.squares;
+    let newStateSquares = this.state.squares;
     // if the player currently has no piece selected
     if (this.state.selected === NOT_SELECTED) {
       // if the spot that was clicked was the current player's color
-      if (this.state.squares[index].player === this.state.turn) {
+      if (this.checkIfPieceBelongsToCurrentPlayer(index)) {
         this.checkPossibleMoves(index);
-        newState[index].selectPiece();
+        newStateSquares[index].selectPiece();
         this.setState({
-          squares: newState,
+          squares: newStateSquares,
           selected: index,
           error: ""
         });
-      } else if (this.state.squares[index].player === this.opponentColor()) {
+      } else if (this.checkIfPieceBelongsToOpponentPlayer(index)) {
         // if the spot that was clicked was the opponent's color
-        this.setState({
-          error: "Cannot move opponent's piece"
-        });
+        this.setError("Cannot move opponent's piece");
       }
     } else {
       // if the player currently has a piece selected
       // check the spot that was clicked
 
       // if the spot that was clicked was the current player's color
-      if (this.state.squares[index].player === this.state.turn) {
+      if (this.checkIfPieceBelongsToCurrentPlayer(index)) {
         // if the spot selected is the current selected piece, then we just need to
         // deselect the piece
-        if (this.state.selected === index) {
+        if (this.checkIfSelectedPieceIsAlreadySelected(index)) {
           this.dehighlightMoves();
-          newState[index].deselectPiece();
+          newStateSquares[index].deselectPiece();
           this.setState({
-            squares: newState,
+            squares: newStateSquares,
             selected: NOT_SELECTED,
             error: ""
           });
         } else {
           // if the spot selected is not the current selected piece throw an error,
           // since you cannot capture your own piece
-          this.setState({
-            error: "Cannot cannot capture your own piece"
-          });
+          this.setError("Cannot cannot capture your own piece");
         }
-      } else if (this.state.squares[index].player === this.opponentColor()) {
+      } else if (this.checkIfPieceBelongsToOpponentPlayer(index)) {
         // if the spot that was clcked was the opposite player's color
-        this.handleMove(true, index);
-      } else if (this.state.squares[index].player === null) {
+        let captured = true;
+        this.handleMove(captured, index);
+      } else if (this.checkIfSelectedIsEmpty(index)) {
         // if the spot that was clicked was an empty spot
-        this.handleMove(false, index);
+        let captured = false;
+        this.handleMove(captured, index);
       }
     }
   }
