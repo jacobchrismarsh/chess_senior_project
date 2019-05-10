@@ -10,6 +10,7 @@ li {
 
 .game-container {
   height: 100vh !important;
+  min-width: 1200px;
   display: flex;
   flex-direction: row;
   align-items: center;
