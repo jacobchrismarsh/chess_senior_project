@@ -4,13 +4,16 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from .context import pychess
+from .context import Stockfish
 from pychess.Utils.Board import Board
 from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
+from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.Move import Move
 
 FROM_COORD = 0
 TO_COORD = 1
 BOARD_WIDTH = 8
+STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10-64"
 
 
 global_board = Board(setup=True)
@@ -58,8 +61,8 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
     return (from_coord, to_coord)
 
 def make_move(request: WSGIRequest) -> JsonResponse:
-    from_coord = int(request.GET.get("from_coord"))
-    to_coord = int(request.GET.get("to_coord"))
+    global global_board
+    from_coord, to_coord = _get_coords_from_wsgi_request(request)
 
     player_move = Move(newMove(from_coord, to_coord))
 
@@ -67,6 +70,31 @@ def make_move(request: WSGIRequest) -> JsonResponse:
     return _get_opponent_move()
 
 def _get_opponent_move():
-    # TODO
-    return JsonResponse({"1": 2})
+    global global_board
 
+    engine = initialize_stockfish_engine()
+    _set_chess_engine_board_fen_position(engine, global_board)
+
+    best_move_as_san = engine.get_best_move()
+    stockfish_move = _convert_SAN_str_to_move(best_move_as_san)
+
+    global_board = global_board.move(stockfish_move)
+
+    from_coord, to_coord = _move_to_board_location(stockfish_move)
+
+    return JsonResponse({"from_coord": from_coord, "to_coord": to_coord})
+
+def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
+    from_coord = int(request.GET.get("from_coord"))
+    to_coord = int(request.GET.get("to_coord"))
+
+    return (from_coord, to_coord)
+
+def initialize_stockfish_engine() -> Stockfish:
+    return Stockfish(STOCKFISH_ENGINE_LOC)
+
+def _set_chess_engine_board_fen_position(engine: Stockfish, board: Board) -> None:
+    engine.set_fen_position(board.asFen())
+
+def _convert_SAN_str_to_move(san: str) -> Move:
+    return Move(parseAny(global_board.board, san))

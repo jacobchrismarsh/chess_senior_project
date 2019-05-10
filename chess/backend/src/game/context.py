@@ -5,3 +5,4 @@ from os.path import dirname, join, abspath
 # directly without any weirdness
 sys.path.append(abspath(join(dirname(__file__), "../../../../")))
 import pychess
+from stockfish import Stockfish
