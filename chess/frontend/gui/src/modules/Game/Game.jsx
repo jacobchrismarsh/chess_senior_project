@@ -196,6 +196,27 @@ export default class Game extends React.Component {
     });
   }
 
+  makeMove(from_coord, to_coord) {
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/make_move/",
+      method: "GET",
+      data: { 
+        from_coord: TRANSLATE_POSITION[from_coord],
+        to_coord: TRANSLATE_POSITION[to_coord]
+      }
+    }).then(response => {
+      let { from_coord, to_coord } = response;
+      let newStateSquares = this.state.squares;
+      let pieceToMove = this.state.squares[TRANSLATE_POSITION[from_coord]];
+      newStateSquares[TRANSLATE_POSITION[to_coord]] = pieceToMove;
+      newStateSquares[TRANSLATE_POSITION[from_coord]] = new Empty(null);
+
+      this.setState({
+        squares: newStateSquares
+      });
+    });
+  }
+
   // Function used to handle the piece moving, rn the
   // capture boolean doesn't do anything but I will use
   // it to keep track of pieces that have been captured
@@ -221,14 +242,15 @@ export default class Game extends React.Component {
     } else {
       pieceToMove.deselectPiece();
       this.dehighlightMoves();
+      this.makeMove(this.state.selected, index);
       postMovePosition[index] = pieceToMove;
       postMovePosition[this.state.selected] = new Empty(null);
+      //turn: this.state.turn === WHITE ? BLACK : WHITE,
       this.setState({
         squares: postMovePosition,
         selected: NOT_SELECTED,
         capturedBlackPieces: capturedB,
         capturedWhitePieces: capturedW,
-        turn: this.state.turn === WHITE ? BLACK : WHITE,
         count: this.state.count + 1,
         error: ""
       });
