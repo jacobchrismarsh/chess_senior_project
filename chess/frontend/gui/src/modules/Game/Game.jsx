@@ -245,7 +245,6 @@ export default class Game extends React.Component {
       this.makeMove(this.state.selected, index);
       postMovePosition[index] = pieceToMove;
       postMovePosition[this.state.selected] = new Empty(null);
-      //turn: this.state.turn === WHITE ? BLACK : WHITE,
       this.setState({
         squares: postMovePosition,
         selected: NOT_SELECTED,
