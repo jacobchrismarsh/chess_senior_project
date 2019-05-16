@@ -1,4 +1,3 @@
-
 import os
 import re
 import tempfile
@@ -12,8 +11,7 @@ from pychess.widgets.Background import hexcol
 class OverlayWindow(Gtk.Window):
     """ This class knows about being an overlaywindow and some svg stuff """
 
-    cache = {
-    }  # Class global self.cache for svgPath:rsvg and (svgPath,w,h):surface
+    cache = {}  # Class global self.cache for svgPath:rsvg and (svgPath,w,h):surface
 
     def __init__(self, parent):
         Gtk.Window.__init__(self, type=Gtk.WindowType.POPUP)
@@ -75,8 +73,9 @@ class OverlayWindow(Gtk.Window):
             print("   !!! get_window() returned None for", self.myparent, top_level)
         else:
             x_loc1, y_loc1 = window.get_position()
-            translate_x = self.myparent.translate_coordinates(self.myparent.get_toplevel(),
-                                                              x, y)
+            translate_x = self.myparent.translate_coordinates(
+                self.myparent.get_toplevel(), x, y
+            )
             x = x_loc1 + translate_x[0]
             y = y_loc1 + translate_x[1]
         return x, y
@@ -120,18 +119,21 @@ class OverlayWindow(Gtk.Window):
 
         sytle_ctxt = self.get_style_context()
 
-        colorDic = {"#18b0ff": getcol("p_light_selected"),
-                    "#575757": getcol("p_text_aa"),
-                    "#e3ddd4": getcol("p_bg_color"),
-                    "#d4cec5": getcol("p_bg_insensitive"),
-                    "#ffffff": getcol("p_base_color"),
-                    "#000000": getcol("p_fg_color")}
+        colorDic = {
+            "#18b0ff": getcol("p_light_selected"),
+            "#575757": getcol("p_text_aa"),
+            "#e3ddd4": getcol("p_bg_color"),
+            "#d4cec5": getcol("p_bg_insensitive"),
+            "#ffffff": getcol("p_base_color"),
+            "#000000": getcol("p_fg_color"),
+        }
 
         data = open(svgPath).read()
         data = re.sub(
             "|".join(colorDic.keys()),
             lambda m: m.group() in colorDic and colorDic[m.group()] or m.group(),
-            data)
+            data,
+        )
         f_handle = open(TEMP_PATH, "w")
         f_handle.write(data)
         f_handle.close()
@@ -145,8 +147,9 @@ class OverlayWindow(Gtk.Window):
         context = cairo.Context(surface)
         context.set_operator(cairo.OPERATOR_SOURCE)
         if svg.props.width != width or svg.props.height != height:
-            context.scale(width / float(svg.props.width),
-                          height / float(svg.props.height))
+            context.scale(
+                width / float(svg.props.width), height / float(svg.props.height)
+            )
         svg.render_cairo(context)
         return surface
 

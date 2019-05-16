@@ -5,12 +5,11 @@ import cairo
 
 
 class PycairoContext(ct.Structure):
-    _fields_ = \
-        [
-            ("PyObject_HEAD", ct.c_byte * object.__basicsize__),
-            ("ctx", ct.c_void_p),
-            ("base", ct.c_void_p),
-        ]
+    _fields_ = [
+        ("PyObject_HEAD", ct.c_byte * object.__basicsize__),
+        ("ctx", ct.c_void_p),
+        ("base", ct.c_void_p),
+    ]
 
 
 _initialized = False
@@ -35,10 +34,18 @@ def create_cairo_font_face_for_file(filename, faceindex=0, loadoptions=0):
         _freetype_so = ct.CDLL("libfreetype.so.6")
         _cairo_so = ct.CDLL("libcairo.so.2")
         _cairo_so.cairo_ft_font_face_create_for_ft_face.restype = ct.c_void_p
-        _cairo_so.cairo_ft_font_face_create_for_ft_face.argtypes = [ct.c_void_p, ct.c_int]
+        _cairo_so.cairo_ft_font_face_create_for_ft_face.argtypes = [
+            ct.c_void_p,
+            ct.c_int,
+        ]
         _cairo_so.cairo_font_face_get_user_data.restype = ct.c_void_p
         _cairo_so.cairo_font_face_get_user_data.argtypes = (ct.c_void_p, ct.c_void_p)
-        _cairo_so.cairo_font_face_set_user_data.argtypes = (ct.c_void_p, ct.c_void_p, ct.c_void_p, ct.c_void_p)
+        _cairo_so.cairo_font_face_set_user_data.argtypes = (
+            ct.c_void_p,
+            ct.c_void_p,
+            ct.c_void_p,
+            ct.c_void_p,
+        )
         _cairo_so.cairo_set_font_face.argtypes = [ct.c_void_p, ct.c_void_p]
         _cairo_so.cairo_font_face_status.argtypes = [ct.c_void_p]
         _cairo_so.cairo_font_face_destroy.argtypes = (ct.c_void_p,)
@@ -57,15 +64,21 @@ def create_cairo_font_face_for_file(filename, faceindex=0, loadoptions=0):
     cr_face = None
     try:
         # load FreeType face
-        status = _freetype_so.FT_New_Face(_ft_lib, filename.encode("utf-8"), faceindex, ct.byref(ft_face))
+        status = _freetype_so.FT_New_Face(
+            _ft_lib, filename.encode("utf-8"), faceindex, ct.byref(ft_face)
+        )
         if status != FT_Err_Ok:
-            raise RuntimeError("Error %d creating FreeType font face for %s" % (status, filename))
+            raise RuntimeError(
+                "Error %d creating FreeType font face for %s" % (status, filename)
+            )
 
         # create Cairo font face for freetype face
         cr_face = _cairo_so.cairo_ft_font_face_create_for_ft_face(ft_face, loadoptions)
         status = _cairo_so.cairo_font_face_status(cr_face)
         if status != CAIRO_STATUS_SUCCESS:
-            raise RuntimeError("Error %d creating cairo font face for %s" % (status, filename))
+            raise RuntimeError(
+                "Error %d creating cairo font face for %s" % (status, filename)
+            )
 
         # Problem: Cairo doesn't know to call FT_Done_Face when its font_face object is
         # destroyed, so we have to do that for it, by attaching a cleanup callback to
@@ -76,14 +89,17 @@ def create_cairo_font_face_for_file(filename, faceindex=0, loadoptions=0):
         # actually unnecessary in our situation, because each call to FT_New_Face
         # will return a new FT Face, but we include it here to show how to handle the
         # general case.
-        if _cairo_so.cairo_font_face_get_user_data(cr_face, ct.byref(_ft_destroy_key)) is None:
+        if (
+            _cairo_so.cairo_font_face_get_user_data(cr_face, ct.byref(_ft_destroy_key))
+            is None
+        ):
             status = _cairo_so.cairo_font_face_set_user_data(
-                cr_face,
-                ct.byref(_ft_destroy_key),
-                ft_face,
-                _freetype_so.FT_Done_Face)
+                cr_face, ct.byref(_ft_destroy_key), ft_face, _freetype_so.FT_Done_Face
+            )
             if status != CAIRO_STATUS_SUCCESS:
-                raise RuntimeError("Error %d doing user_data dance for %s" % (status, filename))
+                raise RuntimeError(
+                    "Error %d doing user_data dance for %s" % (status, filename)
+                )
             ft_face = None  # Cairo has stolen my reference
 
         # set Cairo font face into Cairo context
@@ -92,7 +108,9 @@ def create_cairo_font_face_for_file(filename, faceindex=0, loadoptions=0):
         _cairo_so.cairo_set_font_face(cairo_t, cr_face)
         status = _cairo_so.cairo_font_face_status(cairo_t)
         if status != CAIRO_STATUS_SUCCESS:
-            raise RuntimeError("Error %d creating cairo font face for %s" % (status, filename))
+            raise RuntimeError(
+                "Error %d creating cairo font face for %s" % (status, filename)
+            )
 
     finally:
         _cairo_so.cairo_font_face_destroy(cr_face)
@@ -103,9 +121,8 @@ def create_cairo_font_face_for_file(filename, faceindex=0, loadoptions=0):
     return face
 
 
-if __name__ == '__main__':
-    face = create_cairo_font_face_for_file("../../../pieces/ttf/harlequin.ttf",
-                                           0)
+if __name__ == "__main__":
+    face = create_cairo_font_face_for_file("../../../pieces/ttf/harlequin.ttf", 0)
 
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 200, 128)
 

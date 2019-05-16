@@ -10,7 +10,7 @@ class ProtocolEngine(Engine):
 
     __gsignals__ = {
         "readyForOptions": (GObject.SignalFlags.RUN_FIRST, None, ()),
-        "readyForMoves": (GObject.SignalFlags.RUN_FIRST, None, ())
+        "readyForMoves": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 
     # Setting engine options

@@ -1,6 +1,7 @@
 import colorsys
 import sys
 import xml.etree.cElementTree as ET
+
 # from io import BytesIO
 
 from gi.repository import Gtk, Gdk, GObject, Pango
@@ -21,18 +22,18 @@ def createCombo(combo, data=[], name=None, ellipsize_mode=None):
 
     combo.set_model(lst_store)
     crp = Gtk.CellRendererPixbuf()
-    crp.set_property('xalign', 0)
-    crp.set_property('xpad', 2)
+    crp.set_property("xalign", 0)
+    crp.set_property("xpad", 2)
     combo.pack_start(crp, False)
-    combo.add_attribute(crp, 'pixbuf', 0)
+    combo.add_attribute(crp, "pixbuf", 0)
 
     crt = Gtk.CellRendererText()
-    crt.set_property('xalign', 0)
-    crt.set_property('xpad', 4)
+    crt.set_property("xalign", 0)
+    crt.set_property("xpad", 4)
     combo.pack_start(crt, True)
-    combo.add_attribute(crt, 'text', 1)
+    combo.add_attribute(crt, "text", 1)
     if ellipsize_mode is not None:
-        crt.set_property('ellipsize', ellipsize_mode)
+        crt.set_property("ellipsize", ellipsize_mode)
 
 
 def updateCombo(combo, data):
@@ -57,7 +58,7 @@ def updateCombo(combo, data):
 def genColor(n, startpoint=0):
     assert n >= 1
     # This splits the 0 - 1 segment in the pizza way
-    hue = (2 * n - 1) / (2.**(n - 1).bit_length()) - 1
+    hue = (2 * n - 1) / (2.0 ** (n - 1).bit_length()) - 1
     hue = (hue + startpoint) % 1
     # We set saturation based on the amount of green, scaled to the interval
     # [0.6..0.8]. This ensures a consistent lightness over all colors.
@@ -79,8 +80,10 @@ def keepDown(scrolledWindow):
     scrolledWindow.get_vadjustment().connect("changed", changed)
 
     def value_changed(vadjust):
-        vadjust.need_scroll = abs(vadjust.get_value() + vadjust.get_page_size() -
-                                  vadjust.get_upper()) < vadjust.get_step_increment()
+        vadjust.need_scroll = (
+            abs(vadjust.get_value() + vadjust.get_page_size() - vadjust.get_upper())
+            < vadjust.get_step_increment()
+        )
 
     scrolledWindow.get_vadjustment().connect("value-changed", value_changed)
 
@@ -115,6 +118,7 @@ def appendAutowrapColumn(treeview, name, **kvargs):
             store.row_changed(store.get_path(store_iter), store_iter)
             store_iter = store.iter_next(store_iter)
         treeview.set_size_request(0, -1)
+
     # treeview.connect_after("size-allocate", callback, column, cell)
 
     scroll = treeview.get_parent()
@@ -154,18 +158,21 @@ def keep(widget, key, get_value_=None, set_value_=None):  # , first_value=None):
             getter, setter, signal = methods_
             break
     else:
-        raise AttributeError("I don't have any knowledge of type: '%s'" %
-                             widget)
+        raise AttributeError("I don't have any knowledge of type: '%s'" % widget)
 
     if get_value_:
+
         def get_value():
             return get_value_(widget)
+
     else:
         get_value = getattr(widget, getter)
 
     if set_value_:
+
         def set_value(v):
             return set_value_(widget, v)
+
     else:
         set_value = getattr(widget, setter)
 
@@ -173,8 +180,10 @@ def keep(widget, key, get_value_=None, set_value_=None):  # , first_value=None):
         try:
             v = conf.get(key)
         except TypeError:
-            log.warning("uistuff.keep.setFromConf: Key '%s' from conf had the wrong type '%s', ignored" %
-                        (key, type(conf.get(key))))
+            log.warning(
+                "uistuff.keep.setFromConf: Key '%s' from conf had the wrong type '%s', ignored"
+                % (key, type(conf.get(key)))
+            )
             # print("uistuff.keep TypeError %s %s" % (key, conf.get(key)))
         else:
             set_value(v)
@@ -197,12 +206,14 @@ def keep(widget, key, get_value_=None, set_value_=None):  # , first_value=None):
 # sets of values/configurations and which also aren't instant save like in
 # uistuff.keep(), but rather are saved later if and when the user clicks
 # the dialog's OK button
-def loadDialogWidget(widget,
-                     widget_name,
-                     config_number,
-                     get_value_=None,
-                     set_value_=None,
-                     first_value=None):
+def loadDialogWidget(
+    widget,
+    widget_name,
+    config_number,
+    get_value_=None,
+    set_value_=None,
+    first_value=None,
+):
     key = widget_name + "-" + str(config_number)
 
     if widget is None:
@@ -214,18 +225,21 @@ def loadDialogWidget(widget,
             break
     else:
         if set_value_ is None:
-            raise AttributeError("I don't have any knowledge of type: '%s'" %
-                                 widget)
+            raise AttributeError("I don't have any knowledge of type: '%s'" % widget)
 
     if get_value_:
+
         def get_value():
             return get_value_(widget)
+
     else:
         get_value = getattr(widget, getter)
 
     if set_value_:
+
         def set_value(v):
             return set_value_(widget, v)
+
     else:
         set_value = getattr(widget, setter)
 
@@ -233,8 +247,10 @@ def loadDialogWidget(widget,
         try:
             v = conf.get(key)
         except TypeError:
-            log.warning("uistuff.loadDialogWidget: Key '%s' from conf had the wrong type '%s', ignored" %
-                        (key, type(conf.get(key))))
+            log.warning(
+                "uistuff.loadDialogWidget: Key '%s' from conf had the wrong type '%s', ignored"
+                % (key, type(conf.get(key)))
+            )
             if first_value is not None:
                 conf.set(key, first_value)
             else:
@@ -245,7 +261,10 @@ def loadDialogWidget(widget,
         conf.set(key, first_value)
         set_value(conf.get(key))
     else:
-        log.warning("Didn't load widget \"%s\": no conf value and no first_value arg" % widget_name)
+        log.warning(
+            'Didn\'t load widget "%s": no conf value and no first_value arg'
+            % widget_name
+        )
 
 
 def saveDialogWidget(widget, widget_name, config_number, get_value_=None):
@@ -260,12 +279,13 @@ def saveDialogWidget(widget, widget_name, config_number, get_value_=None):
             break
     else:
         if get_value_ is None:
-            raise AttributeError("I don't have any knowledge of type: '%s'" %
-                                 widget)
+            raise AttributeError("I don't have any knowledge of type: '%s'" % widget)
 
     if get_value_:
+
         def get_value():
             return get_value_(widget)
+
     else:
         get_value = getattr(widget, getter)
 
@@ -276,10 +296,7 @@ def saveDialogWidget(widget, widget_name, config_number, get_value_=None):
 POSITION_NONE, POSITION_CENTER, POSITION_GOLDEN = range(3)
 
 
-def keepWindowSize(key,
-                   window,
-                   defaultSize=None,
-                   defaultPosition=POSITION_NONE):
+def keepWindowSize(key, window, defaultSize=None, defaultPosition=POSITION_NONE):
     """ You should call keepWindowSize before show on your windows """
 
     key = key + "window"
@@ -295,8 +312,10 @@ def keepWindowSize(key,
         if height <= 0:
             log.error("Setting height = '%d' for %s to conf" % (height, key))
 
-        log.debug("Saving window position width=%s height=%s x=%s y=%s" %
-                  (width, height, x_loc, y_loc))
+        log.debug(
+            "Saving window position width=%s height=%s x=%s y=%s"
+            % (width, height, x_loc, y_loc)
+        )
         conf.set(key + "_width", width)
         conf.set(key + "_height", height)
         conf.set(key + "_x", x_loc)
@@ -317,22 +336,19 @@ def keepWindowSize(key,
         if conf.hasKey(key + "_width") and conf.hasKey(key + "_height"):
             width = conf.get(key + "_width")
             height = conf.get(key + "_height")
-            log.debug("Resizing window to width=%s height=%s" %
-                      (width, height))
+            log.debug("Resizing window to width=%s height=%s" % (width, height))
             window.resize(width, height)
 
         elif defaultSize:
             width, height = defaultSize
-            log.debug("Resizing window to width=%s height=%s" %
-                      (width, height))
+            log.debug("Resizing window to width=%s height=%s" % (width, height))
             window.resize(width, height)
 
         elif key == "mainwindow":
             monitor_x, monitor_y, monitor_width, monitor_height = getMonitorBounds()
             width = int(monitor_width / 2)
             height = int(monitor_height / 4) * 3
-            log.debug("Resizing window to width=%s height=%s" %
-                      (width, height))
+            log.debug("Resizing window to width=%s height=%s" % (width, height))
             window.resize(width, height)
 
         elif key == "preferencesdialogwindow":
@@ -380,8 +396,7 @@ def onceWhenReady(window, func, *args, **kwargs):
         func(window, *args, **kwargs)
         window.disconnect(handler_id)
 
-    handler_id = window.connect_after("size-allocate", cb, func, *args, **
-                                      kwargs)
+    handler_id = window.connect_after("size-allocate", cb, func, *args, **kwargs)
 
 
 def getMonitorBounds():
@@ -392,13 +407,18 @@ def getMonitorBounds():
         ptr_window, mouse_x, mouse_y, mouse_mods = root_window.get_pointer()
         current_monitor_number = screen.get_monitor_at_point(mouse_x, mouse_y)
         monitor_geometry = screen.get_monitor_geometry(current_monitor_number)
-        return monitor_geometry.x, monitor_geometry.y, monitor_geometry.width, monitor_geometry.height
+        return (
+            monitor_geometry.x,
+            monitor_geometry.y,
+            monitor_geometry.width,
+            monitor_geometry.height,
+        )
     except TypeError:
         return (0, 0, 0, 0)
 
 
 tooltip = Gtk.Window(Gtk.WindowType.POPUP)
-tooltip.set_name('gtk-tooltip')
+tooltip.set_name("gtk-tooltip")
 tooltip.ensure_style()
 tooltipStyle = tooltip.get_style()
 
@@ -427,12 +447,12 @@ class GladeWidgets:
         if sys.platform == "win32" and not conf.no_gettext:
             tree = ET.parse(addDataPrefix("glade/%s" % filename))
             for node in tree.iter():
-                if 'translatable' in node.attrib:
+                if "translatable" in node.attrib:
                     node.text = _(node.text)
-                    del node.attrib['translatable']
-                if node.get('name') in ('pixbuf', 'logo'):
+                    del node.attrib["translatable"]
+                if node.get("name") in ("pixbuf", "logo"):
                     node.text = addDataPrefix("glade/%s" % node.text)
-            xml_text = ET.tostring(tree.getroot(), encoding='unicode', method='xml')
+            xml_text = ET.tostring(tree.getroot(), encoding="unicode", method="xml")
             self.builder = Gtk.Builder.new_from_string(xml_text, -1)
         else:
             self.builder = Gtk.Builder()

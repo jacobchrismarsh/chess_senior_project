@@ -4,12 +4,53 @@ from .ldata import bitPosArray, fileBits, rankBits, moveArray
 from .bitboard import firstBit, iterBits
 from .validator import validateMove
 
-from pychess.Utils.const import SAN, AN, LAN, ENPASSANT, EMPTY, PAWN, KING_CASTLE, QUEEN_CASTLE,\
-    reprFile, reprRank, chr2Sign, cordDic, reprSign, reprCord, reprSignSittuyin, reprSignMakruk,\
-    QUEEN, KNIGHT, BISHOP, ROOK, KING, NORMALCHESS, NORMAL_MOVE, PROMOTIONS, WHITE, BLACK, DROP,\
-    FAN_PIECES, SITTUYINCHESS, FISCHERRANDOMCHESS, SUICIDECHESS, MAKRUKCHESS, CAMBODIANCHESS,\
-    GIVEAWAYCHESS, ATOMICCHESS, WILDCASTLECHESS, WILDCASTLESHUFFLECHESS, HORDECHESS,\
-    chrU2Sign, CASTLE_KR, CASTLE_SAN, QUEEN_PROMOTION, NULL_MOVE, FAN, ASEAN_QUEEN
+from pychess.Utils.const import (
+    SAN,
+    AN,
+    LAN,
+    ENPASSANT,
+    EMPTY,
+    PAWN,
+    KING_CASTLE,
+    QUEEN_CASTLE,
+    reprFile,
+    reprRank,
+    chr2Sign,
+    cordDic,
+    reprSign,
+    reprCord,
+    reprSignSittuyin,
+    reprSignMakruk,
+    QUEEN,
+    KNIGHT,
+    BISHOP,
+    ROOK,
+    KING,
+    NORMALCHESS,
+    NORMAL_MOVE,
+    PROMOTIONS,
+    WHITE,
+    BLACK,
+    DROP,
+    FAN_PIECES,
+    SITTUYINCHESS,
+    FISCHERRANDOMCHESS,
+    SUICIDECHESS,
+    MAKRUKCHESS,
+    CAMBODIANCHESS,
+    GIVEAWAYCHESS,
+    ATOMICCHESS,
+    WILDCASTLECHESS,
+    WILDCASTLESHUFFLECHESS,
+    HORDECHESS,
+    chrU2Sign,
+    CASTLE_KR,
+    CASTLE_SAN,
+    QUEEN_PROMOTION,
+    NULL_MOVE,
+    FAN,
+    ASEAN_QUEEN,
+)
 from pychess.Utils.repr import reprPiece, localReprSign
 from pychess.Utils.lutils.lmovegen import genAllMoves, genPieceMoves, newMove
 
@@ -46,16 +87,19 @@ class ParsingError(Exception):
     """ Please raise this with a 3-tupple: (move, reason, board.asFen())
         The reason should be usable in the context: 'Move was not parseable
         because %s' % reason """
+
     pass
 
 
 def sittuyin_promotion_fcord(board, tcord):
     from pychess.Variants import variants
+
     queenMoves = moveArray[ASEAN_QUEEN]
     promotion_zone = variants[SITTUYINCHESS].PROMOTION_ZONE[board.color]
     for fcord in iterBits(queenMoves[tcord]):
         if fcord in promotion_zone:
             return fcord
+
 
 ################################################################################
 # parseAny                                                                     #
@@ -83,7 +127,7 @@ def determineAlgebraicNotation(algnot):
         return LAN
 
     # Test for b4xc5
-    if "x" in algnot and algnot.split('x')[0] in cordDic:
+    if "x" in algnot and algnot.split("x")[0] in cordDic:
         return LAN
 
     # Test for e2e4 or a7a8q or a7a8=q
@@ -94,6 +138,7 @@ def determineAlgebraicNotation(algnot):
         return FAN
 
     return SAN
+
 
 ################################################################################
 # listToSan                                                                    #
@@ -110,16 +155,13 @@ def listToSan(board, moves):
         board.applyMove(move)
     return sanmoves
 
+
 ################################################################################
 # listToMoves                                                                  #
 ################################################################################
 
 
-def listToMoves(board,
-                movstrs,
-                type=None,
-                testvalidate=False,
-                ignoreErrors=False):
+def listToMoves(board, movstrs, type=None, testvalidate=False, ignoreErrors=False):
     # Work on a copy to ensure we don't break things
     board = board.clone()
     moves = []
@@ -142,13 +184,14 @@ def listToMoves(board,
         if testvalidate and mstr != "--":
             if not validateMove(board, move):
                 if not ignoreErrors:
-                    raise ParsingError(mstr, 'Validation', board.asFen())
+                    raise ParsingError(mstr, "Validation", board.asFen())
                 break
 
         moves.append(move)
         board.applyMove(move)
 
     return moves
+
 
 ################################################################################
 # toSan                                                                        #
@@ -167,8 +210,10 @@ def toSAN(board, move, localRepr=False):
             for altmove in genAllMoves(board_clone):
                 if board.variant == ATOMICCHESS:
                     from pychess.Variants.atomic import kingExplode
-                    if kingExplode(board_clone, altmove, 1 - board_clone.color) and \
-                            not kingExplode(board_clone, altmove, board_clone.color):
+
+                    if kingExplode(
+                        board_clone, altmove, 1 - board_clone.color
+                    ) and not kingExplode(board_clone, altmove, board_clone.color):
                         sign = "+"
                         break
                     elif kingExplode(board_clone, altmove, board_clone.color):
@@ -224,9 +269,11 @@ def toSAN(board, move, localRepr=False):
         board_clone = board.clone()
         for altmove in genAllMoves(board_clone, drops=False):
             mfcord = FCORD(altmove)
-            if board_clone.arBoard[mfcord] == fpiece and \
-                    mfcord != fcord and \
-                    TCORD(altmove) == tcord:
+            if (
+                board_clone.arBoard[mfcord] == fpiece
+                and mfcord != fcord
+                and TCORD(altmove) == tcord
+            ):
                 board_clone.applyMove(altmove)
                 if not board_clone.opIsChecked():
                     xs.append(FILE(mfcord))
@@ -272,6 +319,7 @@ def toSAN(board, move, localRepr=False):
 
     return "%s%s" % (notat, check_or_mate())
 
+
 ################################################################################
 # parseSan                                                                     #
 ################################################################################
@@ -298,7 +346,11 @@ def parseSAN(board, san):
     c = notat[-1]
     if c in "KQRBNSMFkqrbnsmf.":
         c = c.lower()
-        if c == "k" and board.variant != SUICIDECHESS and board.variant != GIVEAWAYCHESS:
+        if (
+            c == "k"
+            and board.variant != SUICIDECHESS
+            and board.variant != GIVEAWAYCHESS
+        ):
             raise ParsingError(san, _("invalid promoted piece"), board.asFen())
         elif c == ".":
             if board.variant in (CAMBODIANCHESS, MAKRUKCHESS, SITTUYINCHESS):
@@ -315,15 +367,20 @@ def parseSAN(board, san):
             notat = notat[:-1]
 
     if len(notat) < 2:
-        raise ParsingError(san, _("the move needs a piece and a cord"),
-                           board.asFen())
+        raise ParsingError(san, _("the move needs a piece and a cord"), board.asFen())
 
     if notat[0] in "O0o":
         fcord = board.ini_kings[color]
-        flag = KING_CASTLE if notat in ("O-O", "0-0", "o-o", "OO", "00", "oo") else QUEEN_CASTLE
+        flag = (
+            KING_CASTLE
+            if notat in ("O-O", "0-0", "o-o", "OO", "00", "oo")
+            else QUEEN_CASTLE
+        )
         side = flag - QUEEN_CASTLE
-        if FILE(fcord) == 3 and board.variant in (WILDCASTLECHESS,
-                                                  WILDCASTLESHUFFLECHESS):
+        if FILE(fcord) == 3 and board.variant in (
+            WILDCASTLECHESS,
+            WILDCASTLESHUFFLECHESS,
+        ):
             side = 0 if side == 1 else 1
         if board.variant == FISCHERRANDOMCHESS:
             tcord = board.ini_rooks[color][side]
@@ -362,7 +419,9 @@ def parseSAN(board, san):
             notat = notat[1:]
         # if from and to lines are neighbours (or the same) but to is an empty square
         # which can't be en-passant square target -> Bishop
-        elif board.arBoard[tcord] == EMPTY and ((color == BLACK and trank != 3) or (color == WHITE and trank != 6)):
+        elif board.arBoard[tcord] == EMPTY and (
+            (color == BLACK and trank != 3) or (color == WHITE and trank != 6)
+        ):
             piece = chr2Sign[notat[0]]
             notat = notat[1:]
         # elif "ba3", "bc3" ,"ba6", "bc6"
@@ -377,31 +436,41 @@ def parseSAN(board, san):
     if "x" in notat:
         notat, tcord = notat.split("x")
         if tcord not in cordDic:
-            raise ParsingError(san, _("the captured cord (%s) is incorrect") %
-                               tcord, board.asFen())
+            raise ParsingError(
+                san, _("the captured cord (%s) is incorrect") % tcord, board.asFen()
+            )
 
         tcord = cordDic[tcord]
 
         if piece == PAWN:
             # If a pawn is attacking an empty cord, we assue it an enpassant
             if board.arBoard[tcord] == EMPTY:
-                if (color == BLACK and 2 * 8 <= tcord < 3 * 8) or (color == WHITE and 5 * 8 <= tcord < 6 * 8):
+                if (color == BLACK and 2 * 8 <= tcord < 3 * 8) or (
+                    color == WHITE and 5 * 8 <= tcord < 6 * 8
+                ):
                     flag = ENPASSANT
                 else:
                     raise ParsingError(
-                        san, _("pawn capture without target piece is invalid"),
-                        board.asFen())
+                        san,
+                        _("pawn capture without target piece is invalid"),
+                        board.asFen(),
+                    )
     else:
         if not notat[-2:] in cordDic:
-            raise ParsingError(san, _("the end cord (%s) is incorrect") %
-                               notat[-2:], board.asFen())
+            raise ParsingError(
+                san, _("the end cord (%s) is incorrect") % notat[-2:], board.asFen()
+            )
 
         tcord = cordDic[notat[-2:]]
         notat = notat[:-2]
 
     # In suicide promoting to king is valid, so
     # more than 1 king per side can exist !
-    if board.variant != SUICIDECHESS and board.variant != GIVEAWAYCHESS and piece == KING:
+    if (
+        board.variant != SUICIDECHESS
+        and board.variant != GIVEAWAYCHESS
+        and piece == KING
+    ):
         return newMove(board.kings[color], tcord, flag)
 
     # If there is any extra location info, like in the move Bexd1 or Nh3f4 we
@@ -431,16 +500,27 @@ def parseSAN(board, san):
             if color == WHITE:
                 pawns = board.boards[WHITE][PAWN]
                 # In horde white pawns on first rank may move two squares also
-                if board.variant == HORDECHESS and RANK(tcord) == 2 and not (
-                        pawns & fileBits[FILE(tcord)] & rankBits[1]):
+                if (
+                    board.variant == HORDECHESS
+                    and RANK(tcord) == 2
+                    and not (pawns & fileBits[FILE(tcord)] & rankBits[1])
+                ):
                     fcord = tcord - 16
                 else:
-                    fcord = tcord - 16 if RANK(tcord) == 3 and not (
-                        pawns & fileBits[FILE(tcord)] & rankBits[2]) else tcord - 8
+                    fcord = (
+                        tcord - 16
+                        if RANK(tcord) == 3
+                        and not (pawns & fileBits[FILE(tcord)] & rankBits[2])
+                        else tcord - 8
+                    )
             else:
                 pawns = board.boards[BLACK][PAWN]
-                fcord = tcord + 16 if RANK(tcord) == 4 and not (
-                    pawns & fileBits[FILE(tcord)] & rankBits[5]) else tcord + 8
+                fcord = (
+                    tcord + 16
+                    if RANK(tcord) == 4
+                    and not (pawns & fileBits[FILE(tcord)] & rankBits[5])
+                    else tcord + 8
+                )
 
             if board.variant == SITTUYINCHESS and flag == QUEEN_PROMOTION:
                 if pawns & fileBits[FILE(tcord)] & rankBits[RANK(tcord)]:
@@ -475,9 +555,9 @@ def parseSAN(board, san):
                         continue
                     return move
 
-    errstring = "no %s is able to move to %s" % (reprPiece[piece],
-                                                 reprCord[tcord])
+    errstring = "no %s is able to move to %s" % (reprPiece[piece], reprCord[tcord])
     raise ParsingError(san, errstring, board.asFen())
+
 
 ################################################################################
 # toLan                                                                        #
@@ -520,6 +600,7 @@ def toLAN(board, move, localRepr=False):
 
     return s
 
+
 ################################################################################
 # parseLan                                                                     #
 ################################################################################
@@ -544,6 +625,7 @@ def parseLAN(board, lan):
     if not lan.upper().startswith("O-O") and not lan.startswith("--"):
         lan = lan.replace("-", "")
     return parseSAN(board, lan)
+
 
 ################################################################################
 # toAN                                                                         #
@@ -593,6 +675,7 @@ def toAN(board, move, short=False, castleNotation=CASTLE_SAN):
                 s += "=" + reprSign[PROMOTE_PIECE(flag)]
     return s
 
+
 ################################################################################
 # parseAN                                                                      #
 ################################################################################
@@ -602,8 +685,7 @@ def parseAN(board, an):
     """ Parse an Algebraic Notation string """
 
     if not 4 <= len(an) <= 6:
-        raise ParsingError(an, "the move must be 4 or 6 chars long",
-                           board.asFen())
+        raise ParsingError(an, "the move must be 4 or 6 chars long", board.asFen())
 
     if "@" in an:
         tcord = cordDic[an[-2:]]
@@ -618,15 +700,16 @@ def parseAN(board, an):
         fcord = cordDic[an[:2]]
         tcord = cordDic[an[2:4]]
     except KeyError as e:
-        raise ParsingError(an, "the cord (%s) is incorrect" % e.args[0],
-                           board.asFen())
+        raise ParsingError(an, "the cord (%s) is incorrect" % e.args[0], board.asFen())
 
     flag = NORMAL_MOVE
 
     if len(an) > 4 and not an[-1] in "QRBNMSFqrbnmsf":
-        if (board.variant != SUICIDECHESS and board.variant != GIVEAWAYCHESS) or \
-            (board.variant == SUICIDECHESS or board.variant == GIVEAWAYCHESS) and not an[
-                -1] in "Kk":
+        if (
+            (board.variant != SUICIDECHESS and board.variant != GIVEAWAYCHESS)
+            or (board.variant == SUICIDECHESS or board.variant == GIVEAWAYCHESS)
+            and not an[-1] in "Kk"
+        ):
             raise ParsingError(an, "invalid promoted piece", board.asFen())
 
     if len(an) == 5:
@@ -644,8 +727,7 @@ def parseAN(board, an):
             flag = KING_CASTLE
             if board.variant == FISCHERRANDOMCHESS:
                 tcord = board.ini_rooks[board.color][1]
-        elif board.arBoard[
-                tcord] == ROOK:
+        elif board.arBoard[tcord] == ROOK:
             color = board.color
             friends = board.friends[color]
             if bitPosArray[tcord] & friends:
@@ -655,8 +737,12 @@ def parseAN(board, an):
                     flag = KING_CASTLE
         else:
             flag = NORMAL_MOVE
-    elif board.arBoard[fcord] == PAWN and board.arBoard[tcord] == EMPTY and \
-            FILE(fcord) != FILE(tcord) and RANK(fcord) != RANK(tcord):
+    elif (
+        board.arBoard[fcord] == PAWN
+        and board.arBoard[tcord] == EMPTY
+        and FILE(fcord) != FILE(tcord)
+        and RANK(fcord) != RANK(tcord)
+    ):
         flag = ENPASSANT
     elif board.arBoard[fcord] == PAWN:
         if an[3] in "18" and board.variant != SITTUYINCHESS:
@@ -680,7 +766,7 @@ san2WhiteFanDic = {
     ord("N"): FAN_PIECES[WHITE][KNIGHT],
     ord("P"): FAN_PIECES[WHITE][PAWN],
     ord("+"): "†",
-    ord("#"): "‡"
+    ord("#"): "‡",
 }
 
 san2BlackFanDic = {
@@ -694,7 +780,7 @@ san2BlackFanDic = {
     ord("N"): FAN_PIECES[BLACK][KNIGHT],
     ord("P"): FAN_PIECES[BLACK][PAWN],
     ord("+"): "†",
-    ord("#"): "‡"
+    ord("#"): "‡",
 }
 
 
@@ -722,6 +808,7 @@ def parseFAN(board, fan):
     san = fan.translate(fan2SanDic)
     return parseSAN(board, san)
 
+
 ################################################################################
 # toPolyglot                                                                   #
 ################################################################################
@@ -740,6 +827,7 @@ def toPolyglot(board, move):
         pg = (pg & 4032) | board.ini_rooks[board.color][1]
 
     return pg
+
 
 ################################################################################
 # parsePolyglot                                                                #
@@ -767,8 +855,12 @@ def parsePolyglot(board, pg):
                     flag = KING_CASTLE
                     if board.variant == NORMALCHESS:  # Want e1g1/e8g8
                         tcord -= 1
-    elif board.arBoard[fcord] == PAWN and board.arBoard[tcord] == EMPTY and \
-            FILE(fcord) != FILE(tcord) and RANK(fcord) != RANK(tcord):
+    elif (
+        board.arBoard[fcord] == PAWN
+        and board.arBoard[tcord] == EMPTY
+        and FILE(fcord) != FILE(tcord)
+        and RANK(fcord) != RANK(tcord)
+    ):
         flag = ENPASSANT
 
     return newMove(fcord, tcord, flag)

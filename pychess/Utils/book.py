@@ -1,4 +1,3 @@
-
 import os
 from struct import Struct
 from collections import namedtuple
@@ -18,7 +17,7 @@ else:
 # The book probing code is based on that of PolyGlot by Fabien Letouzey.
 # PolyGlot is available under the GNU GPL from http://wbec-ridderkerk.nl
 
-BookEntry = namedtuple('BookEntry', 'key move weight learn')
+BookEntry = namedtuple("BookEntry", "key move weight learn")
 # 'key' c_uint64      the position's hash
 # 'move' c_uint16     the candidate move
 # 'weight' c_uint16   proportional to prob. we should play it

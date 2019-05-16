@@ -13,8 +13,9 @@ from pychess.System.Log import log
 from pychess.System.prefix import getEngineDataPrefix
 from pychess.ic.icc import B_DTGR_END, B_UNIT_END
 
-if not hasattr(asyncio.StreamReader, 'readuntil'):
+if not hasattr(asyncio.StreamReader, "readuntil"):
     from pychess.System.readuntil import readuntil, _wait_for_data
+
     asyncio.StreamReader.readuntil = readuntil
     asyncio.StreamReader._wait_for_data = _wait_for_data
 
@@ -22,7 +23,7 @@ ENCODE = [ord(i) for i in "Timestamp (FICS) v1.0 - programmed by Henrik Gram."]
 ENCODELEN = len(ENCODE)
 G_RESPONSE = "\x029"
 FILLER = b"1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-IAC_WONT_ECHO = b''.join([telnetlib.IAC, telnetlib.WONT, telnetlib.ECHO])
+IAC_WONT_ECHO = b"".join([telnetlib.IAC, telnetlib.WONT, telnetlib.ECHO])
 
 _DEFAULT_LIMIT = 2 ** 16
 
@@ -49,12 +50,14 @@ class ICSStreamReader(asyncio.StreamReader):
                     not_find = "read_until:%s , got:'%s'" % (until, self._buffer)
                     log.debug(not_find, extra={"task": (self.name, "raw")})
 
-            yield from self._wait_for_data('read_until')
+            yield from self._wait_for_data("read_until")
 
 
 class ICSStreamReaderProtocol(asyncio.StreamReaderProtocol):
     def __init__(self, stream_reader, client_connected_cb, loop, name, timeseal):
-        asyncio.StreamReaderProtocol.__init__(self, stream_reader, client_connected_cb=client_connected_cb, loop=loop)
+        asyncio.StreamReaderProtocol.__init__(
+            self, stream_reader, client_connected_cb=client_connected_cb, loop=loop
+        )
         self.name = name
         self.timeseal = timeseal
         self.connected = False
@@ -87,7 +90,9 @@ class ICSStreamReaderProtocol(asyncio.StreamReaderProtocol):
 
             if self.timeseal:
                 for i in range(g_count):
-                    self._stream_writer.write(self.encode(bytearray(G_RESPONSE, "utf-8")) + b"\n")
+                    self._stream_writer.write(
+                        self.encode(bytearray(G_RESPONSE, "utf-8")) + b"\n"
+                    )
         return data
 
     def encode(self, inbuf, timestamp=None):
@@ -95,7 +100,7 @@ class ICSStreamReaderProtocol(asyncio.StreamReaderProtocol):
 
         if not timestamp:
             timestamp = int(time.time() * 1000 % 1e7)
-        enc = inbuf + bytearray('\x18%d\x19' % timestamp, "ascii")
+        enc = inbuf + bytearray("\x18%d\x19" % timestamp, "ascii")
         padding = 12 - len(enc) % 12
         filler = random.sample(FILLER, padding)
         enc += bytearray(filler)
@@ -166,7 +171,7 @@ altpath = getEngineDataPrefix()
 timestamp_path = shutil.which(timestamp, os.X_OK, path=altpath)
 
 
-class ICSTelnet():
+class ICSTelnet:
     sensitive = False
 
     def __init__(self, timeseal):
@@ -202,11 +207,17 @@ class ICSTelnet():
                         startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
                     else:
                         startupinfo = None
-                    create = asyncio.create_subprocess_exec(* ["%s" % timestamp_path, "-p", "%s" % self.port], startupinfo=startupinfo)
+                    create = asyncio.create_subprocess_exec(
+                        *["%s" % timestamp_path, "-p", "%s" % self.port],
+                        startupinfo=startupinfo
+                    )
                     self.timestamp_proc = yield from create
                     log.info("%s started OK" % timestamp_path)
                 except OSError as err:
-                    log.info("Can't start %s OSError: %s %s" % (timestamp_path, err.errno, err.strerror))
+                    log.info(
+                        "Can't start %s OSError: %s %s"
+                        % (timestamp_path, err.errno, err.strerror)
+                    )
                     self.port = port
                     self.host = host
             else:
@@ -219,8 +230,12 @@ class ICSTelnet():
             reader.connected_event.set()
 
         loop = asyncio.get_event_loop()
-        self.reader = ICSStreamReader(_DEFAULT_LIMIT, loop, self.connected_event, self.name)
-        self.protocol = ICSStreamReaderProtocol(self.reader, cb, loop, self.name, self.timeseal)
+        self.reader = ICSStreamReader(
+            _DEFAULT_LIMIT, loop, self.connected_event, self.name
+        )
+        self.protocol = ICSStreamReaderProtocol(
+            self.reader, cb, loop, self.name, self.timeseal
+        )
         coro = loop.create_connection(lambda: self.protocol, self.host, self.port)
         self.transport, _protocol = yield from coro
         # writer = asyncio.StreamWriter(transport, protocol, reader, loop)
@@ -242,7 +257,7 @@ class ICSTelnet():
             PREEMPT Thu Feb 9 20:09:47 GMT 2006 i686 Intel(R) Celeron(R) CPU
             2.00GHz GenuineIntel GNU/Linux| 93049 """
         user = getpass.getuser()
-        uname = ' '.join(list(platform.uname()))
+        uname = " ".join(list(platform.uname()))
         return "TIMESTAMP|" + user + "|" + uname + "|"
 
     def write(self, string):
@@ -251,7 +266,9 @@ class ICSTelnet():
         log.info(logstr, extra={"task": (self.name, "raw")})
 
         if self.timeseal:
-            self.transport.write(self.protocol.encode(bytearray(string, "utf-8")) + b"\n")
+            self.transport.write(
+                self.protocol.encode(bytearray(string, "utf-8")) + b"\n"
+            )
         else:
             self.transport.write(string.encode() + b"\n")
 
@@ -287,12 +304,12 @@ class ICSTelnet():
                 m = min(m, k)
             if m != sys.maxsize:
                 if m == i:
-                    stuff = self.ICC_buffer[:m + len(until)]
-                    self.ICC_buffer = self.ICC_buffer[m + len(until):]
+                    stuff = self.ICC_buffer[: m + len(until)]
+                    self.ICC_buffer = self.ICC_buffer[m + len(until) :]
                     return stuff.decode("latin_1")
                 else:
-                    stuff = self.ICC_buffer[:m + 2]
-                    self.ICC_buffer = self.ICC_buffer[m + 2:]
+                    stuff = self.ICC_buffer[: m + 2]
+                    self.ICC_buffer = self.ICC_buffer[m + 2 :]
                     return stuff.decode("latin_1")
             else:
                 return ""

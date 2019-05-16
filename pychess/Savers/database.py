@@ -5,7 +5,17 @@ from sqlalchemy import select, func, and_, or_
 
 from pychess.Utils.const import FEN_START, WHITE, BLACK, reprResult
 from pychess.Database import model as dbmodel
-from pychess.Database.model import game, event, site, player, pl1, pl2, annotator, source, tag_game
+from pychess.Database.model import (
+    game,
+    event,
+    site,
+    player,
+    pl1,
+    pl2,
+    annotator,
+    source,
+    tag_game,
+)
 
 
 count_games = select([func.count()]).select_from(game)
@@ -84,29 +94,30 @@ def save(path, model, offset, flip=False):
         annotator_id = get_id(annotator, game_annotator)
 
         new_values = {
-            'offset': offset,
-            'offset8': (offset >> 3) << 3,
-            'event_id': event_id,
-            'site_id': site_id,
-            'date': date,
-            'round': game_round,
-            'white_id': white_id,
-            'black_id': black_id,
-            'result': result,
-            'white_elo': white_elo,
-            'black_elo': black_elo,
-            'ply_count': ply_count,
-            'eco': eco,
-            'time_control': time_control,
-            'board': board,
-            'fen': fen,
-            'variant': variant,
-            'annotator_id': annotator_id,
+            "offset": offset,
+            "offset8": (offset >> 3) << 3,
+            "event_id": event_id,
+            "site_id": site_id,
+            "date": date,
+            "round": game_round,
+            "white_id": white_id,
+            "black_id": black_id,
+            "result": result,
+            "white_elo": white_elo,
+            "black_elo": black_elo,
+            "ply_count": ply_count,
+            "eco": eco,
+            "time_control": time_control,
+            "board": board,
+            "fen": fen,
+            "variant": variant,
+            "annotator_id": annotator_id,
         }
 
         if hasattr(model, "game_id") and model.game_id is not None:
-            result = conn.execute(game.update().where(
-                game.c.id == model.game_id).values(new_values))
+            result = conn.execute(
+                game.update().where(game.c.id == model.game_id).values(new_values)
+            )
         else:
             result = conn.execute(game.insert().values(new_values))
             model.game_id = result.inserted_primary_key[0]
@@ -118,26 +129,27 @@ def save(path, model, offset, flip=False):
     conn.close()
 
 
-col2label = {game.c.id: "Id",
-             game.c.offset: "Offset",
-             game.c.offset8: "Offset8",
-             pl1.c.name: "White",
-             pl2.c.name: "Black",
-             game.c.result: "Result",
-             event.c.name: "Event",
-             site.c.name: "Site",
-             game.c.round: "Round",
-             game.c.date: "Date",
-             game.c.white_elo: "WhiteElo",
-             game.c.black_elo: "BlackElo",
-             game.c.ply_count: "PlyCount",
-             game.c.eco: "ECO",
-             game.c.time_control: "TimeControl",
-             game.c.board: "Board",
-             game.c.fen: "FEN",
-             game.c.variant: "Variant",
-             annotator.c.name: "Annotator",
-             }
+col2label = {
+    game.c.id: "Id",
+    game.c.offset: "Offset",
+    game.c.offset8: "Offset8",
+    pl1.c.name: "White",
+    pl2.c.name: "Black",
+    game.c.result: "Result",
+    event.c.name: "Event",
+    site.c.name: "Site",
+    game.c.round: "Round",
+    game.c.date: "Date",
+    game.c.white_elo: "WhiteElo",
+    game.c.black_elo: "BlackElo",
+    game.c.ply_count: "PlyCount",
+    game.c.eco: "ECO",
+    game.c.time_control: "TimeControl",
+    game.c.board: "Board",
+    game.c.fen: "FEN",
+    game.c.variant: "Variant",
+    annotator.c.name: "Annotator",
+}
 
 
 class TagDatabase:
@@ -151,11 +163,12 @@ class TagDatabase:
             .outerjoin(pl2, game.c.black_id == pl2.c.id)
             .outerjoin(event, game.c.event_id == event.c.id)
             .outerjoin(site, game.c.site_id == site.c.id)
-            .outerjoin(annotator, game.c.annotator_id == annotator.c.id)]
+            .outerjoin(annotator, game.c.annotator_id == annotator.c.id)
+        ]
 
         self.select = select(self.cols, from_obj=self.from_obj)
 
-        self.select_offsets = select([game.c.offset, ], from_obj=self.from_obj)
+        self.select_offsets = select([game.c.offset], from_obj=self.from_obj)
 
         self.colnames = self.engine.execute(self.select).keys()
 
@@ -168,6 +181,7 @@ class TagDatabase:
 
     def get_count(self):
         return self.engine.execute(count_games).scalar()
+
     count = property(get_count)
 
     def close(self):
@@ -182,15 +196,23 @@ class TagDatabase:
             tags = []
             if "white" in tag_query:
                 if "ignore_tag_colors" in tag_query:
-                    tags.append(or_(pl1.c.name.like("%%%s%%" % tag_query["white"]),
-                                    pl2.c.name.like("%%%s%%" % tag_query["white"])))
+                    tags.append(
+                        or_(
+                            pl1.c.name.like("%%%s%%" % tag_query["white"]),
+                            pl2.c.name.like("%%%s%%" % tag_query["white"]),
+                        )
+                    )
                 else:
                     tags.append(pl1.c.name.like("%%%s%%" % tag_query["white"]))
 
             if "black" in tag_query:
                 if "ignore_tag_colors" in tag_query:
-                    tags.append(or_(pl1.c.name.like("%%%s%%" % tag_query["black"]),
-                                    pl2.c.name.like("%%%s%%" % tag_query["black"])))
+                    tags.append(
+                        or_(
+                            pl1.c.name.like("%%%s%%" % tag_query["black"]),
+                            pl2.c.name.like("%%%s%%" % tag_query["black"]),
+                        )
+                    )
                 else:
                     tags.append(pl2.c.name.like("%%%s%%" % tag_query["black"]))
 
@@ -279,15 +301,33 @@ class TagDatabase:
         # http://sqlite.org/cvstrac/wiki?p=ScrollingCursor
         # https://stackoverflow.com/questions/21082956/sqlite-scrolling-cursor-how-to-scroll-correctly-with-duplicate-names
         if self.is_desc:
-            query = self.query.where(or_(self.order_cols[0] < last_seen[0],
-                                         and_(self.order_cols[0] == last_seen[0],
-                                              self.order_cols[1] < last_seen[1]))
-                                     ).order_by(self.order_cols[0].desc(), self.order_cols[1].desc()).limit(limit)
+            query = (
+                self.query.where(
+                    or_(
+                        self.order_cols[0] < last_seen[0],
+                        and_(
+                            self.order_cols[0] == last_seen[0],
+                            self.order_cols[1] < last_seen[1],
+                        ),
+                    )
+                )
+                .order_by(self.order_cols[0].desc(), self.order_cols[1].desc())
+                .limit(limit)
+            )
         else:
-            query = self.query.where(or_(self.order_cols[0] > last_seen[0],
-                                         and_(self.order_cols[0] == last_seen[0],
-                                              self.order_cols[1] > last_seen[1]))
-                                     ).order_by(*self.order_cols).limit(limit)
+            query = (
+                self.query.where(
+                    or_(
+                        self.order_cols[0] > last_seen[0],
+                        and_(
+                            self.order_cols[0] == last_seen[0],
+                            self.order_cols[1] > last_seen[1],
+                        ),
+                    )
+                )
+                .order_by(*self.order_cols)
+                .limit(limit)
+            )
 
         # log.debug(self.engine.execute(Explain(query)).fetchall(), extra={"task": "SQL"})
 
@@ -297,7 +337,9 @@ class TagDatabase:
         return records
 
     def get_offsets_for_tags(self, last_seen):
-        query = self.select_offsets.where(self.where_tags).where(game.c.offset > last_seen[1])
+        query = self.select_offsets.where(self.where_tags).where(
+            game.c.offset > last_seen[1]
+        )
         result = self.engine.execute(query)
         return [rec[0] for rec in result.fetchall()]
 
@@ -311,4 +353,6 @@ class TagDatabase:
             return result[0]
 
     def get_exta_tags(self, rec):
-        return self.engine.execute(select([tag_game]).where(tag_game.c.game_id == rec["Id"]))
+        return self.engine.execute(
+            select([tag_game]).where(tag_game.c.game_id == rec["Id"])
+        )

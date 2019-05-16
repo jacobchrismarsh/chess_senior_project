@@ -9,6 +9,7 @@ class PawnOddsBoard(Board):
     """:Description: A standard chess game where one  side starts with one less
         pawn, this is known as giving pawn odds
     """
+
     variant = PAWNODDSCHESS
     __desc__ = _("One player starts with one less pawn piece")
     name = _("Pawn odds")

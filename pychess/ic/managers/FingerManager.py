@@ -3,8 +3,14 @@ from time import time
 
 from gi.repository import GObject
 
-from pychess.ic import IC_STATUS_OFFLINE, IC_STATUS_ACTIVE, IC_STATUS_PLAYING, IC_STATUS_BUSY, \
-    GAME_TYPES_BY_FICS_NAME, BLKCMD_FINGER
+from pychess.ic import (
+    IC_STATUS_OFFLINE,
+    IC_STATUS_ACTIVE,
+    IC_STATUS_PLAYING,
+    IC_STATUS_BUSY,
+    GAME_TYPES_BY_FICS_NAME,
+    BLKCMD_FINGER,
+)
 from pychess.Utils.const import WHITE, BLACK
 from pychess.System.Log import log
 
@@ -17,8 +23,7 @@ titles = "((?:\(%s\))+)?" % titleslist
 names = "(\w+)%s" % titles
 mf = "(?:([mf]{1,2})\s?)?"
 # FIXME: Needs support for day, hour, min, sec
-times = "[, ]*".join("(?:(\d+) %s)?" % s
-                     for s in ("days", "hrs", "mins", "secs"))
+times = "[, ]*".join("(?:(\d+) %s)?" % s for s in ("days", "hrs", "mins", "secs"))
 
 # "73 days, 5 hrs, 55 mins"
 # ('73', '5', '55', None)
@@ -212,8 +217,8 @@ class FingerObject:
 class FingerManager(GObject.GObject):
 
     __gsignals__ = {
-        'fingeringFinished': (GObject.SignalFlags.RUN_FIRST, None, (object, )),
-        'ratingAdjusted': (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
+        "fingeringFinished": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
+        "ratingAdjusted": (GObject.SignalFlags.RUN_FIRST, None, (str, str)),
     }
 
     def __init__(self, connection):
@@ -226,19 +231,24 @@ class FingerManager(GObject.GObject):
             "On for: (?P<uptime>.+?) +Idle: (?P<idletime>.+)",
             "%s is in (?P<silence>silence) mode\." % names,
             "\(playing game (?P<gameno>\d+): (?P<p1>\S+?)%s vs. (?P<p2>\S+?)%s\)"
-            % (titles, titles), "\(%s (?P<busymessage>.+?)\)" % names,
+            % (titles, titles),
+            "\(%s (?P<busymessage>.+?)\)" % names,
             "%s has not played any rated games\." % names,
             "rating +RD +win +loss +draw +total +best",
             "(?P<gametype>%s) +(?P<ratings>.+)" % types,
-            "Email *: (?P<email>.+)", "Sanctions *: (?P<sanctions>.+)",
+            "Email *: (?P<email>.+)",
+            "Sanctions *: (?P<sanctions>.+)",
             "Total time online: (?P<tto>.+)",
             "% of life online:  [\d\.]+  \(since (?P<created>.+?)\)",
             "Timeseal [ \\d] : (?P<timeseal>Off|On)",
             "Admin Level: (?P<adminlevel>.+)",
-            "(?P<noteno>\d+): *(?P<note>.*)", "$")
+            "(?P<noteno>\d+): *(?P<note>.*)",
+            "$",
+        )
 
-        self.connection.expect_fromplus(self.onFinger, "Finger of %s:" % names,
-                                        "$|".join(fingerLines))
+        self.connection.expect_fromplus(
+            self.onFinger, "Finger of %s:" % names, "$|".join(fingerLines)
+        )
 
         self.connection.client.run_command("iset nowrap 1")
 
@@ -287,8 +297,7 @@ class FingerManager(GObject.GObject):
             elif groupdict["gameno"] is not None:
                 finger.setStatus(IC_STATUS_PLAYING)
                 finger.setGameno(groupdict["gameno"])
-                if groupdict["p1"].lower() == self.connection.getUsername(
-                ).lower():
+                if groupdict["p1"].lower() == self.connection.getUsername().lower():
                     finger.setColor(WHITE)
                     finger.setOpponent(groupdict["p2"])
                 else:

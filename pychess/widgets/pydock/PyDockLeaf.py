@@ -1,4 +1,3 @@
-
 from gi.repository import Gtk
 
 from pychess.System.prefix import addDataPrefix
@@ -32,12 +31,14 @@ class PyDockLeaf(TabReceiver):
         self.button_cids = []
 
         self.starButton = StarArrowButton(
-            self, addDataPrefix("glade/dock_top.svg"),
+            self,
+            addDataPrefix("glade/dock_top.svg"),
             addDataPrefix("glade/dock_right.svg"),
             addDataPrefix("glade/dock_bottom.svg"),
             addDataPrefix("glade/dock_left.svg"),
             addDataPrefix("glade/dock_center.svg"),
-            addDataPrefix("glade/dock_star.svg"))
+            addDataPrefix("glade/dock_star.svg"),
+        )
 
         self.button_cids += [
             self.starButton.connect("dropped", self.__onDrop),
@@ -140,6 +141,7 @@ class PyDockLeaf(TabReceiver):
             return
 
         from .PyDockTop import PyDockTop
+
         parent = self.get_parent()
         if not isinstance(parent, PyDockTop):
             while not isinstance(parent, PyDockComposite):

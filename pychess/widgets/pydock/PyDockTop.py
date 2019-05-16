@@ -1,4 +1,3 @@
-
 import os
 from xml.dom import minidom
 from collections import defaultdict
@@ -28,7 +27,8 @@ class PyDockTop(PyDockComposite, TabReceiver):
             ArrowButton(self, addDataPrefix("glade/dock_top.svg"), NORTH),
             ArrowButton(self, addDataPrefix("glade/dock_right.svg"), EAST),
             ArrowButton(self, addDataPrefix("glade/dock_bottom.svg"), SOUTH),
-            ArrowButton(self, addDataPrefix("glade/dock_left.svg"), WEST))
+            ArrowButton(self, addDataPrefix("glade/dock_left.svg"), WEST),
+        )
 
         for button in self.buttons:
             self.button_cids[button] += [
@@ -159,8 +159,7 @@ class PyDockTop(PyDockComposite, TabReceiver):
                     break
 
         if not dockElem:
-            doc = minidom.getDOMImplementation().createDocument(None, "docks",
-                                                                None)
+            doc = minidom.getDOMImplementation().createDocument(None, "docks", None)
             dockElem = doc.createElement("dock")
             dockElem.setAttribute("id", self.id)
             doc.documentElement.appendChild(dockElem)
@@ -181,13 +180,11 @@ class PyDockTop(PyDockComposite, TabReceiver):
             else:
                 childElement = document.createElement("h")
                 size = float(component.get_allocation().width)
-#             if component.getPosition() in (NORTH, SOUTH):
-#                 print "saving v position as %s out of %s (%s)" % (str(pos), str(size), str(pos/max(size,pos)))
+            #             if component.getPosition() in (NORTH, SOUTH):
+            #                 print "saving v position as %s out of %s (%s)" % (str(pos), str(size), str(pos/max(size,pos)))
             childElement.setAttribute("pos", str(pos / max(size, pos)))
-            self.__addToXML(component.getComponents()[0], childElement,
-                            document)
-            self.__addToXML(component.getComponents()[1], childElement,
-                            document)
+            self.__addToXML(component.getComponents()[0], childElement, document)
+            self.__addToXML(component.getComponents()[1], childElement, document)
 
         elif isinstance(component, PyDockLeaf):
             childElement = document.createElement("leaf")
@@ -210,16 +207,17 @@ class PyDockTop(PyDockComposite, TabReceiver):
                 break
         else:
             raise AttributeError(
-                "XML file contains no <dock> elements with id '%s'" % self.id)
+                "XML file contains no <dock> elements with id '%s'" % self.id
+            )
 
         child = [n for n in elem.childNodes if isinstance(n, minidom.Element)]
         if child:
             self.addComponent(self.__createWidgetFromXML(child[0], idToWidget))
 
     def __createWidgetFromXML(self, parentElement, idToWidget):
-        children = [n
-                    for n in parentElement.childNodes
-                    if isinstance(n, minidom.Element)]
+        children = [
+            n for n in parentElement.childNodes if isinstance(n, minidom.Element)
+        ]
 
         if parentElement.tagName in ("h", "v"):
             child1, child2 = children
@@ -230,7 +228,8 @@ class PyDockTop(PyDockComposite, TabReceiver):
             new.initChildren(
                 self.__createWidgetFromXML(child1, idToWidget),
                 self.__createWidgetFromXML(child2, idToWidget),
-                preserve_dimensions=True)
+                preserve_dimensions=True,
+            )
 
             def cb(widget, event, pos):
                 allocation = widget.get_allocation()
@@ -242,7 +241,9 @@ class PyDockTop(PyDockComposite, TabReceiver):
                     widget.set_position(int(allocation.height * pos))
                 widget.disconnect(conid)
 
-            conid = new.paned.connect("size-allocate", cb, float(parentElement.getAttribute("pos")))
+            conid = new.paned.connect(
+                "size-allocate", cb, float(parentElement.getAttribute("pos"))
+            )
             return new
 
         elif parentElement.tagName == "leaf":
@@ -282,17 +283,18 @@ class PyDockTop(PyDockComposite, TabReceiver):
 
     def old2new(self, name):
         """ After 0.99.0 database perspective panel names changed """
-        x = {"switcher": "SwitcherPanel",
-             "openingtree": "OpeningTreePanel",
-             "filter": "FilterPanel",
-             "preview": "PreviewPanel",
-             "chat": "ChatPanel",
-             "console": "ConsolePanel",
-             "news": "NewsPanel",
-             "seeklist": "SeekListPanel",
-             "seekgraph": "SeekGraphPanel",
-             "playerlist": "PlayerListPanel",
-             "gamelist": "GameListPanel",
-             "archivelist": "ArchiveListPanel",
-             }
+        x = {
+            "switcher": "SwitcherPanel",
+            "openingtree": "OpeningTreePanel",
+            "filter": "FilterPanel",
+            "preview": "PreviewPanel",
+            "chat": "ChatPanel",
+            "console": "ConsolePanel",
+            "news": "NewsPanel",
+            "seeklist": "SeekListPanel",
+            "seekgraph": "SeekGraphPanel",
+            "playerlist": "PlayerListPanel",
+            "gamelist": "GameListPanel",
+            "archivelist": "ArchiveListPanel",
+        }
         return x[name] if name in x else name

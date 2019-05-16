@@ -13,7 +13,13 @@ from pychess.compat import create_task
 from pychess.System.Log import log
 
 from pychess import ic
-from pychess.Utils.const import NAME, FISCHERRANDOMCHESS, LOSERSCHESS, ATOMICCHESS, CRAZYHOUSECHESS
+from pychess.Utils.const import (
+    NAME,
+    FISCHERRANDOMCHESS,
+    LOSERSCHESS,
+    ATOMICCHESS,
+    CRAZYHOUSECHESS,
+)
 from .managers.SeekManager import SeekManager
 from .managers.FingerManager import FingerManager
 from .managers.NewsManager import NewsManager
@@ -40,8 +46,14 @@ from .managers.ICCAutoLogOutManager import ICCAutoLogOutManager
 
 from .FICSObjects import FICSPlayers, FICSGames, FICSSeeks, FICSChallenges
 from .TimeSeal import CanceledException, ICSTelnet
-from .VerboseTelnet import LinePrediction, FromPlusPrediction, FromABPlusPrediction, \
-    FromToPrediction, PredictionsTelnet, NLinesPrediction
+from .VerboseTelnet import (
+    LinePrediction,
+    FromPlusPrediction,
+    FromABPlusPrediction,
+    FromToPrediction,
+    PredictionsTelnet,
+    NLinesPrediction,
+)
 
 
 class LogOnException(Exception):
@@ -51,11 +63,11 @@ class LogOnException(Exception):
 class Connection(GObject.GObject):
 
     __gsignals__ = {
-        'connecting': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'connectingMsg': (GObject.SignalFlags.RUN_FIRST, None, (str, )),
-        'connected': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'disconnected': (GObject.SignalFlags.RUN_FIRST, None, ()),
-        'error': (GObject.SignalFlags.RUN_FIRST, None, (object, )),
+        "connecting": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "connectingMsg": (GObject.SignalFlags.RUN_FIRST, None, (str,)),
+        "connected": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "disconnected": (GObject.SignalFlags.RUN_FIRST, None, ()),
+        "error": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
     }
 
     def __init__(self, host, ports, timeseal, username, password):
@@ -105,9 +117,8 @@ class Connection(GObject.GObject):
             # This is so that matching prefers the longest match for matches
             # that start out with the same regexp line(s)
             self.reply_cmd_dict[prediction.callback.BLKCMD] = sorted(
-                predictions,
-                key=len,
-                reverse=True)
+                predictions, key=len, reverse=True
+            )
 
     def unexpect(self, callback):
         self.predictions.remove(self.predictionsDict.pop(callback))
@@ -158,17 +169,20 @@ class Connection(GObject.GObject):
         return self.connecting
 
 
-EOF = _("The connection was broken - got \"end of file\" message")
+EOF = _('The connection was broken - got "end of file" message')
 NOTREG = _("'%s' is not a registered name")
-BADPAS = _("The entered password was invalid.\n" +
-           "If you forgot your password, go to " +
-           "<a href=\"http://www.freechess.org/password\">" +
-           "http://www.freechess.org/password</a> to request a new one over email.")
+BADPAS = _(
+    "The entered password was invalid.\n"
+    + "If you forgot your password, go to "
+    + '<a href="http://www.freechess.org/password">'
+    + "http://www.freechess.org/password</a> to request a new one over email."
+)
 ALREADYIN = _("Sorry '%s' is already logged in")
-REGISTERED = _(
-    "'%s' is a registered name.  If it is yours, type the password.")
-PREVENTED = _("Due to abuse problems, guest connections have been prevented.\n" +
-              "You can still register on http://www.freechess.org")
+REGISTERED = _("'%s' is a registered name.  If it is yours, type the password.")
+PREVENTED = _(
+    "Due to abuse problems, guest connections have been prevented.\n"
+    + "You can still register on http://www.freechess.org"
+)
 
 
 class FICSConnection(Connection):
@@ -187,18 +201,19 @@ class FICSConnection(Connection):
         self.emit("connecting")
         try:
 
-            self.emit('connectingMsg', _("Connecting to server"))
+            self.emit("connectingMsg", _("Connecting to server"))
             for i, port in enumerate(self.ports):
-                log.debug("Trying port %d" % port,
-                          extra={"task": (self.host, "raw")})
+                log.debug("Trying port %d" % port, extra={"task": (self.host, "raw")})
                 try:
                     connected_event = asyncio.Event()
                     self.client = ICSTelnet(self.timeseal)
                     create_task(self.client.start(self.host, port, connected_event))
                     yield from connected_event.wait()
                 except socket.error as err:
-                    log.debug("Failed to open port %d %s" % (port, err),
-                              extra={"task": (self.host, "raw")})
+                    log.debug(
+                        "Failed to open port %d %s" % (port, err),
+                        extra={"task": (self.host, "raw")},
+                    )
                     if i + 1 == len(self.ports):
                         raise
                     else:
@@ -207,13 +222,14 @@ class FICSConnection(Connection):
                     break
 
             yield from self.client.read_until("login: ")
-            self.emit('connectingMsg', _("Logging on to server"))
+            self.emit("connectingMsg", _("Logging on to server"))
 
             # login with registered handle
             if self.password:
                 self.client.write(self.username)
                 got = yield from self.client.read_until(
-                    "password:", "enter the server as", "Try again.")
+                    "password:", "enter the server as", "Try again."
+                )
                 if got == 0:
                     self.client.sensitive = True
                     self.client.write(self.password)
@@ -233,7 +249,8 @@ class FICSConnection(Connection):
                     "You are connected as a guest",
                     "If it is yours, type the password.",
                     "guest connections have been prevented",
-                    "nobody from your site may login without an account.")
+                    "nobody from your site may login without an account.",
+                )
                 # got = 3
                 if got == 2:
                     raise LogOnException(REGISTERED % self.username)
@@ -249,8 +266,10 @@ class FICSConnection(Connection):
                     raise LogOnException(ALREADYIN % self.username)
 
                 match = re.search(
-                    "\*\*\*\* Starting FICS session as " + "(%s)%s \*\*\*\*" %
-                    (ic.NAMES_RE, ic.TITLES_RE), line)
+                    "\*\*\*\* Starting FICS session as "
+                    + "(%s)%s \*\*\*\*" % (ic.NAMES_RE, ic.TITLES_RE),
+                    line,
+                )
                 if match:
                     self.username = match.groups()[0]
                     break
@@ -274,15 +293,20 @@ class FICSConnection(Connection):
                 if match:
                     break
 
-            self.emit('connectingMsg', _("Setting up environment"))
+            self.emit("connectingMsg", _("Setting up environment"))
             lines = yield from self.client.readuntil(b"ics%")
             self._post_connect_hook(lines)
             self.FatICS = self.client.FatICS
             self.USCN = self.client.USCN
             self.ICC = self.client.ICC
             self.client.name = self.username
-            self.client = PredictionsTelnet(self.client, self.predictions, self.reply_cmd_dict,
-                                            self.replay_dg_dict, self.replay_cn_dict)
+            self.client = PredictionsTelnet(
+                self.client,
+                self.predictions,
+                self.reply_cmd_dict,
+                self.replay_dg_dict,
+                self.replay_cn_dict,
+            )
             self.client.lines.line_prefix = "aics%" if self.ICC else "fics%"
 
             if not self.USCN and not self.ICC:
@@ -319,11 +343,14 @@ class FICSConnection(Connection):
                 while self.isConnected():
                     self.client.run_command("date")
                     yield from asyncio.sleep(30 * 60)
+
             self.keep_alive_task = create_task(keep_alive())
 
         except CanceledException as err:
-            log.info("FICSConnection._connect: %s" % repr(err),
-                     extra={"task": (self.host, "raw")})
+            log.info(
+                "FICSConnection._connect: %s" % repr(err),
+                extra={"task": (self.host, "raw")},
+            )
         finally:
             self.connecting = False
 
@@ -339,12 +366,21 @@ class FICSConnection(Connection):
         except Exception as err:
             exc_type, exc_value, exc_traceback = sys.exc_info()
             traceback.print_exception(exc_type, exc_value, exc_traceback)
-            log.info("FICSConnection.run: %s" % repr(err),
-                     extra={"task": (self.host, "raw")})
+            log.info(
+                "FICSConnection.run: %s" % repr(err), extra={"task": (self.host, "raw")}
+            )
             self.close()
-            if isinstance(err,
-                          (IOError, LogOnException, EOFError, socket.error,
-                           socket.gaierror, socket.herror)):
+            if isinstance(
+                err,
+                (
+                    IOError,
+                    LogOnException,
+                    EOFError,
+                    socket.error,
+                    socket.gaierror,
+                    socket.herror,
+                ),
+            ):
                 self.emit("error", err)
             else:
                 raise
@@ -392,23 +428,31 @@ class FICSMainConnection(FICSConnection):
         except AttributeError:
             pass
         except Exception as err:
-            if not isinstance(err,
-                              (IOError, LogOnException, EOFError, socket.error,
-                               socket.gaierror, socket.herror)):
+            if not isinstance(
+                err,
+                (
+                    IOError,
+                    LogOnException,
+                    EOFError,
+                    socket.error,
+                    socket.gaierror,
+                    socket.herror,
+                ),
+            ):
                 raise
         finally:
             FICSConnection.close(self)
 
     def _post_connect_hook(self, lines):
         self.ini_messages = lines.splitlines()
-        notify_users = re.search("Present company includes: ((?:%s ?)+)\." %
-                                 ic.NAMES_RE, lines)
+        notify_users = re.search(
+            "Present company includes: ((?:%s ?)+)\." % ic.NAMES_RE, lines
+        )
         if notify_users:
             self.notify_users.extend(notify_users.groups()[0].split())
 
     def _start_managers(self, lines):
-        self.client.run_command("set interface %s %s" %
-                                (NAME, pychess.VERSION))
+        self.client.run_command("set interface %s %s" % (NAME, pychess.VERSION))
 
         # FIXME: Some managers use each other to avoid regexp collapse. To
         # avoid having to init the in a specific order, connect calls should

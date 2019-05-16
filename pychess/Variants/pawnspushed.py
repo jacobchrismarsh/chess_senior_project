@@ -10,9 +10,12 @@ class PawnsPushedBoard(Board):
     """:Description: Standard chess rules but the start setup position is all the white pawns
         start on the 4th rank and all the black pawns start on the 5th rank
     """
+
     variant = PAWNSPUSHEDCHESS
-    __desc__ = _("FICS wild/8: http://www.freechess.org/Help/HelpFiles/wild.html\n" +
-                 "Pawns start on 4th and 5th ranks rather than 2nd and 7th")
+    __desc__ = _(
+        "FICS wild/8: http://www.freechess.org/Help/HelpFiles/wild.html\n"
+        + "Pawns start on 4th and 5th ranks rather than 2nd and 7th"
+    )
     name = _("Pawns Pushed")
     cecp_name = "normal"
     need_initial_board = True

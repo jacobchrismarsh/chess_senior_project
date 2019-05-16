@@ -1,14 +1,23 @@
 from gi.repository import Rsvg
 
-from pychess.Utils.const import BLACK, WHITE, KING, QUEEN, BISHOP, KNIGHT, ROOK, PAWN, \
-    reprSign
+from pychess.Utils.const import (
+    BLACK,
+    WHITE,
+    KING,
+    QUEEN,
+    BISHOP,
+    KNIGHT,
+    ROOK,
+    PAWN,
+    reprSign,
+)
 from pychess.System import conf
 from pychess.System.prefix import addDataPrefix
 from pychess.System.cairoextras import create_cairo_font_face_for_file
 
 
 piece_ord = {KING: 0, QUEEN: 1, ROOK: 2, BISHOP: 3, KNIGHT: 4, PAWN: 5}
-pnames = ('Pawn', 'Knight', 'Bishop', 'Rook', 'Queen', 'King')
+pnames = ("Pawn", "Knight", "Bishop", "Rook", "Queen", "King")
 
 size = 800.0
 
@@ -50,8 +59,7 @@ def drawPiece3(piece, context, x, y, psize, allwhite=False, asean=False):
     if asean:
         image.render_cairo(context)
     elif all_in_one:
-        pieceid = '#%s%s' % ('White' if color == 0 else 'Black',
-                             pnames[piece.sign - 1])
+        pieceid = "#%s%s" % ("White" if color == 0 else "Black", pnames[piece.sign - 1])
         image.render_cairo_sub(context, id=pieceid)
     else:
         image.render_cairo(context)
@@ -102,33 +110,35 @@ def get_svg_pieces(svgdir):
     """Load figurines from .svg files"""
 
     if all_in_one:
-        rsvg_handles = Rsvg.Handle.new_from_file(addDataPrefix(
-            "pieces/%s/%s.svg" % (svgdir, svgdir)))
+        rsvg_handles = Rsvg.Handle.new_from_file(
+            addDataPrefix("pieces/%s/%s.svg" % (svgdir, svgdir))
+        )
     else:
         rsvg_handles = [[None] * 7, [None] * 7]
-        for c, color in ((WHITE, 'white'), (BLACK, 'black')):
+        for c, color in ((WHITE, "white"), (BLACK, "black")):
             for p in pieces:
-                rsvg_handles[c][p] = Rsvg.Handle.new_from_file(addDataPrefix(
-                    "pieces/%s/%s%s.svg" % (svgdir, color[0], reprSign[
-                        p].lower())))
+                rsvg_handles[c][p] = Rsvg.Handle.new_from_file(
+                    addDataPrefix(
+                        "pieces/%s/%s%s.svg" % (svgdir, color[0], reprSign[p].lower())
+                    )
+                )
     return rsvg_handles
 
 
 def get_chess_font_face(name):
     """Set chess font and char mapping for a chess .ttf"""
     name = name[4:]
-    if name in ('alpha', 'berlin', 'cheq'):
-        char_map = ('phbrqk', 'ojntwl')
+    if name in ("alpha", "berlin", "cheq"):
+        char_map = ("phbrqk", "ojntwl")
     else:
-        char_map = ('pnbrqk', 'omvtwl')
+        char_map = ("pnbrqk", "omvtwl")
 
     piece_chars = [[None] * 7, [None] * 7]
     for color in (WHITE, BLACK):
         for piece, char in zip(pieces, char_map[color]):
             piece_chars[color][piece] = char
 
-    face = create_cairo_font_face_for_file(addDataPrefix("pieces/ttf/%s.ttf" %
-                                                         name))
+    face = create_cairo_font_face_for_file(addDataPrefix("pieces/ttf/%s.ttf" % name))
     return face, piece_chars
 
 
@@ -147,8 +157,9 @@ def set_piece_theme(piece_set):
     global piece2char
 
     piece_set = piece_set.lower()
-    if piece_set == 'pychess':
+    if piece_set == "pychess":
         from pychess.gfx.pychess_pieces import drawPiece2
+
         drawPiece = drawPiece2
     elif piece_set.startswith("ttf-"):
         drawPiece = drawPiece4
@@ -156,9 +167,18 @@ def set_piece_theme(piece_set):
             chess_font_face, piece2char = get_chess_font_face(piece_set)
         except Exception:
             from pychess.gfx.pychess_pieces import drawPiece2
+
             drawPiece = drawPiece2
-    elif piece_set in ('celtic', 'eyes', 'fantasy', 'fantasy_alt', 'freak',
-                       'prmi', 'skulls', 'spatial'):
+    elif piece_set in (
+        "celtic",
+        "eyes",
+        "fantasy",
+        "fantasy_alt",
+        "freak",
+        "prmi",
+        "skulls",
+        "spatial",
+    ):
         all_in_one = True
         drawPiece = drawPiece3
         svg_pieces = get_svg_pieces(piece_set)
@@ -169,6 +189,7 @@ def set_piece_theme(piece_set):
             svg_pieces = get_svg_pieces(piece_set)
         except Exception:
             from pychess.gfx.pychess_pieces import drawPiece2
+
             drawPiece = drawPiece2
 
 

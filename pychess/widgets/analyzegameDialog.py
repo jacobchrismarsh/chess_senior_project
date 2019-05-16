@@ -18,7 +18,7 @@ from pychess.widgets import InfoBar
 from pychess.perspectives import perspective_manager
 
 
-class AnalyzeGameDialog():
+class AnalyzeGameDialog:
     def __init__(self):
         self.widgets = uistuff.GladeWidgets("analyze_game.glade")
         self.widgets["analyze_game"].set_transient_for(mainwindow())
@@ -31,7 +31,9 @@ class AnalyzeGameDialog():
         uistuff.keep(self.widgets["showEval"], "showEval")
         uistuff.keep(self.widgets["showBlunder"], "showBlunder")
         uistuff.keep(self.widgets["max_analysis_spin"], "max_analysis_spin")
-        uistuff.keep(self.widgets["variation_threshold_spin"], "variation_threshold_spin")
+        uistuff.keep(
+            self.widgets["variation_threshold_spin"], "variation_threshold_spin"
+        )
 
         # Analyzing engines
         uistuff.createCombo(self.widgets["ana_combobox"], name="ana_combobox")
@@ -41,11 +43,18 @@ class AnalyzeGameDialog():
         def update_analyzers_store(discoverer):
             data = [(item[0], item[1]) for item in newGameDialog.analyzerItems]
             uistuff.updateCombo(self.widgets["ana_combobox"], data)
+
         discoverer.connect_after("all_engines_discovered", update_analyzers_store)
         update_analyzers_store(discoverer)
 
-        uistuff.keep(self.widgets["ana_combobox"], "ana_combobox", anal_combo_get_value,
-                     lambda combobox, value: anal_combo_set_value(combobox, value, "hint_mode", HINT))
+        uistuff.keep(
+            self.widgets["ana_combobox"],
+            "ana_combobox",
+            anal_combo_get_value,
+            lambda combobox, value: anal_combo_set_value(
+                combobox, value, "hint_mode", HINT
+            ),
+        )
 
         def hide_window(button, *args):
             self.widgets["analyze_game"].destroy()
@@ -83,7 +92,9 @@ class AnalyzeGameDialog():
                     conf.set("inv_analyzer_check", True)
                     if SPY not in gamemodel.spectators:
                         try:
-                            yield from asyncio.wait_for(gamemodel.start_analyzer(SPY), 5.0)
+                            yield from asyncio.wait_for(
+                                gamemodel.start_analyzer(SPY), 5.0
+                            )
                         except asyncio.TimeoutError:
                             log.error("Got timeout error while starting spy analyzer")
                             return
@@ -95,7 +106,9 @@ class AnalyzeGameDialog():
 
                 title = _("Game analyzing in progress...")
                 text = _("Do you want to abort it?")
-                content = InfoBar.get_message_content(title, text, Gtk.STOCK_DIALOG_QUESTION)
+                content = InfoBar.get_message_content(
+                    title, text, Gtk.STOCK_DIALOG_QUESTION
+                )
 
                 def response_cb(infobar, response, message):
                     conf.set("analyzer_check", old_check_value)
@@ -103,8 +116,11 @@ class AnalyzeGameDialog():
                         conf.set("inv_analyzer_check", old_inv_check_value)
                     message.dismiss()
                     abort()
+
                 message = InfoBarMessage(Gtk.MessageType.QUESTION, content, response_cb)
-                message.add_button(InfoBarMessageButton(_("Abort"), Gtk.ResponseType.CANCEL))
+                message.add_button(
+                    InfoBarMessageButton(_("Abort"), Gtk.ResponseType.CANCEL)
+                )
                 gmwidg.replaceMessages(message)
 
                 @asyncio.coroutine
@@ -127,39 +143,76 @@ class AnalyzeGameDialog():
 
                         ply = board.ply - gamemodel.lowply
                         color = (ply - 1) % 2
-                        if ply - 1 in gamemodel.scores and ply in gamemodel.scores and (
-                                (color == BLACK and should_black) or (color == WHITE and should_white)):
+                        if (
+                            ply - 1 in gamemodel.scores
+                            and ply in gamemodel.scores
+                            and (
+                                (color == BLACK and should_black)
+                                or (color == WHITE and should_white)
+                            )
+                        ):
                             oldmoves, oldscore, olddepth = gamemodel.scores[ply - 1]
                             oldscore = oldscore * -1 if color == BLACK else oldscore
                             score_str = prettyPrintScore(oldscore, olddepth)
                             moves, score, depth = gamemodel.scores[ply]
                             score = score * -1 if color == WHITE else score
                             diff = score - oldscore
-                            if ((diff > threshold and color == BLACK) or (diff < -1 * threshold and color == WHITE)) and (
-                               gamemodel.moves[ply - 1] != parseAny(gamemodel.boards[ply - 1], oldmoves[0])):
+                            if (
+                                (diff > threshold and color == BLACK)
+                                or (diff < -1 * threshold and color == WHITE)
+                            ) and (
+                                gamemodel.moves[ply - 1]
+                                != parseAny(gamemodel.boards[ply - 1], oldmoves[0])
+                            ):
                                 if self.threat_PV:
                                     try:
                                         if ply - 1 in gamemodel.spy_scores:
-                                            oldmoves0, oldscore0, olddepth0 = gamemodel.spy_scores[ply - 1]
-                                            score_str0 = prettyPrintScore(oldscore0, olddepth0)
-                                            pv0 = listToMoves(gamemodel.boards[ply - 1], ["--"] + oldmoves0, validate=True)
+                                            oldmoves0, oldscore0, olddepth0 = gamemodel.spy_scores[
+                                                ply - 1
+                                            ]
+                                            score_str0 = prettyPrintScore(
+                                                oldscore0, olddepth0
+                                            )
+                                            pv0 = listToMoves(
+                                                gamemodel.boards[ply - 1],
+                                                ["--"] + oldmoves0,
+                                                validate=True,
+                                            )
                                             if len(pv0) > 2:
-                                                gamemodel.add_variation(gamemodel.boards[ply - 1], pv0,
-                                                                        comment="Threatening", score=score_str0, emit=False)
+                                                gamemodel.add_variation(
+                                                    gamemodel.boards[ply - 1],
+                                                    pv0,
+                                                    comment="Threatening",
+                                                    score=score_str0,
+                                                    emit=False,
+                                                )
                                     except ParsingError as e:
                                         # ParsingErrors may happen when parsing "old" lines from
                                         # analyzing engines, which haven't yet noticed their new tasks
-                                        log.debug("__parseLine: Ignored (%s) from analyzer: ParsingError%s" %
-                                                  (' '.join(oldmoves), e))
+                                        log.debug(
+                                            "__parseLine: Ignored (%s) from analyzer: ParsingError%s"
+                                            % (" ".join(oldmoves), e)
+                                        )
                                 try:
-                                    pv = listToMoves(gamemodel.boards[ply - 1], oldmoves, validate=True)
-                                    gamemodel.add_variation(gamemodel.boards[ply - 1], pv,
-                                                            comment="Better is", score=score_str, emit=False)
+                                    pv = listToMoves(
+                                        gamemodel.boards[ply - 1],
+                                        oldmoves,
+                                        validate=True,
+                                    )
+                                    gamemodel.add_variation(
+                                        gamemodel.boards[ply - 1],
+                                        pv,
+                                        comment="Better is",
+                                        score=score_str,
+                                        emit=False,
+                                    )
                                 except ParsingError as e:
                                     # ParsingErrors may happen when parsing "old" lines from
                                     # analyzing engines, which haven't yet noticed their new tasks
-                                    log.debug("__parseLine: Ignored (%s) from analyzer: ParsingError%s" %
-                                              (' '.join(oldmoves), e))
+                                    log.debug(
+                                        "__parseLine: Ignored (%s) from analyzer: ParsingError%s"
+                                        % (" ".join(oldmoves), e)
+                                    )
 
                     self.widgets["analyze_game"].hide()
                     self.widgets["analyze_ok_button"].set_sensitive(True)
@@ -174,6 +227,7 @@ class AnalyzeGameDialog():
                 hide_window(None)
 
                 return True
+
             create_task(coro())
 
         self.widgets["analyze_game"].connect("delete-event", hide_window)

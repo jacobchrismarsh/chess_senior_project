@@ -44,6 +44,7 @@ def prettyPrintScore(s, depth, format_mate=False):
 def createStoryTextAppEvent(text):
     try:
         import storytext
+
         storytext.applicationEvent(text)
     except AttributeError:
         pass

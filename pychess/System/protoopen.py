@@ -9,7 +9,7 @@ PGN_ENCODING = "latin_1"
 
 def splitUri(uri):
     uri = unquote(uri)  # escape special chars
-    uri = uri.strip('\r\n\x00')  # remove \r\n and NULL
+    uri = uri.strip("\r\n\x00")  # remove \r\n and NULL
     if sys.platform == "win32":
         return uri.split(":///")
     else:
@@ -25,7 +25,9 @@ def protoopen(uri, encoding=PGN_ENCODING):
 
     try:
         handle = open(unquote(uri), "r", encoding=encoding, newline="")
-        handle.pgn_encoding = "utf-8" if os.path.basename(uri).startswith("lichess_") else encoding
+        handle.pgn_encoding = (
+            "utf-8" if os.path.basename(uri).startswith("lichess_") else encoding
+        )
         return handle
     except (IOError, OSError):
         pass

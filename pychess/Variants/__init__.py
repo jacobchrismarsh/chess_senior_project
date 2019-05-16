@@ -1,11 +1,43 @@
-
-from pychess.Utils.const import NORMALCHESS, CORNERCHESS, SHUFFLECHESS, FISCHERRANDOMCHESS, \
-    RANDOMCHESS, ASYMMETRICRANDOMCHESS, UPSIDEDOWNCHESS, PAWNSPUSHEDCHESS, THEBANCHESS, \
-    BUGHOUSECHESS, PAWNSPASSEDCHESS, ATOMICCHESS, CRAZYHOUSECHESS, LOSERSCHESS, SUICIDECHESS, \
-    PAWNODDSCHESS, KNIGHTODDSCHESS, ROOKODDSCHESS, QUEENODDSCHESS, ALLWHITECHESS, BLINDFOLDCHESS, \
-    HIDDENPIECESCHESS, HIDDENPAWNSCHESS, WILDCASTLECHESS, WILDCASTLESHUFFLECHESS, THREECHECKCHESS, \
-    AIWOKCHESS, KINGOFTHEHILLCHESS, ASEANCHESS, CAMBODIANCHESS, SITTUYINCHESS, EUROSHOGICHESS, \
-    RACINGKINGSCHESS, MAKRUKCHESS, SETUPCHESS, GIVEAWAYCHESS, HORDECHESS, PLACEMENTCHESS
+from pychess.Utils.const import (
+    NORMALCHESS,
+    CORNERCHESS,
+    SHUFFLECHESS,
+    FISCHERRANDOMCHESS,
+    RANDOMCHESS,
+    ASYMMETRICRANDOMCHESS,
+    UPSIDEDOWNCHESS,
+    PAWNSPUSHEDCHESS,
+    THEBANCHESS,
+    BUGHOUSECHESS,
+    PAWNSPASSEDCHESS,
+    ATOMICCHESS,
+    CRAZYHOUSECHESS,
+    LOSERSCHESS,
+    SUICIDECHESS,
+    PAWNODDSCHESS,
+    KNIGHTODDSCHESS,
+    ROOKODDSCHESS,
+    QUEENODDSCHESS,
+    ALLWHITECHESS,
+    BLINDFOLDCHESS,
+    HIDDENPIECESCHESS,
+    HIDDENPAWNSCHESS,
+    WILDCASTLECHESS,
+    WILDCASTLESHUFFLECHESS,
+    THREECHECKCHESS,
+    AIWOKCHESS,
+    KINGOFTHEHILLCHESS,
+    ASEANCHESS,
+    CAMBODIANCHESS,
+    SITTUYINCHESS,
+    EUROSHOGICHESS,
+    RACINGKINGSCHESS,
+    MAKRUKCHESS,
+    SETUPCHESS,
+    GIVEAWAYCHESS,
+    HORDECHESS,
+    PLACEMENTCHESS,
+)
 
 from .normal import NormalBoard
 from .corner import CornerBoard
@@ -30,7 +62,12 @@ from .rookodds import RookOddsBoard
 from .queenodds import QueenOddsBoard
 from .wildcastle import WildcastleBoard
 from .wildcastleshuffle import WildcastleShuffleBoard
-from .blindfold import BlindfoldBoard, HiddenPawnsBoard, HiddenPiecesBoard, AllWhiteBoard
+from .blindfold import (
+    BlindfoldBoard,
+    HiddenPawnsBoard,
+    HiddenPiecesBoard,
+    AllWhiteBoard,
+)
 from .kingofthehill import KingOfTheHillBoard
 from .threecheck import ThreeCheckBoard
 from .racingkings import RacingKingsBoard
@@ -40,45 +77,46 @@ from .setupposition import SetupBoard
 from .placement import PlacementBoard
 
 
-variants = {NORMALCHESS: NormalBoard,
-            CORNERCHESS: CornerBoard,
-            SHUFFLECHESS: ShuffleBoard,
-            FISCHERRANDOMCHESS: FischerandomBoard,
-            RANDOMCHESS: RandomBoard,
-            ASYMMETRICRANDOMCHESS: AsymmetricRandomBoard,
-            UPSIDEDOWNCHESS: UpsideDownBoard,
-            PAWNSPUSHEDCHESS: PawnsPushedBoard,
-            PAWNSPASSEDCHESS: PawnsPassedBoard,
-            THEBANCHESS: ThebanBoard,
-            ATOMICCHESS: AtomicBoard,
-            BUGHOUSECHESS: BughouseBoard,
-            CRAZYHOUSECHESS: CrazyhouseBoard,
-            LOSERSCHESS: LosersBoard,
-            SUICIDECHESS: SuicideBoard,
-            GIVEAWAYCHESS: GiveawayBoard,
-            HORDECHESS: HordeBoard,
-            PAWNODDSCHESS: PawnOddsBoard,
-            KNIGHTODDSCHESS: KnightOddsBoard,
-            ROOKODDSCHESS: RookOddsBoard,
-            QUEENODDSCHESS: QueenOddsBoard,
-            ALLWHITECHESS: AllWhiteBoard,
-            BLINDFOLDCHESS: BlindfoldBoard,
-            HIDDENPAWNSCHESS: HiddenPawnsBoard,
-            HIDDENPIECESCHESS: HiddenPiecesBoard,
-            WILDCASTLECHESS: WildcastleBoard,
-            WILDCASTLESHUFFLECHESS: WildcastleShuffleBoard,
-            KINGOFTHEHILLCHESS: KingOfTheHillBoard,
-            THREECHECKCHESS: ThreeCheckBoard,
-            RACINGKINGSCHESS: RacingKingsBoard,
-            AIWOKCHESS: AiWokBoard,
-            ASEANCHESS: AseanBoard,
-            CAMBODIANCHESS: CambodianBoard,
-            MAKRUKCHESS: MakrukBoard,
-            SITTUYINCHESS: SittuyinBoard,
-            EUROSHOGICHESS: EuroShogiBoard,
-            SETUPCHESS: SetupBoard,
-            PLACEMENTCHESS: PlacementBoard,
-            }
+variants = {
+    NORMALCHESS: NormalBoard,
+    CORNERCHESS: CornerBoard,
+    SHUFFLECHESS: ShuffleBoard,
+    FISCHERRANDOMCHESS: FischerandomBoard,
+    RANDOMCHESS: RandomBoard,
+    ASYMMETRICRANDOMCHESS: AsymmetricRandomBoard,
+    UPSIDEDOWNCHESS: UpsideDownBoard,
+    PAWNSPUSHEDCHESS: PawnsPushedBoard,
+    PAWNSPASSEDCHESS: PawnsPassedBoard,
+    THEBANCHESS: ThebanBoard,
+    ATOMICCHESS: AtomicBoard,
+    BUGHOUSECHESS: BughouseBoard,
+    CRAZYHOUSECHESS: CrazyhouseBoard,
+    LOSERSCHESS: LosersBoard,
+    SUICIDECHESS: SuicideBoard,
+    GIVEAWAYCHESS: GiveawayBoard,
+    HORDECHESS: HordeBoard,
+    PAWNODDSCHESS: PawnOddsBoard,
+    KNIGHTODDSCHESS: KnightOddsBoard,
+    ROOKODDSCHESS: RookOddsBoard,
+    QUEENODDSCHESS: QueenOddsBoard,
+    ALLWHITECHESS: AllWhiteBoard,
+    BLINDFOLDCHESS: BlindfoldBoard,
+    HIDDENPAWNSCHESS: HiddenPawnsBoard,
+    HIDDENPIECESCHESS: HiddenPiecesBoard,
+    WILDCASTLECHESS: WildcastleBoard,
+    WILDCASTLESHUFFLECHESS: WildcastleShuffleBoard,
+    KINGOFTHEHILLCHESS: KingOfTheHillBoard,
+    THREECHECKCHESS: ThreeCheckBoard,
+    RACINGKINGSCHESS: RacingKingsBoard,
+    AIWOKCHESS: AiWokBoard,
+    ASEANCHESS: AseanBoard,
+    CAMBODIANCHESS: CambodianBoard,
+    MAKRUKCHESS: MakrukBoard,
+    SITTUYINCHESS: SittuyinBoard,
+    EUROSHOGICHESS: EuroShogiBoard,
+    SETUPCHESS: SetupBoard,
+    PLACEMENTCHESS: PlacementBoard,
+}
 
 name2variant = dict([(v.cecp_name.capitalize(), v) for v in variants.values()])
 

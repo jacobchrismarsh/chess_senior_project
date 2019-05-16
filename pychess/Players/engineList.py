@@ -9,17 +9,17 @@ AUTO_DETECT = True
 NO_AUTO_DETECT = False
 
 # CPUID
-BITNESS = "64" if platform.machine().endswith('64') else "32"
+BITNESS = "64" if platform.machine().endswith("64") else "32"
 POPCOUNT = True  # TODO Auto-detect
 BMI2 = True  # TODO Auto-detect
 
 # List of known interpreters
 PYTHONBIN = sys.executable.split("/")[-1]
-VM = namedtuple('VM', 'name, ext, args')
+VM = namedtuple("VM", "name, ext, args")
 VM_LIST = [
     VM("node", ".js", None),
     VM("java", ".jar", ["-jar"]),
-    VM(PYTHONBIN, ".py", ["-u"])
+    VM(PYTHONBIN, ".py", ["-u"]),
 ]
 
 # Needed by shutil.which() on Windows to find .py engines
@@ -38,7 +38,7 @@ else:
     stockfish_name = "stockfish"
     sjaakii_name = "sjaakii"
 
-ENGINE = namedtuple('ENGINE', 'name, protocol, country, elo, autoDetect, defaultLevel')
+ENGINE = namedtuple("ENGINE", "name, protocol, country, elo, autoDetect, defaultLevel")
 ENGINES_LIST = [
     # -- Full names for internal processing
     ENGINE("PyChess.py", "xboard", "dk", 0, AUTO_DETECT, 5),
@@ -47,17 +47,20 @@ ENGINES_LIST = [
     ENGINE(sjaakii_name, "xboard", "nl", 2194, AUTO_DETECT, None),
     ENGINE("Houdini.exe", "uci", "be", 3526, AUTO_DETECT, None),
     ENGINE("Rybka.exe", "uci", "cz", 3207, AUTO_DETECT, None),
-
     # -- Engines from CCRL 40/4
     ENGINE("stockfish", "uci", "no", 3566, AUTO_DETECT, None),
     ENGINE("houdini", "uci", "be", 3531, AUTO_DETECT, None),
     ENGINE("komodo", "uci", "us", 3508, AUTO_DETECT, None),
-    ENGINE("fire", "uci", "us", 3429, NO_AUTO_DETECT, None),  # fire in mesa-demos https://www.archlinux.org/packages/extra/x86_64/mesa-demos/files/
+    ENGINE(
+        "fire", "uci", "us", 3429, NO_AUTO_DETECT, None
+    ),  # fire in mesa-demos https://www.archlinux.org/packages/extra/x86_64/mesa-demos/files/
     ENGINE("ethereal", "uci", "us", 3386, AUTO_DETECT, None),
     ENGINE("fizbo", "uci", "us", 3347, AUTO_DETECT, None),
     ENGINE("andscacs", "uci", "ad", 3331, AUTO_DETECT, None),
     ENGINE("booot", "uci", "ua", 3328, AUTO_DETECT, None),  # Formerly XB
-    ENGINE("xiphos", "uci", "us", 3328, NO_AUTO_DETECT, None),  # xiphos - environment for Bible reading, study, and research
+    ENGINE(
+        "xiphos", "uci", "us", 3328, NO_AUTO_DETECT, None
+    ),  # xiphos - environment for Bible reading, study, and research
     ENGINE("shredder", "uci", "de", 3325, AUTO_DETECT, None),
     ENGINE("schooner", "xboard", "ca", 3279, AUTO_DETECT, None),
     ENGINE("laser", "uci", "us", 3273, AUTO_DETECT, None),
@@ -68,7 +71,9 @@ ENGINES_LIST = [
     ENGINE("hannibal", "uci", "us", 3230, AUTO_DETECT, None),
     ENGINE("fritz", "uci", "nl", 3229, AUTO_DETECT, None),
     ENGINE("nirvana", "uci", "us", 3228, AUTO_DETECT, None),
-    ENGINE("texel", "xboard", "se", 3207, AUTO_DETECT, None),  # UCI is an option in the command line
+    ENGINE(
+        "texel", "xboard", "se", 3207, AUTO_DETECT, None
+    ),  # UCI is an option in the command line
     ENGINE("rybka", "uci", "cz", 3206, AUTO_DETECT, None),
     ENGINE("blackmamba", "uci", "it", 3198, AUTO_DETECT, None),
     ENGINE("arasan", "uci", "us", 3190, AUTO_DETECT, None),
@@ -127,7 +132,9 @@ ENGINES_LIST = [
     ENGINE("murka", "uci", "by", 2881, AUTO_DETECT, None),
     ENGINE("tornado", "uci", "de", 2859, AUTO_DETECT, None),
     ENGINE("gogobello", "uci", "it", 2857, AUTO_DETECT, None),
-    ENGINE("nemo", "uci", "de", 2857, NO_AUTO_DETECT, None),  # nemo - File manager and graphical shell for Cinnamon
+    ENGINE(
+        "nemo", "uci", "de", 2857, NO_AUTO_DETECT, None
+    ),  # nemo - File manager and graphical shell for Cinnamon
     ENGINE("shield", "uci", "it", 2857, NO_AUTO_DETECT, None),
     ENGINE("godel", "uci", "es", 2846, AUTO_DETECT, None),  # May allow XB
     ENGINE("bugchess", "xboard", "fr", 2842, AUTO_DETECT, None),
@@ -143,10 +150,14 @@ ENGINES_LIST = [
     ENGINE("twisted-logic", "uci", "ph", 2769, AUTO_DETECT, None),
     ENGINE("pawny", "uci", "bg", 2768, AUTO_DETECT, None),
     ENGINE("frenzee", "xboard", "dk", 2767, AUTO_DETECT, None),
-    ENGINE("bison", "uci", "ru", 2759, NO_AUTO_DETECT, None),  # bison - YACC-compatible parser generator
+    ENGINE(
+        "bison", "uci", "ru", 2759, NO_AUTO_DETECT, None
+    ),  # bison - YACC-compatible parser generator
     ENGINE("chessmaster", "xboard", "nl", 2757, AUTO_DETECT, None),
     ENGINE("karballo", "uci", "es", 2756, AUTO_DETECT, None),
-    ENGINE("cheese", "uci", "fr", 2754, NO_AUTO_DETECT, None),  # Allows XB; cheese - tool to take pictures and videos from your webcam
+    ENGINE(
+        "cheese", "uci", "fr", 2754, NO_AUTO_DETECT, None
+    ),  # Allows XB; cheese - tool to take pictures and videos from your webcam
     ENGINE("jonny", "uci", "de", 2754, AUTO_DETECT, None),  # Formerly XB
     ENGINE("chronos", "uci", "ar", 2736, AUTO_DETECT, None),
     ENGINE("winter", "uci", "ch", 2736, NO_AUTO_DETECT, None),
@@ -195,8 +206,12 @@ ENGINES_LIST = [
     # n2 (name to short)
     # k2 (name to short)
     ENGINE("floyd", "uci", "nl", 2583, NO_AUTO_DETECT, None),
-    ENGINE("cuckoo", "xboard", "se", 2582, NO_AUTO_DETECT, None),  # UCI is an option in the command line
-    ENGINE("muse", "xboard", "ch", 2582, NO_AUTO_DETECT, None),  # May support UCI as well
+    ENGINE(
+        "cuckoo", "xboard", "se", 2582, NO_AUTO_DETECT, None
+    ),  # UCI is an option in the command line
+    ENGINE(
+        "muse", "xboard", "ch", 2582, NO_AUTO_DETECT, None
+    ),  # May support UCI as well
     ENGINE("francesca", "xboard", "gb", 2581, NO_AUTO_DETECT, None),
     ENGINE("hamsters", "uci", "it", 2578, NO_AUTO_DETECT, None),
     ENGINE("pseudo", "xboard", "cz", 2576, NO_AUTO_DETECT, None),
@@ -319,7 +334,9 @@ ENGINES_LIST = [
     ENGINE("aice", "xboard", "gr", 2314, NO_AUTO_DETECT, None),
     ENGINE("sungorus", "uci", "es", 2312, NO_AUTO_DETECT, None),
     ENGINE("absolute-zero", "uci", "zh", 2311, NO_AUTO_DETECT, None),
-    ENGINE("nebiyu", "xboard", "et", 2310, NO_AUTO_DETECT, None),  # wine crash on Ubuntu 1804 with NebiyuAlien.exe
+    ENGINE(
+        "nebiyu", "xboard", "et", 2310, NO_AUTO_DETECT, None
+    ),  # wine crash on Ubuntu 1804 with NebiyuAlien.exe
     ENGINE("averno", "xboard", "es", 2309, NO_AUTO_DETECT, None),
     ENGINE("asterisk", "uci", "hu", 2308, NO_AUTO_DETECT, None),  # Allows XB
     ENGINE("joker", "xboard", "nl", 2306, NO_AUTO_DETECT, None),
@@ -627,7 +644,9 @@ ENGINES_LIST = [
     ENGINE("qutechess", "uci", "si", 1267, NO_AUTO_DETECT, None),
     ENGINE("tikov", "uci", "gb", 1236, NO_AUTO_DETECT, None),
     ENGINE("raffaela", "xboard", "it", 1225, NO_AUTO_DETECT, None),
-    ENGINE("gringo", "xboard", "at", 1223, NO_AUTO_DETECT, None),  # gringo - grounding tools for (disjunctive) logic programs
+    ENGINE(
+        "gringo", "xboard", "at", 1223, NO_AUTO_DETECT, None
+    ),  # gringo - grounding tools for (disjunctive) logic programs
     ENGINE("pierre", "xboard", "ca", 1221, NO_AUTO_DETECT, None),
     ENGINE("dragontooth", "uci", "us", 1220, NO_AUTO_DETECT, None),
     ENGINE("toledo-uci", "uci", "mx", 1218, NO_AUTO_DETECT, 5),
@@ -672,7 +691,6 @@ ENGINES_LIST = [
     ENGINE("lamosca", "xboard", "it", 435, NO_AUTO_DETECT, None),
     # ace (name too short)
     # pos (name too short)
-
     # -- Other (parent engine, derivative work, unlisted, variant engine...)
     ENGINE("s_pro", "uci", "it", 3540, NO_AUTO_DETECT, None),
     ENGINE("asmfish", "uci", "bg", 3531, NO_AUTO_DETECT, None),
@@ -683,12 +701,12 @@ ENGINES_LIST = [
     ENGINE("fruit", "uci", "fr", 2783, AUTO_DETECT, None),
     ENGINE("sunfish", "xboard", "dk", 0, NO_AUTO_DETECT, None),
     ENGINE("democracy", "uci", "fr", 0, NO_AUTO_DETECT, None),
-    ENGINE("worse-chess", "uci", "fr", 0, NO_AUTO_DETECT, None)
+    ENGINE("worse-chess", "uci", "fr", 0, NO_AUTO_DETECT, None),
 ]
 
 
 # Bubble sort by descending length of the name
-for i in range(len(ENGINES_LIST) - 1, 1, - 1):
+for i in range(len(ENGINES_LIST) - 1, 1, -1):
     for j in range(0, i - 1):
         if len(ENGINES_LIST[i].name) > len(ENGINES_LIST[j].name):
             tmp = ENGINES_LIST[i]
@@ -730,7 +748,18 @@ def listEnginesFromPath(defaultPath, maxDepth=3, withSymLink=False):
 
             # Blacklisted keywords
             blacklisted = False
-            for kw in ["install", "setup", "reset", "remove", "delete", "purge", "config", "register", "editor", "book"]:
+            for kw in [
+                "install",
+                "setup",
+                "reset",
+                "remove",
+                "delete",
+                "purge",
+                "config",
+                "register",
+                "editor",
+                "book",
+            ]:
                 if kw in file_ci:
                     blacklisted = True
             if blacklisted:
