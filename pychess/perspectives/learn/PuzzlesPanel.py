@@ -5,7 +5,17 @@ from gi.repository import Gtk
 
 from pychess.compat import create_task
 from pychess.System.prefix import addDataPrefix
-from pychess.Utils.const import WHITE, BLACK, LOCAL, NORMALCHESS, ARTIFICIAL, WAITING_TO_START, HINT, PRACTICE_GOAL_REACHED, PUZZLE
+from pychess.Utils.const import (
+    WHITE,
+    BLACK,
+    LOCAL,
+    NORMALCHESS,
+    ARTIFICIAL,
+    WAITING_TO_START,
+    HINT,
+    PRACTICE_GOAL_REACHED,
+    PUZZLE,
+)
 from pychess.Utils.LearnModel import LearnModel
 from pychess.Utils.TimeModel import TimeModel
 from pychess.Variants import variants
@@ -35,20 +45,34 @@ puzzles3 = []
 for elem in sorted(os.listdir(path=addDataPrefix("learn/puzzles/"))):
     if elem.startswith("lichess_study") and elem.endswith(".pgn"):
         if elem[14:31] == "lichess-practice-":
-            puzzles0.append((elem, elem[31:elem.find("_by_")].replace("-", " ").capitalize(), "lichess.org"))
+            puzzles0.append(
+                (
+                    elem,
+                    elem[31 : elem.find("_by_")].replace("-", " ").capitalize(),
+                    "lichess.org",
+                )
+            )
         else:
-            puzzles0.append((elem, elem[14:elem.find("_by_").replace("-", " ").capitalize()], "lichess.org"))
+            puzzles0.append(
+                (
+                    elem,
+                    elem[14 : elem.find("_by_").replace("-", " ").capitalize()],
+                    "lichess.org",
+                )
+            )
     elif elem.startswith("mate_in_") and elem.endswith(".pgn"):
         puzzles1.append((elem, "Puzzles by GMs: Mate in %s" % elem[8], "wtharvey.com"))
     elif elem.endswith(".olv"):
-        puzzles2.append((elem, "Puzzles by %s" % elem.split(".olv")[0].capitalize(), "yacpdb.org"))
+        puzzles2.append(
+            (elem, "Puzzles by %s" % elem.split(".olv")[0].capitalize(), "yacpdb.org")
+        )
     elif elem.endswith(".pgn"):
         puzzles3.append((elem, elem.split(".pgn")[0].capitalize(), _("others")))
 
 PUZZLES = puzzles0 + puzzles1 + puzzles2 + puzzles3
 
 
-class Sidepanel():
+class Sidepanel:
     def load(self, persp):
         self.persp = persp
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -73,10 +97,13 @@ class Sidepanel():
             for i, row in enumerate(self.store):
                 if row[0] == key:
                     solved = progress.count(1)
-                    percent = 0 if not solved else round((solved * 100.) / len(progress))
+                    percent = (
+                        0 if not solved else round((solved * 100.0) / len(progress))
+                    )
                     treeiter = self.store.get_iter(Gtk.TreePath(i))
                     self.store[treeiter][3] = "%s / %s" % (solved, len(progress))
                     self.store[treeiter][4] = percent
+
         puzzles_solving_progress.connect("progress_updated", on_progress_updated)
 
         self.store = Gtk.ListStore(str, str, str, str, int)
@@ -86,9 +113,18 @@ class Sidepanel():
             for file_name, title, author in PUZZLES:
                 progress = puzzles_solving_progress.get(file_name)
                 solved = progress.count(1)
-                percent = 0 if not solved else round((solved * 100.) / len(progress))
-                self.store.append([file_name, title, author, "%s / %s" % (solved, len(progress)), percent])
+                percent = 0 if not solved else round((solved * 100.0) / len(progress))
+                self.store.append(
+                    [
+                        file_name,
+                        title,
+                        author,
+                        "%s / %s" % (solved, len(progress)),
+                        percent,
+                    ]
+                )
                 yield from asyncio.sleep(0)
+
         create_task(coro())
 
         self.tv.set_model(self.store)
@@ -111,6 +147,7 @@ class Sidepanel():
             filename = PUZZLES[path[0]][0]
             conf.set("categorycombo", PUZZLE)
             from pychess.widgets.TaskerManager import learn_tasker
+
             learn_tasker.learn_combo.set_active(path[0])
             start_puzzle_from(filename)
 
@@ -121,7 +158,9 @@ def start_puzzle_from(filename, index=None):
         chessfile.limit = 1000
         chessfile.init_tag_database()
     elif filename.lower().endswith(".olv"):
-        chessfile = OLVFile(protoopen(addDataPrefix("learn/puzzles/%s" % filename), encoding="utf-8"))
+        chessfile = OLVFile(
+            protoopen(addDataPrefix("learn/puzzles/%s" % filename), encoding="utf-8")
+        )
 
     records, plys = chessfile.get_records()
 
@@ -144,7 +183,9 @@ def start_puzzle_from(filename, index=None):
 
 
 def start_puzzle_game(gamemodel, filename, records, index, rec, from_lesson=False):
-    gamemodel.set_learn_data(PUZZLE, filename, index, len(records), from_lesson=from_lesson)
+    gamemodel.set_learn_data(
+        PUZZLE, filename, index, len(records), from_lesson=from_lesson
+    )
 
     engine = discoverer.getEngineByName(discoverer.getEngineLearn())
     ponder_off = True
@@ -165,18 +206,29 @@ def start_puzzle_game(gamemodel, filename, records, index, rec, from_lesson=Fals
 
     if color == WHITE:
         p0 = (LOCAL, Human, (WHITE, w_name), w_name)
-        p1 = (ARTIFICIAL, discoverer.initPlayerEngine,
-              (engine, BLACK, 20, variants[NORMALCHESS], 20, 0, 0, ponder_off), b_name)
+        p1 = (
+            ARTIFICIAL,
+            discoverer.initPlayerEngine,
+            (engine, BLACK, 20, variants[NORMALCHESS], 20, 0, 0, ponder_off),
+            b_name,
+        )
     else:
-        p0 = (ARTIFICIAL, discoverer.initPlayerEngine,
-              (engine, WHITE, 20, variants[NORMALCHESS], 20, 0, 0, ponder_off), w_name)
+        p0 = (
+            ARTIFICIAL,
+            discoverer.initPlayerEngine,
+            (engine, WHITE, 20, variants[NORMALCHESS], 20, 0, 0, ponder_off),
+            w_name,
+        )
         p1 = (LOCAL, Human, (BLACK, b_name), b_name)
 
     def on_game_started(gamemodel, name, color):
         perspective.activate_panel("annotationPanel")
-        create_task(gamemodel.start_analyzer(HINT, force_engine=discoverer.getEngineLearn()))
+        create_task(
+            gamemodel.start_analyzer(HINT, force_engine=discoverer.getEngineLearn())
+        )
         gamemodel.players[1 - color].name = name
         gamemodel.emit("players_changed")
+
     gamemodel.connect("game_started", on_game_started, opp_name, color)
 
     def goal_checked(gamemodle):
@@ -192,6 +244,7 @@ def start_puzzle_game(gamemodel, filename, records, index, rec, from_lesson=Fals
                 lessons_solving_progress[gamemodel.source] = progress
             else:
                 puzzles_solving_progress[gamemodel.source] = progress
+
     gamemodel.connect("goal_checked", goal_checked)
 
     gamemodel.variant.need_initial_board = True

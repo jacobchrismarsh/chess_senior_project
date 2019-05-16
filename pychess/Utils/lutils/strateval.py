@@ -5,20 +5,67 @@
     Can be used for commenting on board changes.
 """
 
-from .ldata import brank48, brank67, bitPosArray, left, right,\
-    stonewall, distance, isolaniMask, fileBits, passedScores, passedPawnMask,\
-    fromToRay, outpost, FILE, PIECE_VALUES,\
-    ray45, ray135, ray90, ray00
+from .ldata import (
+    brank48,
+    brank67,
+    bitPosArray,
+    left,
+    right,
+    stonewall,
+    distance,
+    isolaniMask,
+    fileBits,
+    passedScores,
+    passedPawnMask,
+    fromToRay,
+    outpost,
+    FILE,
+    PIECE_VALUES,
+    ray45,
+    ray135,
+    ray90,
+    ray00,
+)
 
 from .bitboard import clearBit, lastBit, iterBits
-from pychess.Utils.lutils.attack import staticExchangeEvaluate, getAttacks, \
-    defends
+from pychess.Utils.lutils.attack import staticExchangeEvaluate, getAttacks, defends
 from pychess.Utils.lutils.lmove import toSAN, TCORD, FCORD, FLAG, PROMOTE_PIECE
-from pychess.Utils.const import BLACK, WHITEWON, BLACKWON, DRAW,\
-    reprFile, reprCord, QUEEN_CASTLE, KING_CASTLE,\
-    WHITE, KNIGHT, BISHOP, ROOK, PAWN, KING, QUEEN, EMPTY, PROMOTIONS,\
-    FISCHERRANDOMCHESS,\
-    H7, G6, A7, B6, H2, G3, A2, B3, B7, G7, B2, G2, B_OO, B_OOO, W_OO, W_OOO
+from pychess.Utils.const import (
+    BLACK,
+    WHITEWON,
+    BLACKWON,
+    DRAW,
+    reprFile,
+    reprCord,
+    QUEEN_CASTLE,
+    KING_CASTLE,
+    WHITE,
+    KNIGHT,
+    BISHOP,
+    ROOK,
+    PAWN,
+    KING,
+    QUEEN,
+    EMPTY,
+    PROMOTIONS,
+    FISCHERRANDOMCHESS,
+    H7,
+    G6,
+    A7,
+    B6,
+    H2,
+    G3,
+    A2,
+    B3,
+    B7,
+    G7,
+    B2,
+    G2,
+    B_OO,
+    B_OOO,
+    W_OO,
+    W_OOO,
+)
 from pychess.Utils.lutils.lmovegen import genCaptures, genAllMoves, newMove
 from pychess.Utils.lutils.validator import validateMove
 from pychess.Utils.repr import reprColor, reprPiece
@@ -33,6 +80,7 @@ def join(items):
         if len(items) > 2:
             s = ", ".join(items[:-2] + [s])
         return s
+
 
 # Functions can be of types:
 #   * Final: Will be shown alone: "mates", "draws"
@@ -68,12 +116,14 @@ def defencive_moves_safety(model, ply, phase):
     color = oldboard.color
     opcolor = 1 - color
 
-    delta_eval_king = leval.evalKing(board, color, phase) - \
-        leval.evalKing(oldboard, color, phase)
+    delta_eval_king = leval.evalKing(board, color, phase) - leval.evalKing(
+        oldboard, color, phase
+    )
 
     # PyChess points tropism to queen for phase <= 3. Thus we set a high phase
-    delta_eval_tropism = leval.evalKingTropism(board, opcolor, 10) - \
-        leval.evalKingTropism(oldboard, opcolor, 10)
+    delta_eval_tropism = leval.evalKingTropism(
+        board, opcolor, 10
+    ) - leval.evalKingTropism(oldboard, opcolor, 10)
 
     # Notice, that tropism was negative
     delta_score = delta_eval_king - delta_eval_tropism / 2
@@ -163,10 +213,15 @@ def attack_type(model, ply, phase):
     tcord = TCORD(move)
 
     if oldboard.arBoard[tcord] != EMPTY:
-        if not (board.variant == FISCHERRANDOMCHESS and
-                FLAG(move) in (KING_CASTLE, QUEEN_CASTLE)):
-            if oldmove and oldboard3.arBoard[TCORD(oldmove)] != EMPTY and \
-                    TCORD(oldmove) == tcord:
+        if not (
+            board.variant == FISCHERRANDOMCHESS
+            and FLAG(move) in (KING_CASTLE, QUEEN_CASTLE)
+        ):
+            if (
+                oldmove
+                and oldboard3.arBoard[TCORD(oldmove)] != EMPTY
+                and TCORD(oldmove) == tcord
+            ):
                 yield _("takes back material")
             else:
                 see = staticExchangeEvaluate(oldboard, move)
@@ -228,8 +283,7 @@ def defencive_moves_tactic(model, ply, phase):
             continue
 
         # Test if we threats our enemy, at least more than before
-        see0 = staticExchangeEvaluate(oldboard, TCORD(ncap),
-                                      1 - oldboard.color)
+        see0 = staticExchangeEvaluate(oldboard, TCORD(ncap), 1 - oldboard.color)
         see1 = staticExchangeEvaluate(board, TCORD(ncap), 1 - oldboard.color)
         if see1 > see0:
 
@@ -237,8 +291,9 @@ def defencive_moves_tactic(model, ply, phase):
             if see1 > 0:
                 # Find the easiest attack
                 attacks = getAttacks(board, TCORD(ncap), board.color)
-                v, cord = min((PIECE_VALUES[board.arBoard[fc]], fc)
-                              for fc in iterBits(attacks))
+                v, cord = min(
+                    (PIECE_VALUES[board.arBoard[fc]], fc) for fc in iterBits(attacks)
+                )
                 easiestAttack = newMove(cord, TCORD(ncap))
                 found_threatens.append(toSAN(board, easiestAttack, True))
 
@@ -347,11 +402,11 @@ def offencive_moves_pin(model, ply, phase):
             if oppiece == KING:
                 continue
             # Yield
-            yield _(
-                "pins an enemy %(oppiece)s on the %(piece)s at %(cord)s") % {
-                    'oppiece': reprPiece[oppiece].lower(),
-                    'piece': reprPiece[board.arBoard[c]].lower(),
-                    'cord': reprCord[c]}
+            yield _("pins an enemy %(oppiece)s on the %(piece)s at %(cord)s") % {
+                "oppiece": reprPiece[oppiece].lower(),
+                "piece": reprPiece[board.arBoard[c]].lower(),
+                "cord": reprCord[c],
+            }
 
 
 def state_outpost(model, ply, phase):
@@ -369,29 +424,29 @@ def state_outpost(model, ply, phase):
     oldbpawns = oldboard.boards[BLACK][PAWN]
 
     wpieces = board.boards[WHITE][BISHOP] | board.boards[WHITE][KNIGHT]
-    oldwpieces = oldboard.boards[WHITE][BISHOP] | oldboard.boards[WHITE][
-        KNIGHT]
+    oldwpieces = oldboard.boards[WHITE][BISHOP] | oldboard.boards[WHITE][KNIGHT]
     bpieces = board.boards[BLACK][BISHOP] | board.boards[BLACK][KNIGHT]
-    oldbpieces = oldboard.boards[BLACK][BISHOP] | oldboard.boards[BLACK][
-        KNIGHT]
+    oldbpieces = oldboard.boards[BLACK][BISHOP] | oldboard.boards[BLACK][KNIGHT]
 
     for cord in iterBits(wpieces):
         sides = isolaniMask[FILE(cord)]
         front = passedPawnMask[WHITE][cord]
-        if outpost[WHITE][cord] and not bpawns & sides & front and \
-                (not oldwpieces & bitPosArray[cord] or
-                 oldbpawns & sides & front):
-            yield 35, _("White has a new piece in outpost: %s") % reprCord[
-                cord]
+        if (
+            outpost[WHITE][cord]
+            and not bpawns & sides & front
+            and (not oldwpieces & bitPosArray[cord] or oldbpawns & sides & front)
+        ):
+            yield 35, _("White has a new piece in outpost: %s") % reprCord[cord]
 
     for cord in iterBits(bpieces):
         sides = isolaniMask[FILE(cord)]
         front = passedPawnMask[BLACK][cord]
-        if outpost[BLACK][cord] and not wpawns & sides & front and \
-                (not oldbpieces & bitPosArray[cord] or
-                 oldwpawns & sides & front):
-            yield 35, _("Black has a new piece in outpost: %s") % reprCord[
-                cord]
+        if (
+            outpost[BLACK][cord]
+            and not wpawns & sides & front
+            and (not oldbpieces & bitPosArray[cord] or oldwpawns & sides & front)
+        ):
+            yield 35, _("Black has a new piece in outpost: %s") % reprCord[cord]
 
 
 def state_pawn(model, ply, phase):
@@ -419,22 +474,26 @@ def state_pawn(model, ply, phase):
                 continue
 
             # Was this a passed pawn before?
-            if oldpawns & bitPosArray[cord] and \
-                    not oldoppawns & passedPawnMask[color][cord] and \
-                    not frontCords & oldpawns:
+            if (
+                oldpawns & bitPosArray[cord]
+                and not oldoppawns & passedPawnMask[color][cord]
+                and not frontCords & oldpawns
+            ):
                 continue
 
             # Is this just a passed pawn that has been moved?
             if TCORD(move) == cord:
                 frontCords |= bitPosArray[cord]
-                if not frontCords & oldpawns and \
-                        not oldoppawns & passedPawnMask[color][FCORD(move)]:
+                if (
+                    not frontCords & oldpawns
+                    and not oldoppawns & passedPawnMask[color][FCORD(move)]
+                ):
                     continue
 
-            score = (passedScores[color][cord >> 3] * phase)
+            score = passedScores[color][cord >> 3] * phase
             yield score, _("%(color)s has a new passed pawn on %(cord)s") % {
-                'color': reprColor[color],
-                'cord': reprCord[cord]
+                "color": reprColor[color],
+                "cord": reprCord[cord],
             }
 
     # Double pawns
@@ -473,12 +532,18 @@ def state_pawn(model, ply, phase):
             wpawns = oppawns
             oldwpawns = oldoppawns
 
-        if wpawns & bits and not wpawns & isolaniMask[file] and \
-                (not oldwpawns & bits or oldwpawns & isolaniMask[file]):
+        if (
+            wpawns & bits
+            and not wpawns & isolaniMask[file]
+            and (not oldwpawns & bits or oldwpawns & isolaniMask[file])
+        ):
             found_white_isolates.append(reprFile[file])
 
-        if bpawns & bits and not bpawns & isolaniMask[file] and \
-                (not oldbpawns & bits or oldbpawns & isolaniMask[file]):
+        if (
+            bpawns & bits
+            and not bpawns & isolaniMask[file]
+            and (not oldbpawns & bits or oldbpawns & isolaniMask[file])
+        ):
             found_black_isolates.append(reprFile[file])
 
     # We need to take care of 'worstcases' like: "got new double pawns in the a
@@ -488,37 +553,44 @@ def state_pawn(model, ply, phase):
     if doubles_count > 0:
 
         parts = []
-        for type_, list_ in (("", found_doubles),
-                             (_("half-open") + " ", found_halfopen_doubles)):
+        for type_, list_ in (
+            ("", found_doubles),
+            (_("half-open") + " ", found_halfopen_doubles),
+        ):
             if len(list_) == 1:
-                parts.append(_("in the %(x)s%(y)s file") % {'x': type_,
-                                                            'y': list_[0]})
+                parts.append(_("in the %(x)s%(y)s file") % {"x": type_, "y": list_[0]})
             elif len(list_) >= 2:
-                parts.append(_("in the %(x)s%(y)s files") % {'x': type_,
-                                                             'y': join(list_)})
+                parts.append(
+                    _("in the %(x)s%(y)s files") % {"x": type_, "y": join(list_)}
+                )
 
         if doubles_count == 1:
             s = _("%(color)s got a double pawn %(place)s")
         else:
             s = _("%(color)s got new double pawns %(place)s")
 
-        yield (8 + phase) * 2 * doubles_count, s % {'color': reprColor[color],
-                                                    'place': join(parts)}
+        yield (8 + phase) * 2 * doubles_count, s % {
+            "color": reprColor[color],
+            "place": join(parts),
+        }
 
-    for (color_, list_) in ((WHITE, found_white_isolates),
-                            (BLACK, found_black_isolates)):
+    for (color_, list_) in (
+        (WHITE, found_white_isolates),
+        (BLACK, found_black_isolates),
+    ):
         if list_:
             yield 20 * len(list_), ngettext(
                 "%(color)s got an isolated pawn in the %(x)s file",
                 "%(color)s got isolated pawns in the %(x)s files",
-                len(list_)) % {'color': reprColor[color_],
-                               'x': join(list_)}
+                len(list_),
+            ) % {"color": reprColor[color_], "x": join(list_)}
 
     # Stone wall
-    if stonewall[color] & pawns == stonewall[color] and \
-       stonewall[color] & oldpawns != stonewall[color]:
-        yield 10, _("%s moves pawns into stonewall formation") % reprColor[
-            color]
+    if (
+        stonewall[color] & pawns == stonewall[color]
+        and stonewall[color] & oldpawns != stonewall[color]
+    ):
+        yield 10, _("%s moves pawns into stonewall formation") % reprColor[color]
 
 
 def state_destroysCastling(model, ply, phase):
@@ -536,21 +608,21 @@ def state_destroysCastling(model, ply, phase):
         if oldcastling & W_OO and not castling & W_OO:
             yield 900 / phase, _("%s can no longer castle") % reprColor[WHITE]
         else:
-            yield 400 / phase, _(
-                "%s can no longer castle in queenside") % reprColor[WHITE]
+            yield 400 / phase, _("%s can no longer castle in queenside") % reprColor[
+                WHITE
+            ]
     elif oldcastling & W_OO and not castling & W_OO:
-        yield 500 / phase, _(
-            "%s can no longer castle in kingside") % reprColor[WHITE]
+        yield 500 / phase, _("%s can no longer castle in kingside") % reprColor[WHITE]
 
     if oldcastling & B_OOO and not castling & B_OOO:
         if oldcastling & B_OO and not castling & B_OO:
             yield 900 / phase, _("%s can no longer castle") % reprColor[BLACK]
         else:
-            yield 400 / phase, _(
-                "%s can no longer castle in queenside") % reprColor[BLACK]
+            yield 400 / phase, _("%s can no longer castle in queenside") % reprColor[
+                BLACK
+            ]
     elif oldcastling & B_OO and not castling & B_OO:
-        yield 500 / phase, _(
-            "%s can no longer castle in kingside") % reprColor[BLACK]
+        yield 500 / phase, _("%s can no longer castle in kingside") % reprColor[BLACK]
 
 
 def state_trappedBishops(model, ply, phase):
@@ -584,10 +656,10 @@ def state_trappedBishops(model, ply, phase):
 
     # We have got more points -> We have trapped a bishop
     if s > olds:
-        yield 300 / phase, _(
-            "%(opcolor)s has a new trapped bishop on %(cord)s") % {
-                'opcolor': reprColor[opcolor],
-                'cord': reprCord[cord]}
+        yield 300 / phase, _("%(opcolor)s has a new trapped bishop on %(cord)s") % {
+            "opcolor": reprColor[opcolor],
+            "cord": reprCord[cord],
+        }
 
 
 def simple_tropism(model, ply, phase):
@@ -626,17 +698,15 @@ def simple_tropism(model, ply, phase):
             piece = KING
         else:
             piece = arBoard[tcord]
-        if phase >= 5 or distance[piece][fcord][opking] < \
-                distance[piece][fcord][king]:
+        if phase >= 5 or distance[piece][fcord][opking] < distance[piece][fcord][king]:
             yield score - oldscore, _(
-                "brings a %(piece)s closer to enemy king: %(cord)s") % {
-                    'piece': reprPiece[piece],
-                    'cord': reprCord[tcord]}
+                "brings a %(piece)s closer to enemy king: %(cord)s"
+            ) % {"piece": reprPiece[piece], "cord": reprCord[tcord]}
         else:
-            yield (
-                score - oldscore) * 2, _("develops a %(piece)s: %(cord)s") % {
-                    'piece': reprPiece[piece].lower(),
-                    'cord': reprCord[tcord]}
+            yield (score - oldscore) * 2, _("develops a %(piece)s: %(cord)s") % {
+                "piece": reprPiece[piece].lower(),
+                "cord": reprCord[tcord],
+            }
 
 
 def simple_activity(model, ply, phase):
@@ -653,10 +723,10 @@ def simple_activity(model, ply, phase):
     oldmoves = len([m for m in genAllMoves(oldboard) if FCORD(m) == fcord])
 
     if moves > oldmoves:
-        yield (moves -
-               oldmoves) / 2, _("places a %(piece)s more active: %(cord)s") % {
-                   'piece': reprPiece[board.arBoard[tcord]].lower(),
-                   'cord': reprCord[tcord]}
+        yield (moves - oldmoves) / 2, _("places a %(piece)s more active: %(cord)s") % {
+            "piece": reprPiece[board.arBoard[tcord]].lower(),
+            "cord": reprCord[tcord],
+        }
 
 
 def tip_pawnStorm(model, ply, phase):
@@ -682,18 +752,14 @@ def tip_pawnStorm(model, ply, phase):
 
     if wking & left and bking & right:
         if wright > bright:
-            yield (wright + 3 -
-                   bright) * 10, _("White should do pawn storm in right")
+            yield (wright + 3 - bright) * 10, _("White should do pawn storm in right")
         elif bleft > wleft:
-            yield (bright + 3 -
-                   wright) * 10, _("Black should do pawn storm in left")
+            yield (bright + 3 - wright) * 10, _("Black should do pawn storm in left")
     if wking & right and bking & left:
         if wleft > bleft:
-            yield (wleft + 3 -
-                   bleft) * 10, _("White should do pawn storm in left")
+            yield (wleft + 3 - bleft) * 10, _("White should do pawn storm in left")
         if bright > wright:
-            yield (bleft + 3 -
-                   wleft) * 10, _("Black should do pawn storm in right")
+            yield (bleft + 3 - wleft) * 10, _("Black should do pawn storm in right")
 
 
 def tip_mobility(model, ply, phase):
@@ -706,16 +772,26 @@ def tip_mobility(model, ply, phase):
     #    return
 
     board.setColor(WHITE)
-    wmoves = len([move for move in genAllMoves(board) if
-                  KNIGHT <= board.arBoard[FCORD(move)] <= QUEEN and
-                  bitPosArray[TCORD(move)] & brank48[WHITE] and
-                  staticExchangeEvaluate(board, move) >= 0])
+    wmoves = len(
+        [
+            move
+            for move in genAllMoves(board)
+            if KNIGHT <= board.arBoard[FCORD(move)] <= QUEEN
+            and bitPosArray[TCORD(move)] & brank48[WHITE]
+            and staticExchangeEvaluate(board, move) >= 0
+        ]
+    )
 
     board.setColor(BLACK)
-    bmoves = len([move for move in genAllMoves(board) if
-                  KNIGHT <= board.arBoard[FCORD(move)] <= QUEEN and
-                  bitPosArray[TCORD(move)] & brank48[BLACK] and
-                  staticExchangeEvaluate(board, move) >= 0])
+    bmoves = len(
+        [
+            move
+            for move in genAllMoves(board)
+            if KNIGHT <= board.arBoard[FCORD(move)] <= QUEEN
+            and bitPosArray[TCORD(move)] & brank48[BLACK]
+            and staticExchangeEvaluate(board, move) >= 0
+        ]
+    )
 
     board.setColor(colorBackup)
 

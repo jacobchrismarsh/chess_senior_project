@@ -1,7 +1,17 @@
 from gi.repository import Gtk
 
 from pychess.Utils.Piece import Piece
-from pychess.Utils.const import WHITE, SUICIDECHESS, GIVEAWAYCHESS, SITTUYINCHESS, KING, QUEEN, ROOK, BISHOP, KNIGHT
+from pychess.Utils.const import (
+    WHITE,
+    SUICIDECHESS,
+    GIVEAWAYCHESS,
+    SITTUYINCHESS,
+    KING,
+    QUEEN,
+    ROOK,
+    BISHOP,
+    KNIGHT,
+)
 
 from .PieceWidget import PieceWidget
 
@@ -10,8 +20,10 @@ class PromotionDialog:
     """ :Description: A popup dialog that allows you to select form a set of pieces the exchange
         for a pawn through the promotion rule
     """
+
     def __init__(self, variant):
         from .gamewidget import getWidgets
+
         self.widgets = getWidgets()
         self.dialog = self.widgets["promotionDialog"]
 

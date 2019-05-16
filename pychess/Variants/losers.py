@@ -9,8 +9,11 @@ class LosersBoard(Board):
         pieces before you opponent does. On a players turn if a piece can be taken it must be taken
         otherwise a normal chess move can be played
     """
+
     variant = LOSERSCHESS
-    __desc__ = _("FICS losers: http://www.freechess.org/Help/HelpFiles/losers_chess.html")
+    __desc__ = _(
+        "FICS losers: http://www.freechess.org/Help/HelpFiles/losers_chess.html"
+    )
     name = _("Losers")
     cecp_name = "losers"
     need_initial_board = False

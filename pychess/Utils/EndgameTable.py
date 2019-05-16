@@ -12,9 +12,7 @@ providers = []
 class EndgameTable(GObject.GObject):
     """ Wrap the low-level providers of exact endgame knowledge. """
 
-    __gsignals__ = {
-        "scored": (GObject.SignalFlags.RUN_FIRST, None, (object, )),
-    }
+    __gsignals__ = {"scored": (GObject.SignalFlags.RUN_FIRST, None, (object,))}
 
     def __init__(self):
         GObject.GObject.__init__(self)
@@ -41,8 +39,7 @@ class EndgameTable(GObject.GObject):
         piece_count = self._pieceCounts(lBoard)
         for provider in self.providers:
             if provider.supports(piece_count):
-                result, depth = provider.scoreGame(lBoard, omitDepth,
-                                                   probeSoft)
+                result, depth = provider.scoreGame(lBoard, omitDepth, probeSoft)
                 if result is not None:
                     return result, depth
         return None, None

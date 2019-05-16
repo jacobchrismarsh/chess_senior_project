@@ -17,9 +17,9 @@ else:
     ECO_OK = False
 
 if isInstalled():
-    mofile = gettext.find('pychess')
+    mofile = gettext.find("pychess")
 else:
-    mofile = gettext.find('pychess', localedir=addDataPrefix("lang"))
+    mofile = gettext.find("pychess", localedir=addDataPrefix("lang"))
 
 if mofile is None:
     lang = "en"
@@ -27,7 +27,7 @@ else:
     lang = mofile.split(os.sep)[-3]
 
 # big-endian, unsigned long long (uint64)
-hash_struct = struct.Struct('>Q')
+hash_struct = struct.Struct(">Q")
 
 
 def get_eco(hash):
@@ -35,5 +35,11 @@ def get_eco(hash):
         return None
     cur = conn.cursor()
     select = "select eco, opening, variation from openings where hash=? and lang=?"
-    cur.execute(select, (memoryview(hash_struct.pack(hash)), "en" if conf.no_gettext or lang not in ("da", "de", "es", "hu") else lang))
+    cur.execute(
+        select,
+        (
+            memoryview(hash_struct.pack(hash)),
+            "en" if conf.no_gettext or lang not in ("da", "de", "es", "hu") else lang,
+        ),
+    )
     return cur.fetchone()

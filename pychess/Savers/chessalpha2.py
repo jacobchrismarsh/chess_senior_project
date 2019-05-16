@@ -5,12 +5,25 @@
 from html.entities import entitydefs
 
 from pychess.Utils.Move import toFAN
-from pychess.Utils.const import FAN_PIECES, BLACK, ROOK, WHITE, KING, BISHOP, \
-    KNIGHT, QUEEN, DRAW, EMPTY, reprResult, WHITEWON, BLACKWON
+from pychess.Utils.const import (
+    FAN_PIECES,
+    BLACK,
+    ROOK,
+    WHITE,
+    KING,
+    BISHOP,
+    KNIGHT,
+    QUEEN,
+    DRAW,
+    EMPTY,
+    reprResult,
+    WHITEWON,
+    BLACKWON,
+)
 
 
 def group(l, s):
-    return [l[i:i + s] for i in range(0, len(l), s)]
+    return [l[i : i + s] for i in range(0, len(l), s)]
 
 
 __label__ = _("Chess Alpha 2 Diagram")
@@ -18,18 +31,26 @@ __ending__ = "html"
 __append__ = True
 
 # table[background][color][piece]
-diaPieces = ((('\'', 'Ê', 'Â', 'À', 'Ä', 'Æ', 'È'),
-              ('\'', 'ê', 'â', 'à', 'ä', 'æ', 'è')),
-             (('#', 'Ë', 'Ã', 'Á', 'Å', 'Ç', 'É'),
-              ('#', 'ë', 'ã', 'á', 'å', 'ç', 'é')))
-borderNums = ('¬', '"', '£', '$', '%', '^', '&', '*')
-lisPieces = ((FAN_PIECES[BLACK][KNIGHT], 'K'),
-             (FAN_PIECES[BLACK][BISHOP], 'J'), (FAN_PIECES[BLACK][ROOK], 'L'),
-             (FAN_PIECES[BLACK][QUEEN], 'M'), (FAN_PIECES[BLACK][KING], 'N'),
-             (FAN_PIECES[WHITE][KNIGHT], 'k'),
-             (FAN_PIECES[WHITE][BISHOP], 'j'), (FAN_PIECES[WHITE][ROOK], 'l'),
-             (FAN_PIECES[WHITE][QUEEN], 'm'), (FAN_PIECES[WHITE][KING], 'n'),
-             ('†', '+'), ('‡', '+'), ('1/2', 'Z'))
+diaPieces = (
+    (("'", "Ê", "Â", "À", "Ä", "Æ", "È"), ("'", "ê", "â", "à", "ä", "æ", "è")),
+    (("#", "Ë", "Ã", "Á", "Å", "Ç", "É"), ("#", "ë", "ã", "á", "å", "ç", "é")),
+)
+borderNums = ("¬", '"', "£", "$", "%", "^", "&", "*")
+lisPieces = (
+    (FAN_PIECES[BLACK][KNIGHT], "K"),
+    (FAN_PIECES[BLACK][BISHOP], "J"),
+    (FAN_PIECES[BLACK][ROOK], "L"),
+    (FAN_PIECES[BLACK][QUEEN], "M"),
+    (FAN_PIECES[BLACK][KING], "N"),
+    (FAN_PIECES[WHITE][KNIGHT], "k"),
+    (FAN_PIECES[WHITE][BISHOP], "j"),
+    (FAN_PIECES[WHITE][ROOK], "l"),
+    (FAN_PIECES[WHITE][QUEEN], "m"),
+    (FAN_PIECES[WHITE][KING], "n"),
+    ("†", "+"),
+    ("‡", "+"),
+    ("1/2", "Z"),
+)
 
 
 def fanconv(fan):
@@ -39,8 +60,11 @@ def fanconv(fan):
 
 
 # Dictionaries and expressions for parsing diagrams
-entitydefs = dict(("&%s;" % a, chr(ord(b)).encode('utf-8'))
-                  for a, b in entitydefs.items() if len(b) == 1)
+entitydefs = dict(
+    ("&%s;" % a, chr(ord(b)).encode("utf-8"))
+    for a, b in entitydefs.items()
+    if len(b) == 1
+)
 def2entity = dict((b, a) for a, b in entitydefs.items())
 
 style = """
@@ -61,12 +85,14 @@ style = """
 def save(file, model, position=None):
     """Saves the position as a diagram using chess fonts"""
 
-    print("<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>",
-          file=file)
+    print(
+        "<meta http-equiv='Content-Type' content='text/html;charset=UTF-8'>", file=file
+    )
     print("<style type='text/css'>%s</style>" % style, file=file)
     print(
         "<table cellspacing='0' cellpadding='0' class='pychess'><tr><td colspan='6'><pre>",
-        file=file)
+        file=file,
+    )
     writeDiagram(file, model)
     print("</pre></td></tr>", file=file)
 
@@ -75,34 +101,42 @@ def save(file, model, position=None):
     if model.lowply & 1:
         sanmvs = ["&gt;"] + list(sanmvs)
     if model.status in (DRAW, WHITEWON, BLACKWON):
-        sanmvs.extend([''] * (-len(sanmvs) % 2))
+        sanmvs.extend([""] * (-len(sanmvs) % 2))
         sanmvs.append(fanconv(reprResult[model.status]))
-    sanmvs.extend([''] * (-len(sanmvs) % 4))
+    sanmvs.extend([""] * (-len(sanmvs) % 4))
     sanmvs = group(sanmvs, 2)
     for i in range((len(sanmvs) + 1) // 2):
         left = i + 1 + model.lowply // 2
-        writeMoves(file, str(i + 1 + model.lowply // 2), sanmvs[i],
-                   str(left + len(sanmvs) // 2), sanmvs[i + len(sanmvs) // 2])
+        writeMoves(
+            file,
+            str(i + 1 + model.lowply // 2),
+            sanmvs[i],
+            str(left + len(sanmvs) // 2),
+            sanmvs[i + len(sanmvs) // 2],
+        )
     print("</table>", file=file)
 
     file.close()
 
 
 def writeMoves(file, move1, movepair1, move2, movepair2):
-    move1 += '.'
-    move2 += '.'
+    move1 += "."
+    move2 += "."
     if not movepair2[0]:
-        move2 = ''
-    print("<tr><td class='numa'>%s</td><td>%s</td><td>%s</td>" %
-          (move1, movepair1[0], movepair1[1]),
-          file=file)
+        move2 = ""
+    print(
+        "<tr><td class='numa'>%s</td><td>%s</td><td>%s</td>"
+        % (move1, movepair1[0], movepair1[1]),
+        file=file,
+    )
     if not movepair2[1] and movepair2[0] in map(fanconv, reprResult):
-        print("<td class='status' colspan='3'>%s</td></tr>" % movepair2[0],
-              file=file)
+        print("<td class='status' colspan='3'>%s</td></tr>" % movepair2[0], file=file)
     else:
-        print("<td class='numb'>%s</td><td>%s</td><td>%s</td></tr>" %
-              (move2, movepair2[0], movepair2[1]),
-              file=file)
+        print(
+            "<td class='numb'>%s</td><td>%s</td><td>%s</td></tr>"
+            % (move2, movepair2[0], movepair2[1]),
+            file=file,
+        )
 
 
 def writeDiagram(file, model, border=True, whitetop=False):
@@ -132,7 +166,7 @@ def writeDiagram(file, model, border=True, whitetop=False):
                 if dia_color in def2entity:
                     dia_color = def2entity[dia_color]
                 file.write("%s" % dia_color)
-        file.write('\\\n')
+        file.write("\\\n")
 
     if border:
         print("{ABCDEFGH}", file=file)

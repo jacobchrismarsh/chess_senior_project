@@ -12,23 +12,25 @@ class ListAndVarManager:
         self.personalBackup = {}
 
         if self.connection.USCN:
-            self.connection.expect_line(self.onUpdateList,
-                                        "(?:\w+\s+is (?:PUBLIC|PERSONAL))|$")
+            self.connection.expect_line(
+                self.onUpdateList, "(?:\w+\s+is (?:PUBLIC|PERSONAL))|$"
+            )
         else:
             self.connection.expect_fromplus(
-                self.onUpdateLists, "Lists:",
-                "(?:\w+\s+is (?:PUBLIC|PERSONAL))|$")
+                self.onUpdateLists, "Lists:", "(?:\w+\s+is (?:PUBLIC|PERSONAL))|$"
+            )
 
-        self.connection.expect_line(self.onUpdateEmptyListitems,
-                                    "-- (\w+) list: 0 \w+ --")
-        self.connection.expect_fromplus(self.onUpdateListitems,
-                                        "-- (\w+) list: ([1-9]\d*) \w+ --",
-                                        "(?:\w+ *)+$")
+        self.connection.expect_line(
+            self.onUpdateEmptyListitems, "-- (\w+) list: 0 \w+ --"
+        )
+        self.connection.expect_fromplus(
+            self.onUpdateListitems, "-- (\w+) list: ([1-9]\d*) \w+ --", "(?:\w+ *)+$"
+        )
 
         self.connection.client.run_command("showlist")
 
         # Auto flag
-        conf.notify_add('autoCallFlag', self.autoFlagNotify)
+        conf.notify_add("autoCallFlag", self.autoFlagNotify)
 
     def onUpdateLists(self, matchlist):
         self.publicLists.clear()
@@ -77,7 +79,8 @@ class ListAndVarManager:
 
     def autoFlagNotify(self, *args):
         self.connection.client.run_command(
-            "set autoflag %s" % int(conf.get('autoCallFlag')))
+            "set autoflag %s" % int(conf.get("autoCallFlag"))
+        )
         # print 'notify flag', conf.get('autoCallFlag')
 
     def getList(self, list_name):

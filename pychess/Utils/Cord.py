@@ -53,14 +53,14 @@ class Cord:
 
     def intToChar(self, x):
         # assert 0 <= x <= 7
-        return chr(x + ord('a'))
+        return chr(x + ord("a"))
 
     def charToInt(self, char):
         ord_char = ord(char)
-        if ord('A') <= ord_char <= ord('H'):
-            ord_char -= ord('A')
-        elif ord('a') <= ord_char <= ord('h'):
-            ord_char -= ord('a')
+        if ord("A") <= ord_char <= ord("H"):
+            ord_char -= ord("A")
+        elif ord("a") <= ord_char <= ord("h"):
+            ord_char -= ord("a")
         else:
             raise CordFormatException("x < 0 || x > 7 (%s, %d)" % (char, ord_char))
         return ord_char

@@ -16,20 +16,18 @@ from .Player import Player
 class Engine(Player):
 
     __type__ = ARTIFICIAL
-    ''' "analyze" signal emits list of analysis lines. Lines are 5 element tuples.
+    """ "analyze" signal emits list of analysis lines. Lines are 5 element tuples.
         The first element is game ply. Second is pv string of moves. Third is a score
         relative to the engine. If no score is known, the value can be None,
         but not 0, which is a draw. Fourth is the depth of the search. Fifth is the
-        nodes per second. '''
-    __gsignals__ = {
-        'analyze': (GObject.SignalFlags.RUN_FIRST, None, (object, ))
-    }
+        nodes per second. """
+    __gsignals__ = {"analyze": (GObject.SignalFlags.RUN_FIRST, None, (object,))}
 
     def __init__(self, md5=None):
         Player.__init__(self)
         self.md5 = md5
         self.currentAnalysis = []
-        self.analyze_cid = self.connect('analyze', self.on_analysis)
+        self.analyze_cid = self.connect("analyze", self.on_analysis)
 
     def on_analysis(self, engine, analysis):
         self.currentAnalysis = analysis
@@ -105,18 +103,28 @@ class Engine(Player):
     def putMessage(self, message):
         def answer(message):
             try:
-                data = urlopen(
-                    "https://www.pandorabots.com/pandora/talk?botid=8d034368fe360895",
-                    urlencode({"message": message,
-                               "botcust2": "x"}).encode("utf-8")).read().decode('utf-8')
+                data = (
+                    urlopen(
+                        "https://www.pandorabots.com/pandora/talk?botid=8d034368fe360895",
+                        urlencode({"message": message, "botcust2": "x"}).encode(
+                            "utf-8"
+                        ),
+                    )
+                    .read()
+                    .decode("utf-8")
+                )
             except IOError as err:
-                log.warning("Couldn't answer message from online bot: '%s'" %
-                            err,
-                            extra={"task": self.defname})
+                log.warning(
+                    "Couldn't answer message from online bot: '%s'" % err,
+                    extra={"task": self.defname},
+                )
                 return
             sstring = "<b>DMPGirl:</b>"
             estring = "<br>"
-            answer = data[data.find(sstring) + len(sstring):data.find(estring, data.find(sstring))]
+            answer = data[
+                data.find(sstring)
+                + len(sstring) : data.find(estring, data.find(sstring))
+            ]
             self.emit("offer", Offer(CHAT_ACTION, answer))
 
         @asyncio.coroutine

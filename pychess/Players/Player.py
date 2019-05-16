@@ -4,39 +4,44 @@ from gi.repository import GObject
 class PlayerIsDead(Exception):
     """ Used instead of returning a move,
         when an engine crashes, or a nonlocal player disconnects """
+
     pass
 
 
 class PassInterrupt(Exception):
     """ Used instead of returning a move, when a players turn is interrupted but not changed.
         This may happen when undoMoves doesn't changes the current player """
+
     pass
 
 
 class TurnInterrupt(Exception):
     """ Used instead of returning a move, when a players turn is interrupted.
         This may happen when undoMoves changes the current player """
+
     pass
 
 
 class InvalidMove(Exception):
     """ Used instead of returning a move,
         when an engine plays an invalid move """
+
     pass
 
 
 class GameEnded(Exception):
     """ Used instead of returning a move on game end """
+
     pass
 
 
 class Player(GObject.GObject):
 
     __gsignals__ = {
-        "offer": (GObject.SignalFlags.RUN_FIRST, None, (object, )),
-        "withdraw": (GObject.SignalFlags.RUN_FIRST, None, (object, )),
-        "decline": (GObject.SignalFlags.RUN_FIRST, None, (object, )),
-        "accept": (GObject.SignalFlags.RUN_FIRST, None, (object, )),
+        "offer": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
+        "withdraw": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
+        "decline": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
+        "accept": (GObject.SignalFlags.RUN_FIRST, None, (object,)),
         "name_changed": (GObject.SignalFlags.RUN_FIRST, None, ()),
     }
 

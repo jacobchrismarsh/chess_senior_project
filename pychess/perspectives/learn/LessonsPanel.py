@@ -28,13 +28,13 @@ LESSONS = []
 for elem in sorted(os.listdir(path=addDataPrefix("learn/lessons/"))):
     if elem.startswith("lichess_study") and elem.endswith(".pgn"):
         title = elem.replace("beta-lichess-practice-", "")
-        title = title[14:title.find("_by_")].replace("-", " ").capitalize()
+        title = title[14 : title.find("_by_")].replace("-", " ").capitalize()
         LESSONS.append((elem, title, "lichess.org"))
     elif elem.endswith(".pgn"):
         LESSONS.append((elem, elem.replace("-", " ").capitalize(), "pychess.org"))
 
 
-class Sidepanel():
+class Sidepanel:
     def load(self, persp):
         self.persp = persp
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -59,10 +59,13 @@ class Sidepanel():
             for i, row in enumerate(self.store):
                 if row[0] == key:
                     solved = progress.count(1)
-                    percent = 0 if not solved else round((solved * 100.) / len(progress))
+                    percent = (
+                        0 if not solved else round((solved * 100.0) / len(progress))
+                    )
                     treeiter = self.store.get_iter(Gtk.TreePath(i))
                     self.store[treeiter][3] = "%s / %s" % (solved, len(progress))
                     self.store[treeiter][4] = percent
+
         lessons_solving_progress.connect("progress_updated", on_progress_updated)
 
         self.store = Gtk.ListStore(str, str, str, str, int)
@@ -72,8 +75,17 @@ class Sidepanel():
             for file_name, title, author in LESSONS:
                 progress = lessons_solving_progress.get(file_name)
                 solved = progress.count(1)
-                percent = 0 if not solved else round((solved * 100.) / len(progress))
-                self.store.append([file_name, title, author, "%s / %s" % (solved, len(progress)), percent])
+                percent = 0 if not solved else round((solved * 100.0) / len(progress))
+                self.store.append(
+                    [
+                        file_name,
+                        title,
+                        author,
+                        "%s / %s" % (solved, len(progress)),
+                        percent,
+                    ]
+                )
+
         create_task(coro())
 
         self.tv.set_model(self.store)
@@ -96,6 +108,7 @@ class Sidepanel():
             filename = LESSONS[path[0]][0]
             conf.set("categorycombo", LESSON)
             from pychess.widgets.TaskerManager import learn_tasker
+
             learn_tasker.learn_combo.set_active(path[0])
             start_lesson_from(filename)
 
@@ -132,7 +145,9 @@ def start_lesson_game(gamemodel, filename, chessfile, records, index, rec):
 
     # Lichess doesn't export some study data to .pgn like
     # Orientation, Analysis mode, Chapter pinned comment, move hint comments, general fail comment
-    if filename.startswith("lichess_study_beta-lichess-practice-checkmating-with-a-knight-and-bishop"):
+    if filename.startswith(
+        "lichess_study_beta-lichess-practice-checkmating-with-a-knight-and-bishop"
+    ):
         if index in (4, 6, 8, 9):
             gamemodel.tags["Orientation"] = "White"
             print(index, '[Orientation "White"]')
@@ -154,12 +169,16 @@ def start_lesson_game(gamemodel, filename, chessfile, records, index, rec):
         lessons_solving_progress[gamemodel.source] = progress
         if "FEN" in gamemodel.tags:
             create_task(gamemodel.restart_analyzer(HINT))
+
     gamemodel.connect("learn_success", learn_success)
 
     def on_game_started(gamemodel):
         perspective.activate_panel("annotationPanel")
         if "FEN" in gamemodel.tags:
-            create_task(gamemodel.start_analyzer(HINT, force_engine=discoverer.getEngineLearn()))
+            create_task(
+                gamemodel.start_analyzer(HINT, force_engine=discoverer.getEngineLearn())
+            )
+
     gamemodel.connect("game_started", on_game_started)
 
     gamemodel.status = WAITING_TO_START

@@ -13,7 +13,17 @@ from pychess.System import uistuff, conf
 from pychess.Utils.GameModel import GameModel
 from pychess.Utils.IconLoader import load_icon, get_pixbuf
 from pychess.Utils.TimeModel import TimeModel
-from pychess.Utils.const import LOCAL, ARTIFICIAL, WHITE, BLACK, NORMALCHESS, LECTURE, LESSON, PUZZLE, ENDGAME
+from pychess.Utils.const import (
+    LOCAL,
+    ARTIFICIAL,
+    WHITE,
+    BLACK,
+    NORMALCHESS,
+    LECTURE,
+    LESSON,
+    PUZZLE,
+    ENDGAME,
+)
 from pychess.Variants import variants
 from pychess.ic import ICLogon
 from pychess.widgets import newGameDialog
@@ -45,34 +55,57 @@ class TaskerManager(Gtk.Table):
             height = widget.get_allocation().height
 
             cairo_win.move_to(x_loc - self.border, y_loc)
-            cairo_win.curve_to(x_loc - self.border, y_loc - self.border / 2.,
-                               x_loc - self.border / 2., y_loc - self.border, x_loc,
-                               y_loc - self.border)
+            cairo_win.curve_to(
+                x_loc - self.border,
+                y_loc - self.border / 2.0,
+                x_loc - self.border / 2.0,
+                y_loc - self.border,
+                x_loc,
+                y_loc - self.border,
+            )
             cairo_win.line_to(x_loc + width, y_loc - self.border)
-            cairo_win.curve_to(x_loc + width + self.border / 2., y_loc - self.border,
-                               x_loc + width + self.border, y_loc - self.border / 2.,
-                               x_loc + width + self.border, y_loc)
+            cairo_win.curve_to(
+                x_loc + width + self.border / 2.0,
+                y_loc - self.border,
+                x_loc + width + self.border,
+                y_loc - self.border / 2.0,
+                x_loc + width + self.border,
+                y_loc,
+            )
             cairo_win.line_to(x_loc + width + self.border, y_loc + height)
-            cairo_win.curve_to(x_loc + width + self.border, y_loc + height + self.border / 2.,
-                               x_loc + width + self.border / 2., y_loc + height + self.border,
-                               x_loc + width, y_loc + height + self.border)
+            cairo_win.curve_to(
+                x_loc + width + self.border,
+                y_loc + height + self.border / 2.0,
+                x_loc + width + self.border / 2.0,
+                y_loc + height + self.border,
+                x_loc + width,
+                y_loc + height + self.border,
+            )
             cairo_win.line_to(x_loc, y_loc + height + self.border)
-            cairo_win.curve_to(x_loc - self.border / 2., y_loc + height + self.border,
-                               x_loc - self.border, y_loc + height + self.border / 2.,
-                               x_loc - self.border, y_loc + height)
+            cairo_win.curve_to(
+                x_loc - self.border / 2.0,
+                y_loc + height + self.border,
+                x_loc - self.border,
+                y_loc + height + self.border / 2.0,
+                x_loc - self.border,
+                y_loc + height,
+            )
 
             style_ctxt = self.get_style_context()
             bgcolor = style_ctxt.lookup_color("p_bg_color")[1]
             darkcolor = style_ctxt.lookup_color("p_dark_color")[1]
 
-            cairo_win.set_source_rgba(bgcolor.red, bgcolor.green, bgcolor.blue,
-                                      bgcolor.alpha)
+            cairo_win.set_source_rgba(
+                bgcolor.red, bgcolor.green, bgcolor.blue, bgcolor.alpha
+            )
             cairo_win.fill()
 
-            cairo_win.rectangle(x_loc - self.border, y_loc + height - 30,
-                                width + self.border * 2, 30)
-            cairo_win.set_source_rgba(darkcolor.red, darkcolor.green, darkcolor.blue,
-                                      darkcolor.alpha)
+            cairo_win.rectangle(
+                x_loc - self.border, y_loc + height - 30, width + self.border * 2, 30
+            )
+            cairo_win.set_source_rgba(
+                darkcolor.red, darkcolor.green, darkcolor.blue, darkcolor.alpha
+            )
             cairo_win.fill()
 
     def calcSpacings(self, n):
@@ -139,8 +172,9 @@ class TaskerManager(Gtk.Table):
             for col, widget in enumerate(widgets[-numw:]):
                 alignment = Gtk.Alignment.new(hspac[col], vspac[-1], 0, 0)
                 alignment.add(widget)
-                alignment.set_padding(self.border, self.border, self.border,
-                                      self.border)
+                alignment.set_padding(
+                    self.border, self.border, self.border, self.border
+                )
                 lastrow.pack_start(alignment, True, True, 0)
 
             self.attach(lastrow, 0, cols, rrows, rrows + 1)
@@ -161,23 +195,28 @@ class NewGameTasker(Gtk.Alignment):
         startButton = self.widgets["startButton"]
         startButton.set_name("startButton")
         combo = Gtk.ComboBox()
-        uistuff.createCombo(combo, [
-            (get_pixbuf("glade/white.png"), _("White")),
-            (get_pixbuf("glade/black.png"), _("Black")),
-            (get_pixbuf("glade/random.png"), _("Random"))])
+        uistuff.createCombo(
+            combo,
+            [
+                (get_pixbuf("glade/white.png"), _("White")),
+                (get_pixbuf("glade/black.png"), _("Black")),
+                (get_pixbuf("glade/random.png"), _("Random")),
+            ],
+        )
         widgets["colorDock"].add(combo)
         if combo.get_active() < 0:
             combo.set_active(0)
-        widgets['yourColorLabel'].set_mnemonic_widget(combo)
+        widgets["yourColorLabel"].set_mnemonic_widget(combo)
 
         # We need to wait until after engines have been discovered, to init the
         # playerCombos. We use connect_after to make sure, that newGameDialog
         # has also had time to init the constants we share with them.
         self.playerCombo = Gtk.ComboBox()
         widgets["opponentDock"].add(self.playerCombo)
-        discoverer.connect_after("all_engines_discovered",
-                                 self.__initPlayerCombo, widgets)
-        widgets['opponentLabel'].set_mnemonic_widget(self.playerCombo)
+        discoverer.connect_after(
+            "all_engines_discovered", self.__initPlayerCombo, widgets
+        )
+        widgets["opponentLabel"].set_mnemonic_widget(self.playerCombo)
 
         def on_skill_changed(scale):
             # Just to make sphinx happy...
@@ -236,9 +275,12 @@ class NewGameTasker(Gtk.Alignment):
         else:
             engine = discoverer.getEngineByName(engine)
             name = discoverer.getName(engine)
-            player1tup = (ARTIFICIAL, discoverer.initPlayerEngine,
-                          (engine, 1 - color, difficulty,
-                           variants[NORMALCHESS], 5 * 60, 0), name)
+            player1tup = (
+                ARTIFICIAL,
+                discoverer.initPlayerEngine,
+                (engine, 1 - color, difficulty, variants[NORMALCHESS], 5 * 60, 0),
+                name,
+            )
 
         perspective = perspective_manager.get_perspective("games")
         if color == WHITE:
@@ -360,6 +402,7 @@ class LearnTasker(Gtk.Alignment):
                         model = combo.get_model()
                         newlearn = model.get_path(tree_iter)[0]
                         conf.set("learncombo%s" % self.category, newlearn)
+
                 self.learn_combo.connect("changed", on_learn_changed)
 
         self.category_combo.connect("changed", on_category_changed)
@@ -428,7 +471,7 @@ class DatabaseTasker(Gtk.Alignment):
         # Just to make sphinx happy...
         try:
             for uri in recent_menu.get_uris():
-                liststore.append((uri, basename(unquote(uri)), ))
+                liststore.append((uri, basename(unquote(uri))))
         except TypeError:
             pass
         self.recent_combo.set_active(0)
@@ -475,6 +518,10 @@ class DatabaseTasker(Gtk.Alignment):
                 recent_manager.remove_item(uri)
 
 
-new_game_tasker, internet_game_tasker, database_tasker, learn_tasker = \
-    NewGameTasker(), InternetGameTasker(), DatabaseTasker(), LearnTasker()
+new_game_tasker, internet_game_tasker, database_tasker, learn_tasker = (
+    NewGameTasker(),
+    InternetGameTasker(),
+    DatabaseTasker(),
+    LearnTasker(),
+)
 tasker.packTaskers(new_game_tasker, database_tasker, internet_game_tasker, learn_tasker)

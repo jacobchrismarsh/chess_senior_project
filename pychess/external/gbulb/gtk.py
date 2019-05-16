@@ -4,7 +4,7 @@ from gi.repository import GLib, Gtk
 
 from .glib_events import GLibEventLoop, GLibEventLoopPolicy
 
-__all__ = ['GtkEventLoop', 'GtkEventLoopPolicy']
+__all__ = ["GtkEventLoop", "GtkEventLoopPolicy"]
 
 
 class GtkEventLoop(GLibEventLoop):
@@ -13,10 +13,11 @@ class GtkEventLoop(GLibEventLoop):
     This loop supports recursion in Gtk, for example for implementing modal
     windows.
     """
+
     def __init__(self, **kwargs):
         self._recursive = 0
         self._recurselock = threading.Lock()
-        kwargs['context'] = GLib.main_context_default()
+        kwargs["context"] = GLib.main_context_default()
 
         super().__init__(**kwargs)
 
@@ -50,8 +51,10 @@ class GtkEventLoop(GLibEventLoop):
         else:
             super().stop()
 
+
 class GtkEventLoopPolicy(GLibEventLoopPolicy):
     """Gtk-based event loop policy. Use this if you are using Gtk."""
+
     def _new_default_loop(self):
         l = GtkEventLoop(application=self._application)
         l._policy = self

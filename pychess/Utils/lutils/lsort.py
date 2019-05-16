@@ -24,6 +24,7 @@ def getCaptureValue(board, move):
 def sortCaptures(board, moves):
     def sort_captures_func(move):
         return getCaptureValue(board, move)
+
     moves.sort(key=sort_captures_func, reverse=True)
     return moves
 
@@ -86,8 +87,10 @@ def getMoveValue(board, table, depth, move):
     if board.variant in ASEAN_VARIANTS:
         score = 0
     else:
-        score = position_values[fpiece][board.color][tcord] - \
-            position_values[fpiece][board.color][fcord]
+        score = (
+            position_values[fpiece][board.color][tcord]
+            - position_values[fpiece][board.color][fcord]
+        )
 
     # History heuristic
     score += table.getButterfly(move)
@@ -98,5 +101,6 @@ def getMoveValue(board, table, depth, move):
 def sortMoves(board, table, ply, hashmove, moves):
     def sort_moves_func(move):
         return getMoveValue(board, table, ply, hashmove, move)
+
     moves.sort(key=sort_moves_func, reverse=True)
     return moves

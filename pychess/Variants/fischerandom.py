@@ -10,8 +10,9 @@ from pychess.Utils.const import reprFile
 class FischerandomBoard(Board):
     variant = FISCHERRANDOMCHESS
     __desc__ = _(
-        "http://en.wikipedia.org/wiki/Chess960\n" +
-        "FICS wild/fr: http://www.freechess.org/Help/HelpFiles/wild.html")
+        "http://en.wikipedia.org/wiki/Chess960\n"
+        + "FICS wild/fr: http://www.freechess.org/Help/HelpFiles/wild.html"
+    )
     name = _("Fischer Random")
     cecp_name = "fischerandom"
     need_initial_board = True
@@ -30,47 +31,54 @@ class FischerandomBoard(Board):
             The bishops are placed on opposite-colored squares."""
 
         positions = [1, 2, 3, 4, 5, 6, 7, 8]
-        board = [''] * 8
-        castl = ''
+        board = [""] * 8
+        castl = ""
 
         bishop = random.choice((1, 3, 5, 7))
-        board[bishop - 1] = 'b'
+        board[bishop - 1] = "b"
         positions.remove(bishop)
 
         bishop = random.choice((2, 4, 6, 8))
-        board[bishop - 1] = 'b'
+        board[bishop - 1] = "b"
         positions.remove(bishop)
 
         queen = random.choice(positions)
-        board[queen - 1] = 'q'
+        board[queen - 1] = "q"
         positions.remove(queen)
 
         knight = random.choice(positions)
-        board[knight - 1] = 'n'
+        board[knight - 1] = "n"
         positions.remove(knight)
 
         knight = random.choice(positions)
-        board[knight - 1] = 'n'
+        board[knight - 1] = "n"
         positions.remove(knight)
 
         rook = positions[0]
-        board[rook - 1] = 'r'
+        board[rook - 1] = "r"
         castl += reprFile[rook - 1]
 
         king = positions[1]
-        board[king - 1] = 'k'
+        board[king - 1] = "k"
 
         rook = positions[2]
-        board[rook - 1] = 'r'
+        board[rook - 1] = "r"
         castl += reprFile[rook - 1]
 
-        fen = ''.join(board)
-        fen = fen + '/pppppppp/8/8/8/8/PPPPPPPP/' + fen.upper(
-        ) + ' w ' + castl.upper() + castl + ' - 0 1'
+        fen = "".join(board)
+        fen = (
+            fen
+            + "/pppppppp/8/8/8/8/PPPPPPPP/"
+            + fen.upper()
+            + " w "
+            + castl.upper()
+            + castl
+            + " - 0 1"
+        )
         return fen
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     frcBoard = FischerandomBoard(True)
     for i in range(10):
         print(frcBoard.shuffle_start())
