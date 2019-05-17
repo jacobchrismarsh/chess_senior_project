@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import List, Tuple
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
@@ -8,7 +8,8 @@ from .context import Stockfish
 from pychess.Utils.Board import Board
 from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
-from pychess.Utils.Move import Move
+from pychess.Utils.Move import Move, listToMoves
+from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE
 
 FROM_COORD = 0
 TO_COORD = 1
@@ -17,6 +18,7 @@ STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10
 
 
 global_board = Board(setup=True)
+
 
 def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
@@ -35,21 +37,41 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
+    board = _get_board(request)
     from_coord = int(request.GET.get("index"))
 
-    potential_moves = [Move(newMove(from_coord, to_coord)) for to_coord in range(64)]
+    potential_moves = _get_potential_board_moves(from_coord, board)
 
-    all_legal_moves = [Move(move) for move in genAllMoves(global_board.board)]
+    all_legal_moves = [Move(move) for move in genAllMoves(board.board)]
 
+    legal_destinations = _get_legal_destinations(potential_moves, all_legal_moves)
+
+    return JsonResponse({"moves": legal_destinations})
+
+
+def _get_board(request: WSGIRequest) -> Board:
+    """ This will eventually be fleshed out into accessing the Database """
+    global global_board
+    return global_board
+
+
+def _get_potential_board_moves(from_coord: int, board: Board) -> List[Move]:
+    """ Given a piece at location 'from_coord', list every possible move it could
+        make, legal and illegal alike
+    """
+    potential_moves_coordinates = [(from_coord, to_coord) for to_coord in range(64)]
+    potential_moves = [_get_move(*coords) for coords in potential_moves_coordinates]
+    return potential_moves
+
+
+def _get_legal_destinations(
+    potential_moves: List[Move], all_legal_moves: List[Move]
+) -> List[int]:
     legal_moves_for_piece = [
         move for move in potential_moves if move in all_legal_moves
     ]
 
-    legal_destinations = [
-        _move_to_board_location(move)[TO_COORD] for move in legal_moves_for_piece
-    ]
-
-    return JsonResponse({"moves": legal_destinations})
+    return [_move_to_board_location(move)[TO_COORD] for move in legal_moves_for_piece]
 
 
 def _move_to_board_location(move: Move) -> Tuple[int]:
@@ -60,14 +82,28 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
     to_coord = move.cord1.y * BOARD_WIDTH + move.cord1.x
     return (from_coord, to_coord)
 
+
 def make_move(request: WSGIRequest) -> JsonResponse:
     global global_board
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
 
-    player_move = Move(newMove(from_coord, to_coord))
+    player_move = _get_move(from_coord, to_coord)
+
+    _check_for_castle(player_move)
 
     global_board = global_board.move(player_move)
     return _get_opponent_move()
+
+
+def _get_move(from_coord, to_coord) -> Move:
+    move = Move(newMove(from_coord, to_coord))
+    move = Move(move.cord0, move.cord1, global_board)
+    return move
+
+
+def _check_for_castle(move: Move):
+    pass
+
 
 def _get_opponent_move():
     global global_board
@@ -84,17 +120,24 @@ def _get_opponent_move():
 
     return JsonResponse({"from_coord": from_coord, "to_coord": to_coord})
 
+
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
     from_coord = int(request.GET.get("from_coord"))
     to_coord = int(request.GET.get("to_coord"))
 
     return (from_coord, to_coord)
 
+
 def initialize_stockfish_engine() -> Stockfish:
     return Stockfish(STOCKFISH_ENGINE_LOC)
+
 
 def _set_chess_engine_board_fen_position(engine: Stockfish, board: Board) -> None:
     engine.set_fen_position(board.asFen())
 
+
 def _convert_SAN_str_to_move(san: str) -> Move:
-    return Move(parseAny(global_board.board, san))
+    move = Move(parseAny(global_board.board, san))
+    from_coord, to_coord = _move_to_board_location(move)
+    move = _get_move(from_coord, to_coord)
+    return move
