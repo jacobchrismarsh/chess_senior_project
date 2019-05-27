@@ -102,7 +102,7 @@ def _get_move(from_coord, to_coord) -> Move:
     return move
 
 
-def _check_for_castle(move: Move, color: int) -> List[Tuple[int, int]]:
+def _check_for_castle(move: Move, color: int) -> List[Dict[int, int]]:
     if color is BLACK:
         return _black_check_castle(move)
     return _white_check_castle(move)
@@ -118,7 +118,7 @@ def _black_check_castle(move: Move) -> List[Dict[str, int]]:
     return []
 
 
-def _white_check_castle(move: Move) -> List[Tuple[int, int]]:
+def _white_check_castle(move: Move) -> List[Dict[int, int]]:
     if move.flag == QUEEN_CASTLE:
         from_coord, to_coord = cordDic["a1"], cordDic["d1"]
         return [{"from_coord": from_coord, "to_coord": to_coord}]
