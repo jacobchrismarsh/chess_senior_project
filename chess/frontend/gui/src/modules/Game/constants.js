@@ -18,6 +18,8 @@ export const WHITE_QUEEN_INIT = [59];
 export const BLACK_KING_INIT = [4];
 export const WHITE_KING_INIT = [60];
 
+export const ONE_MINUTE = 60000
+
 export const TRANSLATE_POSITION = {
   0: 56,
   1: 57,

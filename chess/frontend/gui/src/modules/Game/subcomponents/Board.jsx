@@ -50,9 +50,8 @@ export class Board extends React.Component {
     return (
       <div className="tri-list">
         <Clock
+          time={this.props.blackTime}
           turn={this.props.turn}
-          minutes={START_MIN}
-          seconds={START_SECONDS}
           player={BLACK}
           move={this.props.move}
         />
@@ -60,9 +59,8 @@ export class Board extends React.Component {
         {board}
         <br />
         <Clock
+          time={this.props.whiteTime}
           turn={this.props.turn}
-          minutes={START_MIN}
-          seconds={START_SECONDS}
           player={WHITE}
           move={this.props.move}
         />
