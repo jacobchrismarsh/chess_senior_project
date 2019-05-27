@@ -84,15 +84,16 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 
 def make_move(request: WSGIRequest) -> JsonResponse:
-    global global_board
+    board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
+    pieces_moved = [{"from_coord": from_coord, "to_coord":to_coord}]
 
     player_move = _get_move(from_coord, to_coord)
 
-    _check_for_castle(player_move)
+    pieces_moved += _check_for_castle(player_move)
 
-    global_board = global_board.move(player_move)
-    return _get_opponent_move()
+    global_board = board.move(player_move)
+    return JsonResponse({"moves": pieces_moved})
 
 
 def _get_move(from_coord, to_coord) -> Move:
