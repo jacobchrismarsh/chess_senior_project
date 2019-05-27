@@ -127,8 +127,8 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
     return []
 
 
-def _get_opponent_move():
-    global global_board
+def get_ai_move(request: WSGIRequest):
+    board = _get_board(request)
     stockfish_color = BLACK
 
     engine = initialize_stockfish_engine()
@@ -137,7 +137,7 @@ def _get_opponent_move():
     best_move_as_san = engine.get_best_move()
     stockfish_move = _convert_SAN_str_to_move(best_move_as_san)
 
-    global_board = global_board.move(stockfish_move)
+    global_board = board.move(stockfish_move)
 
     from_coord, to_coord = _move_to_board_location(stockfish_move)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
