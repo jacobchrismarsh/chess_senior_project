@@ -84,6 +84,7 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 
 def make_move(request: WSGIRequest) -> JsonResponse:
+    global global_board
     player_color = WHITE
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
@@ -138,6 +139,7 @@ def _opponent_is_ai(request: WSGIRequest) -> bool:
 
 
 def get_ai_move(request: WSGIRequest):
+    global global_board
     board = _get_board(request)
     stockfish_color = BLACK
 
