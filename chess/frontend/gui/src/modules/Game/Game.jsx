@@ -26,7 +26,8 @@ import {
   WHITE_KING_INIT,
   WHITE,
   BLACK,
-  TRANSLATE_POSITION
+  TRANSLATE_POSITION,
+  ONE_MINUTE
 } from "./constants";
 
 import $ from "jquery";
@@ -43,7 +44,9 @@ export default class Game extends React.Component {
       turn: WHITE,
       count: 0,
       error: "",
-      movableSquares: []
+      movableSquares: [],
+      whiteTime: (Date.now + (ONE_MINUTE * 10)),
+      blackTime: (Date.now + (ONE_MINUTE * 10))
     };
 
     autoBind(this);
@@ -316,7 +319,14 @@ export default class Game extends React.Component {
           white={this.state.capturedWhitePieces}
           black={this.state.capturedBlackPieces}
         />
-        <Board squares={this.state.squares} handleClick={this.handleClick} />
+        <Board
+          squares={this.state.squares}
+          handleClick={this.handleClick}
+          turn={this.state.turn}
+          move={this.state.count}
+          whiteTime={this.state.whiteTime}
+          blackTime={this.state.blackTime}
+        />
         <RightSidebar
           turn={this.state.turn}
           count={this.state.count}
