@@ -106,6 +106,7 @@ def _get_move(from_coord, to_coord) -> Move:
 def _check_for_castle(move: Move, color: int) -> List[Dict[int, int]]:
     return _black_check_castle(move) if color == BLACK else _white_check_castle(move)
 
+
 def _black_check_castle(move: Move) -> List[Dict[str, int]]:
     if move.flag == QUEEN_CASTLE:
         from_coord, to_coord = cordDic["a8"], cordDic["d8"]
@@ -128,6 +129,7 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
 
 def _get_opponent_move():
     global global_board
+    stockfish_color = BLACK
 
     engine = initialize_stockfish_engine()
     _set_chess_engine_board_fen_position(engine, global_board)
@@ -138,8 +140,10 @@ def _get_opponent_move():
     global_board = global_board.move(stockfish_move)
 
     from_coord, to_coord = _move_to_board_location(stockfish_move)
+    pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
+    pieces_moved += _check_for_castle(stockfish_move, stockfish_color)
 
-    return JsonResponse({"from_coord": from_coord, "to_coord": to_coord})
+    return JsonResponse({"moves": pieces_moved})
 
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
