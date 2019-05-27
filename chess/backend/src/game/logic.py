@@ -86,11 +86,11 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 def make_move(request: WSGIRequest) -> JsonResponse:
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
-    pieces_moved = [{"from_coord": from_coord, "to_coord":to_coord}]
+    pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
 
     player_move = _get_move(from_coord, to_coord)
 
-    pieces_moved += _check_for_castle(player_move)
+    pieces_moved += _check_for_castle(player_move, WHITE)
 
     global_board = board.move(player_move)
     return JsonResponse({"moves": pieces_moved})
@@ -107,23 +107,26 @@ def _check_for_castle(move: Move, color: int) -> List[Tuple[int, int]]:
         return _black_check_castle(move)
     return _white_check_castle(move)
 
+
 def _black_check_castle(move: Move) -> List[Dict[str, int]]:
-    if move.flag == KING_CASTLE:
+    if move.flag == QUEEN_CASTLE:
         from_coord, to_coord = cordDic["a8"], cordDic["d8"]
-        return [{"from_coord": from_coord, "to_coord":to_coord}]
-    elif move.flag == QUEEN_CASTLE:
+        return [{"from_coord": from_coord, "to_coord": to_coord}]
+    elif move.flag == KING_CASTLE:
         from_coord, to_coord = cordDic["h8"], cordDic["f8"]
-        return [{"from_coord": from_coord, "to_coord":to_coord}]
+        return [{"from_coord": from_coord, "to_coord": to_coord}]
     return []
 
+
 def _white_check_castle(move: Move) -> List[Tuple[int, int]]:
-    if move.flag == KING_CASTLE:
+    if move.flag == QUEEN_CASTLE:
         from_coord, to_coord = cordDic["a1"], cordDic["d1"]
-        return [{"from_coord": from_coord, "to_coord":to_coord}]
-    elif move.flag == QUEEN_CASTLE:
+        return [{"from_coord": from_coord, "to_coord": to_coord}]
+    elif move.flag == KING_CASTLE:
         from_coord, to_coord = cordDic["h1"], cordDic["f1"]
-        return [{"from_coord": from_coord, "to_coord":to_coord}]
+        return [{"from_coord": from_coord, "to_coord": to_coord}]
     return []
+
 
 def _get_opponent_move():
     global global_board
