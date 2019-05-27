@@ -205,12 +205,16 @@ export default class Game extends React.Component {
         to_coord: TRANSLATE_POSITION[to_coord]
       }
     }).then(response => {
-      let { from_coord, to_coord } = response;
       let newStateSquares = this.state.squares;
-      let pieceToMove = this.state.squares[TRANSLATE_POSITION[from_coord]];
-      newStateSquares[TRANSLATE_POSITION[to_coord]] = pieceToMove;
-      newStateSquares[TRANSLATE_POSITION[from_coord]] = new Empty(null);
+      response.moves.forEach(move => {
+        let from_coord_response = move.from_coord
+        let to_coord_response = move.to_coord
 
+        let pieceToMove = this.state.squares[TRANSLATE_POSITION[from_coord_response]];
+        newStateSquares[TRANSLATE_POSITION[to_coord_response]] = pieceToMove;
+        newStateSquares[TRANSLATE_POSITION[from_coord_response]] = new Empty(null);
+      });
+      
       this.setState({
         squares: newStateSquares
       });
@@ -243,8 +247,9 @@ export default class Game extends React.Component {
       pieceToMove.deselectPiece();
       this.dehighlightMoves();
       this.makeMove(this.state.selected, index);
+      
       postMovePosition[index] = pieceToMove;
-      postMovePosition[this.state.selected] = new Empty(null);
+      
       this.setState({
         squares: postMovePosition,
         selected: NOT_SELECTED,
