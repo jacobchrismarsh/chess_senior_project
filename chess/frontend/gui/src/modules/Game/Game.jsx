@@ -225,6 +225,32 @@ export default class Game extends React.Component {
     });
   }
 
+  getOpponentMove() {
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/get_opponent_move/",
+      method: "GET",
+      data: {
+        player_color: this.state.turn
+      }
+    }).then(response => {
+      let newStateSquares = this.state.squares;
+
+      response.moves.forEach(move => {
+        let from_coord_response = move.from_coord
+        let to_coord_response = move.to_coord
+
+        let pieceToMove = this.state.squares[TRANSLATE_POSITION[from_coord_response]];
+        newStateSquares[TRANSLATE_POSITION[to_coord_response]] = pieceToMove;
+        newStateSquares[TRANSLATE_POSITION[from_coord_response]] = new Empty(null);
+      });
+
+      this.setState({
+        squares: newStateSquares,
+        turn: this.opponentColor()
+      });
+    });
+  }
+
   // Function used to handle the piece moving, rn the
   // capture boolean doesn't do anything but I will use
   // it to keep track of pieces that have been captured
@@ -262,6 +288,9 @@ export default class Game extends React.Component {
         count: this.state.count + 1,
         error: ""
       });
+
+      // Finish off by pinging for the next move that I am going to recieve
+      this.getOpponentMove();
     }
   }
 
