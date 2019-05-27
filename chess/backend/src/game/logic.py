@@ -84,13 +84,14 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 
 def make_move(request: WSGIRequest) -> JsonResponse:
+    player_color = WHITE
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
 
     player_move = _get_move(from_coord, to_coord)
 
-    pieces_moved += _check_for_castle(player_move, WHITE)
+    pieces_moved += _check_for_castle(player_move, player_color)
 
     global_board = board.move(player_move)
     return JsonResponse({"moves": pieces_moved})
