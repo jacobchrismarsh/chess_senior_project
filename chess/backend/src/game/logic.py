@@ -9,7 +9,7 @@ from pychess.Utils.Board import Board
 from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.Move import Move, listToMoves
-from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE
+from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
 
 FROM_COORD = 0
 TO_COORD = 1
@@ -101,9 +101,28 @@ def _get_move(from_coord, to_coord) -> Move:
     return move
 
 
-def _check_for_castle(move: Move):
-    pass
+def _check_for_castle(move: Move, color: int) -> List[Tuple[int, int]]:
+    if color is BLACK:
+        return _black_check_castle(move)
+    return _white_check_castle(move)
 
+def _black_check_castle(move: Move) -> List[Dict[str, int]]:
+    if move.flag == KING_CASTLE:
+        from_coord, to_coord = cordDic["a8"], cordDic["d8"]
+        return [{"from_coord": from_coord, "to_coord":to_coord}]
+    elif move.flag == QUEEN_CASTLE:
+        from_coord, to_coord = cordDic["h8"], cordDic["f8"]
+        return [{"from_coord": from_coord, "to_coord":to_coord}]
+    return []
+
+def _white_check_castle(move: Move) -> List[Tuple[int, int]]:
+    if move.flag == KING_CASTLE:
+        from_coord, to_coord = cordDic["a1"], cordDic["d1"]
+        return [{"from_coord": from_coord, "to_coord":to_coord}]
+    elif move.flag == QUEEN_CASTLE:
+        from_coord, to_coord = cordDic["h1"], cordDic["f1"]
+        return [{"from_coord": from_coord, "to_coord":to_coord}]
+    return []
 
 def _get_opponent_move():
     global global_board
