@@ -127,6 +127,11 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
     return []
 
 
+def get_opponent_move(request: WSGIRequest) -> JsonResponse:
+    if True: # Player is AI
+        return get_ai_move(request)
+    return JsonResponse({1: 2})
+
 def get_ai_move(request: WSGIRequest):
     board = _get_board(request)
     stockfish_color = BLACK
