@@ -45,8 +45,8 @@ export default class Game extends React.Component {
       count: 0,
       error: "",
       movableSquares: [],
-      whiteTime: (Date.now + (ONE_MINUTE * 10)),
-      blackTime: (Date.now + (ONE_MINUTE * 10))
+      whiteTime: (Date.now() + (ONE_MINUTE * 10)),
+      blackTime: (Date.now() + (ONE_MINUTE * 10))
     };
 
     autoBind(this);
