@@ -6,4 +6,5 @@ urlpatterns = [
     path("create/", logic.create_chess_game, name="create-game"),
     path("get_moves/", logic.get_all_moves, name="get_all_moves"),
     path("make_move/", logic.make_move, name="make_move"),
+    path("get_ai_move/", logic.get_ai_move, name="get_ai_move"),
 ]
