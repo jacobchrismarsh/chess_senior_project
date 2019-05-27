@@ -10,24 +10,28 @@ export class Clock extends React.Component {
   }
 
   componentWillUpdate() {
-    let { move, turn } = this.props
+    let { move, turn, player } = this.props
     let clockApiInterface = this.clock.current.api;
 
-    if ((this.state.playerColor === turn) && move !== 0) {
+    // start the clock on the player's move unless it is the
+    // first move of the game 
+    if ((player === turn) && move !== 0) {
       clockApiInterface.start();
     } else {
       clockApiInterface.pause();
     }
-
   }
 
   render() {
     return (
-      <Countdown 
-        ref={this.clock}
-        autoStart={false}
-        daysInHours={true}
-        date={this.props.time} />
+      <div className="clock">
+        <Countdown 
+          ref={this.clock}
+          autoStart={false}
+          daysInHours={true}
+          date={this.props.time}
+        />
+      </div>
     );
   }
 }
