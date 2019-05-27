@@ -128,9 +128,14 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
 
 
 def get_opponent_move(request: WSGIRequest) -> JsonResponse:
-    if True: # Player is AI
+    if _opponent_is_ai(request):  # Player is AI
         return get_ai_move(request)
     return JsonResponse({1: 2})
+
+
+def _opponent_is_ai(request: WSGIRequest) -> bool:
+    return True
+
 
 def get_ai_move(request: WSGIRequest):
     board = _get_board(request)
