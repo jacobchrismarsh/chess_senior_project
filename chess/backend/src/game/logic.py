@@ -103,10 +103,7 @@ def _get_move(from_coord, to_coord) -> Move:
 
 
 def _check_for_castle(move: Move, color: int) -> List[Dict[int, int]]:
-    if color is BLACK:
-        return _black_check_castle(move)
-    return _white_check_castle(move)
-
+    return _black_check_castle(move) if color == BLACK else _white_check_castle(move)
 
 def _black_check_castle(move: Move) -> List[Dict[str, int]]:
     if move.flag == QUEEN_CASTLE:
