@@ -9,10 +9,10 @@ export class Clock extends React.Component {
     this.clock = React.createRef();
   }
 
-  componentWillUpdate() {
+  componentDidUpdate() {
     let { move, turn, player } = this.props
     let clockApiInterface = this.clock.current.api;
-
+  
     // start the clock on the player's move unless it is the
     // first move of the game 
     if ((player === turn) && move !== 0) {
@@ -29,6 +29,7 @@ export class Clock extends React.Component {
           ref={this.clock}
           autoStart={false}
           daysInHours={true}
+          controlled={false}
           date={this.props.time}
         />
       </div>
