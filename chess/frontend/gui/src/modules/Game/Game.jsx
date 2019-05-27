@@ -219,7 +219,8 @@ export default class Game extends React.Component {
       });
       
       this.setState({
-        squares: newStateSquares
+        squares: newStateSquares,
+        turn: opponentColor()
       });
     });
   }
