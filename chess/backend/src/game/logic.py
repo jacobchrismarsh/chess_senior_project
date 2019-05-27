@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Dict, Tuple
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
