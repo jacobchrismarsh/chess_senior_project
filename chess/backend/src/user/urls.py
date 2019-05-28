@@ -1,6 +1,7 @@
 from django.urls import path
-from . import logic
+from . import user
 
 urlpatterns = [
-    path("new_user/", logic.create_chess_game, name="create-game"),
+    path("new_user/", user.create_user, name="create-user"),
+    path("authenticate_user/", user.authenticate_user, name="authenticate-user"),
 ]
