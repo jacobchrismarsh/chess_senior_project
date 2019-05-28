@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 
 def create_user(request: WSGIRequest) -> JsonResponse:
@@ -23,3 +23,8 @@ def authenticate_user(request: WSGIRequest) -> JsonResponse:
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "failure"})
+
+
+def logout_user(request: WSGIRequest) -> JsonResponse:
+    logout(request)
+    return JsonResponse({"status": "success"})
