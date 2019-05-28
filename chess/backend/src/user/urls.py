@@ -3,6 +3,6 @@ from . import user
 
 urlpatterns = [
     path("new_user/", user.create_user, name="create-user"),
-    path("authenticate_user/", user.authenticate_user, name="authenticate-user"),
-    path("logout_user/", user.logout_user, name="logout-user"),
+    path("login/", user.login_user, name="login-user"),
+    path("logout/", user.logout_user, name="logout-user"),
 ]

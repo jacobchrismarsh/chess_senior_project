@@ -13,16 +13,20 @@ def create_user(request: WSGIRequest) -> JsonResponse:
     return JsonResponse({"status": "success"})
 
 
-def authenticate_user(request: WSGIRequest) -> JsonResponse:
-    username = request.GET.get("username")
-    password = request.GET.get("password")
-    user = authenticate(username=username, password=password)
+def login_user(request: WSGIRequest) -> JsonResponse:
+    user = authenticate_user(request)
 
     if user is not None:
         login(request, user)
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "failure"})
+
+def authenticate_user(request: WSGIRequest) -> User:
+    username = request.GET.get("username")
+    password = request.GET.get("password")
+    user = authenticate(username=username, password=password)
+    return user
 
 
 def logout_user(request: WSGIRequest) -> JsonResponse:
