@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.response import JsonResponse
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login
 
 
 def create_user(request: WSGIRequest) -> JsonResponse:
@@ -12,12 +12,14 @@ def create_user(request: WSGIRequest) -> JsonResponse:
     user.save()
     return JsonResponse({"status": "success"})
 
+
 def authenticate_user(request: WSGIRequest) -> JsonResponse:
     username = request.GET.get("username")
     password = request.GET.get("password")
     user = authenticate(username=username, password=password)
 
     if user is not None:
+        login(request, user)
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "failure"})
