@@ -22,7 +22,7 @@ export class PiecePromotion extends React.Component {
     let { color, show, handleClick } = this.props;
     let whitePieces = [whiteQueen, whiteRook, whiteKnight, whiteBishop];
     let blackPieces = [blackQueen, blackRook, blackKnight, blackBishop];
-    let usePieces = (color === WHITE ? usePieces = whitePieces : usePieces = blackPieces);
+    let usePieces = (color === WHITE ? whitePieces :  blackPieces);
 
     if (!show) {
       return null;
