@@ -12,6 +12,7 @@ import loginIcon from "./login_icon.png";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
+import $ from 'jquery';
 
 const styles = theme => ({
   main: {
@@ -46,14 +47,6 @@ const styles = theme => ({
   }
 });
 
-function handleClick(event) {
-  let email = event.target.form.elements[0].value;
-  let pass = event.target.form.elements[1].value;
-  console.log(email);
-  console.log(pass);
-  // TODO: login
-}
-
 class SignIn extends Component {
   render() {
     let { classes } = this.props;
@@ -67,10 +60,12 @@ class SignIn extends Component {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <form className={classes.form}>
+
+          <form className={classes.form} action="http://127.0.0.1:8000/user/login/" method="POST">
+
             <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input id="email" name="email" autoComplete="email" autoFocus />
+              <InputLabel htmlFor="username">username Address</InputLabel>
+              <Input id="username" name="username" autoComplete="username" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="password">Password</InputLabel>
@@ -91,7 +86,6 @@ class SignIn extends Component {
               variant="contained"
               color="primary"
               className={classes.submit}
-              onClick={handleClick}
             >
               Sign in
             </Button>
