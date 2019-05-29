@@ -1,6 +1,6 @@
 import React from "react";
 import autoBind from 'react-autobind';
-import { Board, LeftSidebar, RightSidebar } from "./subcomponents";
+import { Board, LeftSidebar, RightSidebar, PiecePromotion } from "./subcomponents";
 import {
   Pawn,
   Knight,
@@ -46,7 +46,9 @@ export default class Game extends React.Component {
       error: "",
       movableSquares: [],
       whiteTime: (Date.now() + (ONE_MINUTE * 10)),
-      blackTime: (Date.now() + (ONE_MINUTE * 10))
+      blackTime: (Date.now() + (ONE_MINUTE * 10)),
+      showPiecePromotion: false,
+      promotedPiece: null
     };
 
     autoBind(this);
@@ -338,10 +340,26 @@ export default class Game extends React.Component {
     }
   }
 
+  handlePiecePromotion(index) {
+    let pieces = ['Queen', 'Rook', 'Knight', 'Bishop']
+
+    this.setState({
+      promotedPiece: pieces[index],
+      showPiecePromotion: false
+    });
+  }
+
   render() {
     return (
       <div className="game-container">
         <div className="spacer" />
+        
+        <PiecePromotion
+          show={this.state.showPiecePromotion}
+          color={this.state.turn}
+          handleClick={this.handlePiecePromotion}
+        />
+
         <LeftSidebar
           white={this.state.capturedWhitePieces}
           black={this.state.capturedBlackPieces}

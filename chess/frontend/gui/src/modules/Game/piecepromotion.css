@@ -1,0 +1,20 @@
+.overlay {
+  width: 25%;
+  height: 25%;
+  top: 10%; 
+  z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+  position: absolute;
+  text-align: center;
+  top: 40%;
+  left: 37.5%;
+  background-color: antiquewhite;
+  border-radius: 5px;
+}
+
+.overlay-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 10%;
+}
