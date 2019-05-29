@@ -5,7 +5,7 @@ export default class Piece {
     this.selected = false;
     this.movable = false;
   }
-ß
+
   canMovePiece() {
     this.movable = true;
   }
