@@ -1,0 +1,35 @@
+.dashboard-container {
+  display: flex;
+  flex-direction: row;
+  align-content: space-around;
+  height: 90vh !important;
+  width: 100%;
+}
+
+.dashboard-boarder {
+  margin-left: 15px;
+}
+
+.dashboard-sidebar {
+  font-family: "Courier New", Courier, monospace;
+  opacity: 0.8;
+  background-color: antiquewhite;
+  border-radius: 5px;
+  flex-grow: 1;
+  margin: 5%;
+  align-content: stretch;
+  height: inherit;
+  text-align: center;
+}
+
+.left-sidebar-container {
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+}
+
+.MuiFormGroup-root-1 {
+  display: inline;
+  justify-content: center;
+  align-items: center;
+}

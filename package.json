@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@material-ui/lab": "^4.0.0-alpha.14",
     "jquery": "^3.4.0",
     "react-autobind": "^1.0.6"
   }
