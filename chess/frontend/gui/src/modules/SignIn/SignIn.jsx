@@ -48,6 +48,7 @@ const styles = theme => ({
 });
 
 class SignIn extends Component {
+
   render() {
     let { classes } = this.props;
     return (
@@ -64,7 +65,7 @@ class SignIn extends Component {
           <form className={classes.form} action="http://127.0.0.1:8000/user/login/" method="POST">
 
             <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="username">username Address</InputLabel>
+              <InputLabel htmlFor="username">Username</InputLabel>
               <Input id="username" name="username" autoComplete="username" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>

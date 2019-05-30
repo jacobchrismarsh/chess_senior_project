@@ -10,6 +10,7 @@ def create_user(request: WSGIRequest) -> JsonResponse:
     username = request.POST.get("username")
     password = request.POST.get("password")
     email = request.POST.get("email")
+    print(username, password, email)
     user = User.objects.create_user(username=username, password=password, email=email)
     user.save()
     return JsonResponse({"status": "success"})
@@ -20,8 +21,7 @@ def login_user(request: WSGIRequest) -> JsonResponse:
 
     if user is not None:
         login(request, user)
-        return HttpResponseRedirect("http://localhost:3000/game/")
-        # return JsonResponse({"status": "success"})
+        return HttpResponseRedirect("http://localhost:3000/dashboard/")
     else:
         return JsonResponse({"status": "failure"})
 
