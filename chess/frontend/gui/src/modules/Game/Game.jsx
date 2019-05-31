@@ -205,9 +205,25 @@ export default class Game extends React.Component {
   // backend's response
   updateBoardWithMove(response) {
     let newStateSquares = this.state.squares;
+    let capturedB = this.state.capturedBlackPieces;
+    let capturedW = this.state.capturedWhitePieces;
+    let turn = this.state.turn
+    let opponentColor = this.opponentColor();
     response.moves.forEach(move => {
       let from_coord_response = move.from_coord
       let to_coord_response = move.to_coord
+
+      // if it is white's turn and you are placing on top of an opponent's piece we need to update
+      // the capture array to show we captured a black piece
+      if (turn === WHITE && opponentColor === newStateSquares[TRANSLATE_POSITION[to_coord_response]].player) {
+        capturedB.push(newStateSquares[TRANSLATE_POSITION[to_coord_response]]);
+      }
+
+      // if it is black's turn and you are placing on top of an opponent's piece we need to update
+      // the capture array to show we captured a white piece
+      if (turn === BLACK && opponentColor === newStateSquares[TRANSLATE_POSITION[to_coord_response]].player) {
+        capturedW.push(newStateSquares[TRANSLATE_POSITION[to_coord_response]]);
+      }
 
       let pieceToMove = this.state.squares[TRANSLATE_POSITION[from_coord_response]];
       newStateSquares[TRANSLATE_POSITION[to_coord_response]] = pieceToMove;
@@ -216,7 +232,9 @@ export default class Game extends React.Component {
     
     this.setState({
       squares: newStateSquares,
-      turn: this.opponentColor()
+      turn: this.opponentColor(),
+      capturedBlackPieces: capturedB,
+      capturedWhitePieces: capturedW
     });
   }
 
