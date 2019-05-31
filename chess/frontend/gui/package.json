@@ -9,6 +9,7 @@
     "@material-ui/lab": "^4.0.0-alpha.14",
     "jquery": "^3.4.1",
     "material-ui-slider": "^3.0.3",
+    "react": "^16.8.6",
     "react-autobind": "^1.0.6",
     "react-countdown-now": "^2.1.0",
     "react-dom": "^16.7.0",
