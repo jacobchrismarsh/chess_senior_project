@@ -63,6 +63,7 @@ def _get_potential_board_moves(from_coord: int, board: Board) -> List[Move]:
     """
     potential_moves_coordinates = [(from_coord, to_coord) for to_coord in range(64)]
     potential_moves = [_get_move(*coords) for coords in potential_moves_coordinates]
+    potential_moves = [move for move in potential_moves if not board.board.willLeaveInCheck(move.move)]
     return potential_moves
 
 
