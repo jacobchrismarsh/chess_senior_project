@@ -48,7 +48,8 @@ export default class Game extends React.Component {
       whiteTime: (Date.now() + (ONE_MINUTE * 10)),
       blackTime: (Date.now() + (ONE_MINUTE * 10)),
       showPiecePromotion: false,
-      promotedPiece: null
+      promotedPiece: null,
+      yourColor: WHITE
     };
 
     autoBind(this);
@@ -391,6 +392,7 @@ export default class Game extends React.Component {
           black={this.state.capturedBlackPieces}
         />
         <Board
+          yourColor={this.state.yourColor}
           squares={this.state.squares}
           handleClick={this.handleClick}
           turn={this.state.turn}

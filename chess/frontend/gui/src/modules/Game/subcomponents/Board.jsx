@@ -41,11 +41,19 @@ export class Board extends React.Component {
           this.renderSquare(i * 8 + j, this.getSquareColor(i, j))
         );
       }
-      board.push(
-        <div key={i} className="board-row">
-          {squareRows}
-        </div>
-      );
+      if (this.props.yourColor === WHITE) {
+        board.push(
+          <div key={i} className="board-row">
+            {squareRows}
+          </div>
+        );
+      } else {
+        board.unshift(
+          <div key={i} className="board-row">
+            {squareRows}
+          </div>
+        );
+      }
     }
     return (
       <div className="tri-list">
@@ -56,7 +64,9 @@ export class Board extends React.Component {
           move={this.props.move}
         />
         <br />
-        {board}
+        <div className="board-alone">
+          {board}
+        </div>
         <br />
         <Clock
           time={this.props.whiteTime}
