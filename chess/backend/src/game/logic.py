@@ -1,6 +1,7 @@
 from typing import List, Dict, Tuple
 
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from .context import pychess
@@ -32,8 +33,9 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
             black_user_id: str
             id: int
     """
-    newBoard = Board(setup=True)
-    return JsonResponse({1: 2})
+    global global_board
+    global_board = Board(setup=True)
+    return HttpResponseRedirect("http://localhost:3000/game")
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
