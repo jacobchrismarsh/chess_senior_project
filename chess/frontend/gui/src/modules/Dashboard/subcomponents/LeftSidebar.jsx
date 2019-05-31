@@ -2,55 +2,125 @@ import React, { Component } from "react";
 import RadioButtonGroup from '@material-ui/core/RadioGroup';
 import RadioButton from '@material-ui/core/Radio';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Slider from '@material-ui/lab/Slider';
+import Button from '@material-ui/core/Button';
+import { Slider } from 'material-ui-slider';
 import autoBind from 'react-autobind';
+import { WHITE, BLACK } from "../../Game/constants"
+
+import "../dashboard.css";
 
 export class LeftSidebar extends React.Component { 
   constructor(props) {
     super(props);
 
     this.state = {
-      opponent: 'Computer'
+      color: WHITE,
+      opponent: 'Computer',
+      difficulty: 10
     };
 
     autoBind(this);
   }
 
-  handleRadioButtonChange(event, value) {
-    this.setState({ 
-      opponent: value 
-    });
+  handleChangeRadioButton(component, event) {
+    return e => {
+      let value = e.target.value
+      this.setState({
+        [component]: value
+      })
+    }
+  }
+
+  handleChangeSlider(component, event) {
+    return e => {
+      this.setState({
+        [component]: e
+      });
+    }
+  }
+
+  handleButton() {
+
   }
 
   render() {
-
+    let colorOptions = [WHITE, BLACK]
     let opponentOptions = ['Computer', 'Online Opponent'];
 
     return (
-      <div className="left-sidebar-container">
+      <div className="sidebar-container">
 
-        <div>Start a new game</div>
+        <div className="dashboard-left-sidebar-item">
+          Start a new game
+        </div>
 
-        <div>Who would you like to play against?</div>
-
-        <div>
+        <div className="dashboard-left-sidebar-item">
+          <div>What color would you like to be?</div>
+          <br/>
           <RadioButtonGroup
-            value={this.state.opponent}
-            onChange={this.handleRadioButtonChange}
-            
+            value={this.state.color}
+            onChange={this.handleChangeRadioButton('color')}
           >
 
           {
-            opponentOptions.map(choice =>
-              <FormControlLabel value={choice} control={<RadioButton />} label={choice} />)
+            colorOptions.map((choice, idx) =>
+              <FormControlLabel
+                key={idx}
+                value={choice}
+                control={<RadioButton />}
+                label={choice}
+              />)
           }
           </RadioButtonGroup>
         </div>
 
-        <div>
-          <Slider />
+        <div className="dashboard-left-sidebar-item">
+          <div>Who would you like to play against?</div>
+          <br/>
+          <RadioButtonGroup
+            value={this.state.opponent}
+            onChange={this.handleChangeRadioButton('opponent')}
+            
+          >
 
+          {
+            opponentOptions.map((choice, idx) =>
+              <FormControlLabel
+                key={idx}
+                value={choice}
+                control={<RadioButton />}
+                label={choice}
+              />)
+          }
+          </RadioButtonGroup>
         </div>
+        {
+          this.state.opponent === 'Computer' && (
+            <div className="dashboard-left-sidebar-item slider-div">
+              <div>Difficuly</div>
+              <br/>
+              <Slider
+                onChange={this.handleChangeSlider('difficulty')}
+                min={0}
+                max={20}
+                defaultValue={10}
+                />
+            </div>
+          )
+        }
+
+        <div className="dashboard-left-sidebar-item">
+          <Button
+            size="large"
+            variant="contained"
+            color="primary"
+            className="chess-button"
+            onClick={this.handleButton}
+          >
+            Create Game
+          </Button>
+        </div>
+
       </div>
     );
   }

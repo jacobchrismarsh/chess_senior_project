@@ -22,14 +22,33 @@
   text-align: center;
 }
 
-.left-sidebar-container {
+.sidebar-container {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   flex-direction: column;
 }
 
-.MuiFormGroup-root-1 {
-  display: inline;
+.MuiFormControlLabel-root {
+  display: initial;
   justify-content: center;
   align-items: center;
+}
+
+.slider-div {
+  margin-left: 25%;
+  margin-right: 25%;
+}
+
+.dashboard-left-sidebar-item {
+  margin-top: 10%;
+  margin-top: 10%;
+}
+
+.dashboard-right-sidebar-item {
+  margin-top: 10%;
+  margin-top: 10%;
+}
+
+.chess-button {
+  background-color: #07ade0 !important;
 }
