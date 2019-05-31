@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import { Slider } from 'material-ui-slider';
 import autoBind from 'react-autobind';
 import { WHITE, BLACK } from "../../Game/constants"
+import $ from 'jquery';
 
 import "../dashboard.css";
 
@@ -40,7 +41,15 @@ export class LeftSidebar extends React.Component {
   }
 
   handleButton() {
-
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/create/",
+      method: "GET",
+      date: {
+        opponent: this.state.opponent,
+        difficulty: this.state.difficulty,
+        color: this.state.color
+      }
+    });
   }
 
   render() {
