@@ -201,6 +201,14 @@ export default class Game extends React.Component {
     });
   }
 
+  checkIfCaptureWhite(turn, opponentColor, squares, index) {
+    return turn === WHITE && opponentColor === squares[TRANSLATE_POSITION[index]].player
+  }
+
+  checkIfCaptureBlack(turn, opponentColor, squares, index) {
+    return turn === BLACK && opponentColor === squares[TRANSLATE_POSITION[index]].player
+  }
+
   // function used to update the board with the moves from the 
   // backend's response
   updateBoardWithMove(response) {
@@ -215,13 +223,13 @@ export default class Game extends React.Component {
 
       // if it is white's turn and you are placing on top of an opponent's piece we need to update
       // the capture array to show we captured a black piece
-      if (turn === WHITE && opponentColor === newStateSquares[TRANSLATE_POSITION[to_coord_response]].player) {
+      if (this.checkIfCaptureWhite(turn, opponentColor, newStateSquares, to_coord_response)) {
         capturedB.push(newStateSquares[TRANSLATE_POSITION[to_coord_response]]);
       }
 
       // if it is black's turn and you are placing on top of an opponent's piece we need to update
       // the capture array to show we captured a white piece
-      if (turn === BLACK && opponentColor === newStateSquares[TRANSLATE_POSITION[to_coord_response]].player) {
+      if (this.checkIfCaptureBlack(turn, opponentColor, newStateSquares, to_coord_response)) {
         capturedW.push(newStateSquares[TRANSLATE_POSITION[to_coord_response]]);
       }
 
