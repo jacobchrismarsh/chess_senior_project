@@ -5,6 +5,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import { Slider } from 'material-ui-slider';
 import autoBind from 'react-autobind';
+import TextField from '@material-ui/core/TextField';
 import { WHITE, BLACK } from "../../Game/constants"
 import $ from 'jquery';
 
@@ -17,6 +18,7 @@ export class LeftSidebar extends React.Component {
     this.state = {
       color: WHITE,
       opponent: 'Computer',
+      opponentUsername: '',
       difficulty: 10
     };
 
@@ -40,6 +42,15 @@ export class LeftSidebar extends React.Component {
     }
   }
 
+  handleChangeText(component, event) {
+    return e => {
+      let value = e.target.value;
+      this.setState({
+        [component]: value
+      });
+    }
+  }
+
   handleButton() {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/create/",
@@ -47,7 +58,8 @@ export class LeftSidebar extends React.Component {
       date: {
         opponent: this.state.opponent,
         difficulty: this.state.difficulty,
-        color: this.state.color
+        color: this.state.color,
+        opponentUsername: this.state.opponentUsername
       }
     });
   }
@@ -114,6 +126,19 @@ export class LeftSidebar extends React.Component {
                 max={20}
                 defaultValue={10}
                 />
+            </div>
+          )
+        }
+
+        {
+          this.state.opponent === 'Online Opponent' && (
+            <div className="dashboard-left-sidebar-item dashboard-text-input">
+            <div>Opponent Username</div>
+            <br/>
+            <TextField
+              value={this.state.opponentUsername}
+              onChange={this.handleChangeText('opponentUsername')}
+            />
             </div>
           )
         }
