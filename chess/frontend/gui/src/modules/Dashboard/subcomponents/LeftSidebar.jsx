@@ -61,6 +61,11 @@ export class LeftSidebar extends React.Component {
         color: this.state.color,
         opponentUsername: this.state.opponentUsername
       }
+    }).then(response => {
+      // TODO route to a specific game id?
+      if (response.status == 'success') {
+        window.location = "/game"
+      }
     });
   }
 

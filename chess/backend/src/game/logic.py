@@ -37,7 +37,7 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
     global global_board
     global_board = Board(setup=True)
-    return HttpResponseRedirect("http://localhost:3000/game")
+    return JsonResponse({"status": "success"})
 
 
 @login_required
