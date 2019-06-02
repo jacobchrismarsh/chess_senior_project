@@ -136,5 +136,3 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
     ]
 }
-
-LOGIN_URL = "http://localhost:3000/sign_in"

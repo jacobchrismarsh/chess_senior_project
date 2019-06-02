@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple
 
 from django.core.handlers.wsgi import WSGIRequest
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
@@ -22,7 +21,6 @@ STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10
 global_board = Board(setup=True)
 
 
-@login_required
 def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
         Takes the appropriate information from `request` and creates a new
@@ -40,7 +38,6 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
     return JsonResponse({"status": "success"})
 
 
-@login_required
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
     board = _get_board(request)
     from_coord = int(request.GET.get("index"))
@@ -89,7 +86,6 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
     return (from_coord, to_coord)
 
 
-@login_required
 def make_move(request: WSGIRequest) -> JsonResponse:
     global global_board
     player_color = WHITE
@@ -135,7 +131,6 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
     return []
 
 
-@login_required
 def get_opponent_move(request: WSGIRequest) -> JsonResponse:
     if _opponent_is_ai(request):  # Player is AI
         return get_ai_move(request)
