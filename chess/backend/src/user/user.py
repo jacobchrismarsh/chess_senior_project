@@ -8,6 +8,7 @@ from django.http.response import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 
+
 @csrf_exempt
 def create_user(request: WSGIRequest) -> JsonResponse:
     username, password, email = _get_user_pass_email_from_request(request)
@@ -32,6 +33,7 @@ def _get_user_pass_email_from_request(request: WSGIRequest) -> Tuple[str, str, s
     return username, password, email
 
 
+
 @csrf_exempt
 def login_user(request: WSGIRequest) -> JsonResponse:
     user = authenticate_user(request)
@@ -40,7 +42,10 @@ def login_user(request: WSGIRequest) -> JsonResponse:
         login(request, user)
         return JsonResponse({"status": "success"})
     else:
-        return JsonResponse({"status": "failure"})
+        return JsonResponse(
+            {"status": "failure", "error": "Invalid username or password"}
+        )
+
 
 
 @csrf_exempt
