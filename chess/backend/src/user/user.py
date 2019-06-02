@@ -5,6 +5,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseRedirect
 
+
 @csrf_exempt
 def create_user(request: WSGIRequest) -> JsonResponse:
     username = request.POST.get("username")
@@ -15,6 +16,7 @@ def create_user(request: WSGIRequest) -> JsonResponse:
     user.save()
     return JsonResponse({"status": "success"})
 
+
 @csrf_exempt
 def login_user(request: WSGIRequest) -> JsonResponse:
     user = authenticate_user(request)
@@ -23,7 +25,10 @@ def login_user(request: WSGIRequest) -> JsonResponse:
         login(request, user)
         return JsonResponse({"status": "success"})
     else:
-        return JsonResponse({"status": "failure"})
+        return JsonResponse(
+            {"status": "failure", "error": "Invalid username or password"}
+        )
+
 
 @csrf_exempt
 def authenticate_user(request: WSGIRequest) -> User:
@@ -36,6 +41,7 @@ def authenticate_user(request: WSGIRequest) -> User:
 def logout_user(request: WSGIRequest) -> JsonResponse:
     logout(request)
     return JsonResponse({"status": "success"})
+
 
 def is_logged_in(request: WSGIRequest) -> JsonResponse:
     return JsonResponse({"status": request.user.is_authenticated})
