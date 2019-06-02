@@ -12,9 +12,6 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 def create_user(request: WSGIRequest) -> JsonResponse:
     username, password, email = _get_user_pass_email_from_request(request)
-
-    print(username, password, email)
-
     status = "success"
     error = ""
 
