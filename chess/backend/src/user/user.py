@@ -38,7 +38,7 @@ def login_user(request: WSGIRequest) -> JsonResponse:
 
     if user is not None:
         login(request, user)
-        return HttpResponseRedirect("http://localhost:3000/dashboard/")
+        return JsonResponse({"status": "success"})
     else:
         return JsonResponse({"status": "failure"})
 
