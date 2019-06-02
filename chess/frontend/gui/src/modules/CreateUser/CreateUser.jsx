@@ -12,9 +12,13 @@ import loginIcon from "./login_icon.png";
 import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
+import autoBind from 'react-autobind';
 import $ from 'jquery';
 
 const styles = theme => ({
+  red: {
+    color: 'red'
+  },
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -49,7 +53,41 @@ const styles = theme => ({
 
 class CreateUser extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      error: ''
+    }
+
+    autoBind(this);
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+
+    $.ajax({
+      url: "http://127.0.0.1:8000/user/new_user/",
+      method: "POST",
+      data: {
+        email: event.target.elements.email.value,
+        username: event.target.elements.username.value,
+        password: event.target.elements.password.value
+      }
+    }).then(response => {
+      if (response.status === 'success') {
+        window.location = '/sign_in/'
+      } else {
+        document.getElementById("create-account-form").reset();
+        this.setState({
+          error: response.error
+        })
+      }
+    });
+  }
+
   render() {
+
     let { classes } = this.props;
     return (
       <main className={classes.main}>
@@ -62,10 +100,13 @@ class CreateUser extends Component {
             Create User
           </Typography>
 
-          <form className={classes.form} action="http://127.0.0.1:8000/user/new_user/" method="POST">
+          <form id="create-account-form" className={classes.form} onSubmit={this.handleSubmit}>
+            <div className={classes.red}>
+              {this.state.error}
+            </div>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email</InputLabel>
-              <Input id="username" name="username" autoComplete="username" autoFocus />
+              <Input id="email" name="email" autoComplete="email" autoFocus />
             </FormControl>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="username">Username</InputLabel>
