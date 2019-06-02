@@ -1,0 +1,18 @@
+/* Style the header with a grey background and some padding */
+.header {
+  overflow: hidden;
+  background-color: white;
+}
+
+/* Style the logo link (notice that we set the same value of line-height and font-size to prevent the header to increase when the font gets bigger */
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: black;
+}
+
+/* Float the link section to the right */
+.header-right {
+  float: right;
+  padding: 10px;
+}
