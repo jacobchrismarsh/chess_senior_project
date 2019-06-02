@@ -1,3 +1,4 @@
+from typing import Tuple
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
@@ -9,10 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 @csrf_exempt
 def create_user(request: WSGIRequest) -> JsonResponse:
-    username = request.POST.get("username")
-    password = request.POST.get("password")
-    email = request.POST.get("email")
-
+    username, password, email = _get_user_pass_email_from_request(request)
     status = "success"
     error = ""
 
@@ -25,6 +23,13 @@ def create_user(request: WSGIRequest) -> JsonResponse:
         error = "That username is already taken"
 
     return JsonResponse({"status": status, "error": error})
+
+
+def _get_user_pass_email_from_request(request: WSGIRequest) -> Tuple[str, str, str]:
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    email = request.POST.get("email")
+    return username, password, email
 
 
 @csrf_exempt
