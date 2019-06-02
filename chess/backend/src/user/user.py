@@ -10,10 +10,10 @@ def create_user(request: WSGIRequest) -> JsonResponse:
     username = request.POST.get("username")
     password = request.POST.get("password")
     email = request.POST.get("email")
-    print(username, password, email)
     user = User.objects.create_user(username=username, password=password, email=email)
-    user.save()
-    return JsonResponse({"status": "success"})
+    if user.save():
+        return HttpResponseRedirect("http://localhost:3000/sign_in/")
+    return JsonResponse({"status": "failure"})
 
 @csrf_exempt
 def login_user(request: WSGIRequest) -> JsonResponse:
