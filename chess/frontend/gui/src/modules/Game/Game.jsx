@@ -55,6 +55,18 @@ export default class Game extends React.Component {
     autoBind(this);
   }
 
+  componentDidMount() {
+    $.ajax({
+      url: 'http://127.0.0.1:8000/user/is_logged_in/',
+      method: 'GET'
+
+    }).then(response => {
+      if (!response.status) {
+        window.location ='/sign_in/'
+      }
+    })
+  }
+
   initBoard() {
     // Not using a 2D array just for simplicity
     let squares = Array(64).fill(null);
