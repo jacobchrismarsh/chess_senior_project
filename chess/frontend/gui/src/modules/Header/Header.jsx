@@ -79,7 +79,7 @@ class Header extends Component {
 
   render() {
     return (
-      <div class="header">
+      <div className="header">
         {this.renderBoarder()}
         <div className="header-right">
           <Button
