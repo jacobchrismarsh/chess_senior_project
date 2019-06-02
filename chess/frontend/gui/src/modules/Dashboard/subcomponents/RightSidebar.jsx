@@ -13,6 +13,11 @@ export class RightSidebar extends Component {
     }
   }
 
+  handleButton(event) {
+    let id = event.target.id;
+    console.log(id)
+  }
+
   componentDidMount() {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/get_current_games/",
@@ -46,15 +51,11 @@ export class RightSidebar extends Component {
             className="chess-button"
             onClick={this.handleButton}
           >
-            Join Game
+          <span id={id}>Join Game</span>
           </Button>
       </div>
 
     );
-
-  }
-
-  handleButton() {
 
   }
 
