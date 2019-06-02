@@ -12,6 +12,11 @@ export class RightSidebar extends Component {
     }
   }
 
+  handleButton(event) {
+    let id = event.target.id;
+    console.log(id)
+  }
+
   componentDidMount() {
     // TODO fetch data from backend, using mock data until then
     this.setState({
@@ -59,15 +64,11 @@ export class RightSidebar extends Component {
             className="chess-button"
             onClick={this.handleButton}
           >
-            Join Game
+          <span id={id}>Join Game</span>
           </Button>
       </div>
 
     );
-
-  }
-
-  handleButton() {
 
   }
 
