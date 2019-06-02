@@ -13,8 +13,12 @@ import Paper from "@material-ui/core/Paper";
 import Typography from "@material-ui/core/Typography";
 import withStyles from "@material-ui/core/styles/withStyles";
 import $ from 'jquery';
+import autoBind from 'react-autobind';
 
 const styles = theme => ({
+  red: {
+    color: 'red'
+  },
   main: {
     width: "auto",
     display: "block", // Fix IE 11 issue.
@@ -49,6 +53,37 @@ const styles = theme => ({
 
 class SignIn extends Component {
 
+  constructor(props) {
+    super(props);
+
+    this.state ={
+      error: ''
+    }
+
+    autoBind(this);
+  }
+
+  handleSumbit(event) {
+    event.preventDefault();
+    $.ajax({
+      url: "http://127.0.0.1:8000/user/login/",
+      method: "POST",
+      data: {
+        username: event.target.elements.username.value,
+        password: event.target.elements.password.value
+      }
+    }).then(response => {
+      if (response.status === 'success') {
+        window.location = '/dashboard/'
+      } else {
+        document.getElementById("sign-in-form").reset();
+        this.setState({
+          error: response.error
+        })
+      }
+    });
+  }
+
   render() {
     let { classes } = this.props;
     return (
@@ -62,8 +97,10 @@ class SignIn extends Component {
             Sign in
           </Typography>
 
-          <form className={classes.form} action="http://127.0.0.1:8000/user/login/" method="POST">
-
+          <form id='sign-in-form' className={classes.form} onSubmit={this.handleSumbit}>
+            <div className={classes.red}>
+              {this.state.error}
+            </div>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="username">Username</InputLabel>
               <Input id="username" name="username" autoComplete="username" autoFocus />
