@@ -36,3 +36,6 @@ def authenticate_user(request: WSGIRequest) -> User:
 def logout_user(request: WSGIRequest) -> JsonResponse:
     logout(request)
     return JsonResponse({"status": "success"})
+
+def is_logged_in(request: WSGIRequest) -> JsonResponse:
+    return JsonResponse({"status": request.user.is_authenticated})
