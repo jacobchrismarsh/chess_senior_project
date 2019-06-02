@@ -14,6 +14,7 @@ import whitePawn from "../../cburnett/wp.svg";
 import blackPawn from "../../cburnett/bp.svg";
 import { Square } from "../Game/subcomponents/Square";
 import { LeftSidebar, RightSidebar } from "./subcomponents";
+import { checkSignedIn } from '../Common/utils';
 import $ from 'jquery';
 import "./dashboard.css";
 
@@ -29,15 +30,13 @@ class Dashboard extends Component {
   componentDidMount() {
     this.updateWindowDimensions();
     window.addEventListener('resize', this.updateWindowDimensions);
-    $.ajax({
-      url: 'http://127.0.0.1:8000/user/is_logged_in/',
-      method: 'GET'
 
-    }).then(response => {
-      if (!response.status) {
-        window.location ='/sign_in/'
-      }
-    })
+    checkSignedIn().then(
+      response => {
+        if (!response.status) {
+          window.location ='/sign_in/'
+        }
+    });
   }
   
   componentWillUnmount() {

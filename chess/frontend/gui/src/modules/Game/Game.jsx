@@ -29,7 +29,7 @@ import {
   TRANSLATE_POSITION,
   ONE_MINUTE
 } from "./constants";
-
+import { checkSignedIn } from '../Common/utils';
 import $ from "jquery";
 import "./game.css";
 
@@ -56,15 +56,12 @@ export default class Game extends React.Component {
   }
 
   componentDidMount() {
-    $.ajax({
-      url: 'http://127.0.0.1:8000/user/is_logged_in/',
-      method: 'GET'
-
-    }).then(response => {
-      if (!response.status) {
-        window.location ='/sign_in/'
-      }
-    })
+    checkSignedIn().then(
+      response => {
+        if (!response.status) {
+          window.location ='/sign_in/'
+        }
+    });
   }
 
   initBoard() {
