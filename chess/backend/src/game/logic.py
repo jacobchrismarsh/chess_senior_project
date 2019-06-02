@@ -1,9 +1,14 @@
 from typing import List, Dict, Tuple
 
+from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
+
+from game.models import Games
+from move.models import Moves
+
 from .context import pychess
 from .context import Stockfish
 from user.user import get_user_info
@@ -12,12 +17,16 @@ from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.Move import Move, listToMoves
 from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
+from game.models import Games
+from move.models import Moves
 from user.user import get_user_info
 
 FROM_COORD = 0
 TO_COORD = 1
 BOARD_WIDTH = 8
 STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10-64"
+ONLINE_OPPONENT = "Online Opponent"
+AI = "Computer"
 
 
 global_board = Board(setup=True)
@@ -35,9 +44,20 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
             black_user_id: str
             id: int
     """
+    # user_id_1 = request.user.get_username()
+    # user_id_2 = _get_username_or_computer(request)
     global global_board
+    # g = Games(request.user.get_username()
     global_board = Board(setup=True)
     return JsonResponse({"status": "success"})
+
+def _get_user_id_or_computer(request: WSGIRequest) -> int:
+    pass
+    # player = request.GET.get("opponent")
+
+def _get_user_id_from_username(username: str) -> int:
+    user_id = User.objects.filter(username__exact = username)
+    return user_id[0].id
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
@@ -66,7 +86,9 @@ def _get_potential_board_moves(from_coord: int, board: Board) -> List[Move]:
     """
     potential_moves_coordinates = [(from_coord, to_coord) for to_coord in range(64)]
     potential_moves = [_get_move(*coords) for coords in potential_moves_coordinates]
-    potential_moves = [move for move in potential_moves if not board.board.willLeaveInCheck(move.move)]
+    potential_moves = [
+        move for move in potential_moves if not board.board.willLeaveInCheck(move.move)
+    ]
     return potential_moves
 
 
@@ -91,6 +113,7 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 def make_move(request: WSGIRequest) -> JsonResponse:
     global global_board
+    print(_get_user_id_from_username(request.user.get_username()))
     player_color = WHITE
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
