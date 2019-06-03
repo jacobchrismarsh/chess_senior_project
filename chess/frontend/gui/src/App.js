@@ -6,6 +6,7 @@ import Dashboard from "./modules/Dashboard/Dashboard";
 import CreateUser from "./modules/CreateUser/CreateUser";
 import Game from "./modules/Game/Game";
 import Header from "./modules/Header/Header";
+import Home from "./modules/Home/Home";
 import autoBind from "react-autobind";
 
 class App extends Component {
@@ -29,21 +30,15 @@ class App extends Component {
   
   render() {
     return (
-      <div>
-        {
-          this.state.signedIn && (
-            <Header />
-          )
-        }
-        <BrowserRouter>
-          <Switch>
-            <Route path="/sign_in" component={SignIn} />
-            <Route path="/create_user" component={CreateUser} />
-            <Route path="/dashboard" component={Dashboard} />
-            <Route path="/game" component={Game} />
-          </Switch>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route exact path="/" component={Home} />
+          <Route path="/sign_in" component={SignIn} />
+          <Route path="/create_user" component={CreateUser} />
+          <Route path="/dashboard" component={Dashboard} />
+          <Route path="/game" component={Game} />
+        </Switch>
+      </BrowserRouter>
     );
   }
 }
