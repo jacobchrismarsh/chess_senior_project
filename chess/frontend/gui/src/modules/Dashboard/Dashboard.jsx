@@ -29,7 +29,6 @@ class Dashboard extends Component {
   componentDidMount() {
     checkSignedIn().then(
       response => {
-        debugger;
         if (!response.status) {
           window.location ='/sign_in/'
         }
