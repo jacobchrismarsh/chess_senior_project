@@ -13,11 +13,6 @@ import whiteBishop from "../../../cburnett/wb.svg"
 import "../piecepromotion.css";
 
 export class PiecePromotion extends React.Component {
-
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     let { color, show, handleClick } = this.props;
     let whitePieces = [whiteQueen, whiteRook, whiteKnight, whiteBishop];

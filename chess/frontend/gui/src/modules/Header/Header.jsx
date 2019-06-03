@@ -59,7 +59,7 @@ class Header extends Component {
   }
 
   isEven(num) {
-    if (num == 0) {
+    if (num === 0) {
       return true;
     }
     return num % 2 === 0;
@@ -72,7 +72,6 @@ class Header extends Component {
     let widthOfPiece = 50;
 
     let renderElements = [];
-    let rand = Math.random() * (pieces.length);
 
     for (let i = 0; i < Math.floor(width / widthOfPiece) - 4; i++) {
       renderElements.push(<Square key={i} piece={pieces[this.getRandomNumberOfSamePolarity(i, pieces.length)]} />);
