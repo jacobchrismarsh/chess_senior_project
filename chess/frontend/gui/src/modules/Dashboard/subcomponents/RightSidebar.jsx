@@ -4,7 +4,7 @@ import Button from '@material-ui/core/Button';
 import "../dashboard.css";
 
 
-export class RightSidebar extends React.Component { 
+export class RightSidebar extends Component { 
   constructor(props) {
     super(props);
     this.state = {

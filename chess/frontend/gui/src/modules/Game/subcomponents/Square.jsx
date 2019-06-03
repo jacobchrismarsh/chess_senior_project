@@ -14,7 +14,7 @@ export function Square(props) {
       className={`${selected(props.selected)} ${movable(props.movable)} square ` + props.squareColor}
       onClick={props.onClick}
     >
-      <img src={props.piece} />
+      <img src={props.piece} alt=""/>
     </button>
   );
 }

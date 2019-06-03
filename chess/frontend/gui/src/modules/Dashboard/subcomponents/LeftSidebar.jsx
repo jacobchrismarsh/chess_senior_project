@@ -11,7 +11,7 @@ import $ from 'jquery';
 
 import "../dashboard.css";
 
-export class LeftSidebar extends React.Component { 
+export class LeftSidebar extends Component { 
   constructor(props) {
     super(props);
 
@@ -63,7 +63,7 @@ export class LeftSidebar extends React.Component {
       }
     }).then(response => {
       // TODO route to a specific game id?
-      if (response.status == 'success') {
+      if (response.status === 'success') {
         window.location = "/game"
       }
     });

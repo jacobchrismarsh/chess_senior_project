@@ -1,21 +1,7 @@
 import React, { Component } from "react";
 import autoBind from 'react-autobind';
-import whiteKing from "../../cburnett/wk.svg";
-import blackKing from "../../cburnett/bk.svg";
-import blackQueen from "../../cburnett/bq.svg";
-import whiteQueen from "../../cburnett/wq.svg";
-import blackRook from "../../cburnett/br.svg";
-import whiteRook from "../../cburnett/wr.svg";
-import blackKnight from "../../cburnett/bn.svg";
-import whiteKnight from "../../cburnett/wn.svg";
-import blackBishop from "../../cburnett/bb.svg";
-import whiteBishop from "../../cburnett/wb.svg";
-import whitePawn from "../../cburnett/wp.svg";
-import blackPawn from "../../cburnett/bp.svg";
-import { Square } from "../Game/subcomponents/Square";
 import { LeftSidebar, RightSidebar } from "./subcomponents";
 import { checkSignedIn } from '../Common/utils';
-import $ from 'jquery';
 import "./dashboard.css";
 
 class Dashboard extends Component {

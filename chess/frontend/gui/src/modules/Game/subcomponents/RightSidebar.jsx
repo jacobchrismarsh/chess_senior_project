@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import "../game.css";
 
-export class RightSidebar extends React.Component {
+export class RightSidebar extends Component {
   render() {
     return (
       <div className="sidebar">

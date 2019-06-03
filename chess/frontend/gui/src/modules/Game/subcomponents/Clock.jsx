@@ -1,6 +1,5 @@
 import React from "react";
 import Countdown from "react-countdown-now"
-import SweetAlert from "sweetalert2-react";
 import "../clock.css"
 
 export class Clock extends React.Component {

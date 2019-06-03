@@ -1,12 +1,12 @@
-import React from "react";
+import React, { Component } from "react";
 import "../game.css";
 
-export class LeftSidebar extends React.Component {
+export class LeftSidebar extends Component {
   renderCapturedWhitePieces() {
     const list = this.props.white.map((piece, index) => {
       return (
         <li key={index}>
-          <img src={piece.svg} width="25" height="25" />
+          <img src={piece.svg} width="25" height="25" alt=""/>
         </li>
       );
     });
@@ -18,7 +18,7 @@ export class LeftSidebar extends React.Component {
     const list = this.props.black.map((piece, index) => {
       return (
         <li key={index}>
-          <img src={piece.svg} width="25" height="25" />
+          <img src={piece.svg} width="25" height="25" alt=""/>
         </li>
       );
     });
