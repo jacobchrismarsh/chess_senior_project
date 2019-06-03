@@ -28,8 +28,8 @@ class Home extends Component {
             variant="contained"
             color="primary"
             className="chess-button home-button-item"
-            onClick={() => window.location = '/create_user/'}
-          >
+            onClick={() => window.location = '/sign_in/'}
+            >
             Sign In
           </Button>
           <div></div>
@@ -39,7 +39,7 @@ class Home extends Component {
             variant="contained"
             color="primary"
             className="chess-button home-button-item"
-            onClick={() => window.location = '/sign_in/'}
+            onClick={() => window.location = '/create_user/'}
           >
             Create Account
           </Button>
