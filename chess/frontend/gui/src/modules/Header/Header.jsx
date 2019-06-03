@@ -32,9 +32,11 @@ class Header extends Component {
 
   handleSignOutButton() {
     return $.ajax({
-      url: "http://127.0.0.1:8000/user/signout/",
+      url: "http://127.0.0.1:8000/user/logout/",
       method: 'POST'
-    });
+    }).then(response) {
+      window.location = '/';
+    }
   }
 
   componentDidMount() {
