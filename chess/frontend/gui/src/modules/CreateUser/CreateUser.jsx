@@ -47,6 +47,7 @@ const styles = theme => ({
     marginTop: theme.spacing.unit
   },
   submit: {
+    'background-color': '#07ade0',
     marginTop: theme.spacing.unit * 3
   }
 });
