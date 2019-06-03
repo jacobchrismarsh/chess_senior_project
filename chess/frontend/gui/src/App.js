@@ -30,15 +30,22 @@ class App extends Component {
   
   render() {
     return (
-      <BrowserRouter>
-        <Switch>
-          <Route exact path="/" component={Home} />
-          <Route path="/sign_in" component={SignIn} />
-          <Route path="/create_user" component={CreateUser} />
-          <Route path="/dashboard" component={Dashboard} />
-          <Route path="/game" component={Game} />
-        </Switch>
-      </BrowserRouter>
+      <div>
+        {
+          this.state.signedIn && (
+            <Header />
+          )
+        }
+        <BrowserRouter>
+          <Switch>
+            <Route exact path="/" component={Home} />
+            <Route path="/sign_in" component={SignIn} />
+            <Route path="/create_user" component={CreateUser} />
+            <Route path="/dashboard" component={Dashboard} />
+            <Route path="/game" component={Game} />
+          </Switch>
+        </BrowserRouter>
+      </div>
     );
   }
 }
