@@ -14,6 +14,7 @@ import whiteBishop from "../../cburnett/wb.svg";
 import whitePawn from "../../cburnett/wp.svg";
 import blackPawn from "../../cburnett/bp.svg";
 import { Square } from "../Game/subcomponents/Square";
+import $ from 'jquery';
 import "../Dashboard/dashboard.css";
 import "./header.css";
 
@@ -25,8 +26,15 @@ class Header extends Component {
     autoBind(this);
   }
 
-  handleButton() {
+  handleHomeButton() {
+    window.location = '/dashboard/';
+  }
 
+  handleSignOutButton() {
+    return $.ajax({
+      url: "http://127.0.0.1:8000/user/signout/",
+      method: 'POST'
+    });
   }
 
   componentDidMount() {
@@ -87,7 +95,7 @@ class Header extends Component {
             variant="contained"
             color="primary"
             className="chess-button"
-            onClick={this.handleButton}
+            onClick={this.handleSignOutButton}
           >
             Sign Out
           </Button>
@@ -98,7 +106,7 @@ class Header extends Component {
             variant="contained"
             color="primary"
             className="chess-button"
-            onClick={this.handleButton}
+            onClick={this.handleHomeButton}
           >
             Home
           </Button>
