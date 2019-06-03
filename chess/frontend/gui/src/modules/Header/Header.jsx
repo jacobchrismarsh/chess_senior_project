@@ -34,9 +34,9 @@ class Header extends Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/user/logout/",
       method: 'POST'
-    }).then(response) {
+    }).then(response => {
       window.location = '/';
-    }
+    });
   }
 
   componentDidMount() {
