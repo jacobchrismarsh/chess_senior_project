@@ -25,17 +25,12 @@ SECRET_KEY = ")ejaqtzr$odwidm5tk*96!d9=t)_w3as#sy=k$d+rfuk7_3day"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    'localhost',
-    "127.0.0.1"
-]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
 CORS_ALLOW_CREDENTIALS = True
 
 # Allow requests from
-CORS_ORIGIN_WHITELIST = (
-    "localhost:3000"
-)
+CORS_ORIGIN_WHITELIST = ("localhost:3000",)
 
 # Application definition
 
@@ -95,7 +90,7 @@ DATABASES = {
     }
 }
 
-AUTH_PROFILE_MODULE = "user.UserProfile"
+# AUTH_PROFILE_MODULE = "user.UserProfile"
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -132,7 +127,15 @@ STATIC_URL = "/static/"
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
-    ]
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly"
+    # ],
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    ),
 }
+
+JWT_AUTH = {"JWT_RESPONSE_PAYLOAD_HANDLER": "utils.my_jwt_response_handler"}
