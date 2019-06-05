@@ -40,6 +40,7 @@ def login_user(request: WSGIRequest) -> JsonResponse:
 
     if user is not None:
         login(request, user)
+        print(user.get_username())
         return JsonResponse({"status": "success"})
     else:
         return JsonResponse(
@@ -62,4 +63,5 @@ def logout_user(request: WSGIRequest) -> JsonResponse:
 
 
 def is_logged_in(request: WSGIRequest) -> JsonResponse:
-    return JsonResponse({"status": request.user.is_authenticated()})
+    print(request.user.get_username())
+    return JsonResponse({"status": request.user.is_authenticated})
