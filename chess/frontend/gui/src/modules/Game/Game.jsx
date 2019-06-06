@@ -29,7 +29,6 @@ import {
   TRANSLATE_POSITION,
   ONE_MINUTE
 } from "./constants";
-import { checkSignedIn } from '../Common/utils';
 import $ from "jquery";
 import "./game.css";
 
@@ -53,10 +52,6 @@ export default class Game extends React.Component {
     };
 
     autoBind(this);
-  }
-
-  componentDidMount() {
-    checkSignedIn();
   }
 
   initBoard() {

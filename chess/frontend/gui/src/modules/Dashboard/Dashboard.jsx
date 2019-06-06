@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import autoBind from 'react-autobind';
 import { LeftSidebar, RightSidebar } from "./subcomponents";
-import { checkSignedIn } from '../Common/utils';
 import "./dashboard.css";
 
 class Dashboard extends Component {
@@ -11,11 +10,6 @@ class Dashboard extends Component {
 
     autoBind(this);
   }
-  
-  componentDidMount() {
-    checkSignedIn();
-  }
-
 
   render() {
     
