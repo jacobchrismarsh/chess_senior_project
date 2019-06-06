@@ -195,6 +195,10 @@ export default class Game extends React.Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/get_moves/",
       method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
+      },
       data: { index: TRANSLATE_POSITION[index] }
     }).then(response => {
       this.highlightMoves(response.moves);
@@ -250,6 +254,10 @@ export default class Game extends React.Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/make_move/",
       method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
+      },
       data: { 
         from_coord: TRANSLATE_POSITION[from_coord],
         to_coord: TRANSLATE_POSITION[to_coord]
@@ -263,6 +271,10 @@ export default class Game extends React.Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/get_opponent_move/",
       method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
+      },
       data: {
         player_color: this.state.turn
       }
