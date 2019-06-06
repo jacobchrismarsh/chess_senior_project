@@ -57,33 +57,44 @@ class SignIn extends Component {
   constructor(props) {
     super(props);
 
-    this.state ={
+    this.state = {
+      username: '',
+      password: '',
       error: ''
     }
 
     autoBind(this);
   }
 
-  handleSumbit(event) {
-    event.preventDefault();
+  handleLogin = (e, data) => {
+    e.preventDefault();
     $.ajax({
-      url: "http://127.0.0.1:8000/user/login/",
-      method: "POST",
-      data: {
-        username: event.target.elements.username.value,
-        password: event.target.elements.password.value
+      url: 'http://127.0.0.1:8000/token-auth/',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: JSON.stringify(data),
+      error: () => {
+        this.setState({
+          error: "Incorrect username or password"
+        });
       }
     }).then(response => {
-      if (response.status === 'success') {
-        window.location = '/dashboard/'
-      } else {
-        document.getElementById("sign-in-form").reset();
-        this.setState({
-          error: response.error
-        })
-      }
+      localStorage.setItem('token', response.token);
+      window.location = '/dashboard'
+    })
+  };
+
+  handleChange = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState(prevstate => {
+      const newState = { ...prevstate };
+      newState[name] = value;
+      return newState;
     });
-  }
+  };
 
   render() {
     let { classes } = this.props;
@@ -98,23 +109,34 @@ class SignIn extends Component {
             Sign in
           </Typography>
 
-          <form id='sign-in-form' className={classes.form} onSubmit={this.handleSumbit}>
+          <form id='sign-in-form' onSubmit={e => this.handleLogin(e, this.state)}>
             <div className={classes.red}>
               {this.state.error}
             </div>
+            
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" name="username" autoComplete="username" autoFocus />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="password">Password</InputLabel>
               <Input
-                name="password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                id="username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                value={this.state.username}
+                onChange={this.handleChange}
               />
             </FormControl>
+
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">Password</InputLabel>
+                <Input
+                  name="password"
+                  type="password"
+                  id="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+            </FormControl>
+
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
               label="Remember me"

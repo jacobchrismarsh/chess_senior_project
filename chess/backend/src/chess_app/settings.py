@@ -25,16 +25,16 @@ SECRET_KEY = ")ejaqtzr$odwidm5tk*96!d9=t)_w3as#sy=k$d+rfuk7_3day"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+# ALLOWED_HOSTS = ["localhost", "127.0.0.1", "http://localhost:3000"]
 
-CORS_ALLOW_CREDENTIALS = True
-
-# Allow requests from
-CORS_ORIGIN_WHITELIST = ("localhost:3000",)
+# CORS_ALLOW_CREDENTIALS = True
 
 # Application definition
 
+CORS_ORIGIN_ALLOW_ALL = True
+
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,21 +42,18 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "corsheaders",
     "game",
     "move",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.middleware.common.CommonMiddleware",
+    "django.middleware.security.SecurityMiddleware",
 ]
 
 ROOT_URLCONF = "chess_app.urls"
@@ -139,3 +136,16 @@ REST_FRAMEWORK = {
 }
 
 JWT_AUTH = {"JWT_RESPONSE_PAYLOAD_HANDLER": "utils.my_jwt_response_handler"}
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'token',
+)

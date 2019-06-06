@@ -56,34 +56,47 @@ class CreateUser extends Component {
     super(props);
 
     this.state = {
+      username: '',
+      password: '',
       error: ''
     }
 
     autoBind(this);
   }
 
-  handleSubmit(event) {
-    event.preventDefault();
-
-    $.ajax({
-      url: "http://127.0.0.1:8000/user/new_user/",
-      method: "POST",
-      data: {
-        email: event.target.elements.email.value,
-        username: event.target.elements.username.value,
-        password: event.target.elements.password.value
-      }
-    }).then(response => {
-      if (response.status === 'success') {
-        window.location = '/sign_in/'
-      } else {
-        document.getElementById("create-account-form").reset();
-        this.setState({
-          error: response.error
-        })
-      }
+  handleChange = e => {
+    const name = e.target.name;
+    const value = e.target.value;
+    this.setState(prevstate => {
+      const newState = { ...prevstate };
+      newState[name] = value;
+      return newState;
     });
-  }
+  };
+
+  handleSignUp = (e, data) => {
+    e.preventDefault();
+    $.ajax({
+      url: 'http://127.0.0.1:8000/user/users/',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      error: () => {
+        this.setState({
+          error: 'Username has already been taken'
+        });
+      },
+      data: JSON.stringify(data)
+    }).then(response => {
+      debugger;
+      localStorage.setItem('token', response.token);
+      window.location = '/dashboard'
+    })
+  };
+
+  // localStorage.setItem('token', json.token);
+  // window.location = '/dashboard'
 
   render() {
 
@@ -99,27 +112,34 @@ class CreateUser extends Component {
             Create User
           </Typography>
 
-          <form id="create-account-form" className={classes.form} onSubmit={this.handleSubmit}>
-            <div className={classes.red}>
+          <div className={classes.red}>
               {this.state.error}
             </div>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">Email</InputLabel>
-              <Input id="email" name="email" autoComplete="email" autoFocus />
-            </FormControl>
+
+          <form id="sign-up-form" onSubmit={e => this.handleSignUp(e, this.state)}>
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="username">Username</InputLabel>
-              <Input id="username" name="username" autoComplete="username" autoFocus />
-            </FormControl>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="password">Password</InputLabel>
               <Input
-                name="password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
+                id="username"
+                name="username"
+                autoComplete="username"
+                autoFocus
+                value={this.state.username}
+                onChange={this.handleChange}
               />
             </FormControl>
+
+            <FormControl margin="normal" required fullWidth>
+              <InputLabel htmlFor="password">Password</InputLabel>
+                <Input
+                  name="password"
+                  type="password"
+                  id="password"
+                  value={this.state.password}
+                  onChange={this.handleChange}
+                />
+            </FormControl>
+
             <Button
               type="submit"
               fullWidth
