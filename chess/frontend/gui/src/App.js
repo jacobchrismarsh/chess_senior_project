@@ -23,7 +23,7 @@ class App extends Component {
   componentDidMount() {
     checkSignedIn().then(response => {
       this.setState({
-        signedIn: response.status
+        signedIn: true
       })
     });
   }
