@@ -12,6 +12,7 @@ from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.Move import Move, listToMoves
 from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
+from user.user import get_user_info
 
 FROM_COORD = 0
 TO_COORD = 1
@@ -39,7 +40,8 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
     return JsonResponse({"status": "success"})
 
 
-def get_all_moves(request):
+def get_all_moves(request: WSGIRequest) -> JsonResponse:
+    get_user_info(request)
     board = _get_board(request)
     from_coord = int(request.GET.get("index"))
 
