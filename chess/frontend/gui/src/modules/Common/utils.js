@@ -9,8 +9,9 @@ export const checkSignedIn = () => {
       'Authorization': `JWT ${localStorage.getItem('token')}`
     },
     error: () => {
-      if (!window.location.pathname === '/' || !window.location.pathname.includes('sign_in')) {
-        window.location = '/sign_in'
+      debugger;
+      if (!(['/', '/sign_in', '/sign_in/', '/create_user', '/create_user/'].some(path => path === window.location.pathname))) {        
+        window.location = '/'
       }
     }
   });
