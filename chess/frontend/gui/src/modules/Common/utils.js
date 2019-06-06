@@ -9,7 +9,6 @@ export const checkSignedIn = () => {
       'Authorization': `JWT ${localStorage.getItem('token')}`
     },
     error: () => {
-      debugger;
       if (!(['/', '/sign_in', '/sign_in/', '/create_user', '/create_user/'].some(path => path === window.location.pathname))) {        
         window.location = '/'
       }
