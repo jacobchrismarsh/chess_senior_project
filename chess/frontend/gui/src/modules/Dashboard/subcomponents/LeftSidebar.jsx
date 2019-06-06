@@ -7,7 +7,6 @@ import { Slider } from 'material-ui-slider';
 import autoBind from 'react-autobind';
 import TextField from '@material-ui/core/TextField';
 import { WHITE, BLACK } from "../../Game/constants"
-import history from '../../../history';
 import $ from 'jquery';
 
 import "../dashboard.css";
@@ -66,20 +65,7 @@ export class LeftSidebar extends Component {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('token')}`
       }
-    }).then(response => {
-      // TODO route to a specific game id?
-      if (response.status === 'success') {
-        history.push('/game');
-        // window.location.
-        // window.location = "/game"
-        // this.props.router.push({
-        //   pathname: '/game',
-        //   state: {
-        //     color: this.state.color
-        //   }
-        // })
-      }
-    });
+    }).then(window.location.pathname = '/game')
   }
 
   render() {
