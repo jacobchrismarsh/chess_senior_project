@@ -13,12 +13,7 @@ class Dashboard extends Component {
   }
   
   componentDidMount() {
-    checkSignedIn().then(
-      response => {
-        if (!response.status) {
-          window.location ='/sign_in/'
-        }
-    });
+    checkSignedIn();
   }
 
 

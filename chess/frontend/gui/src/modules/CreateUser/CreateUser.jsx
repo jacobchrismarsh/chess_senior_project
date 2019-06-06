@@ -89,7 +89,6 @@ class CreateUser extends Component {
       },
       data: JSON.stringify(data)
     }).then(response => {
-      debugger;
       localStorage.setItem('token', response.token);
       window.location = '/dashboard'
     })
