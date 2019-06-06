@@ -9,4 +9,5 @@ class Games(models.Model):
     user_id_2 = models.IntegerField()
     white_user_id = models.IntegerField()
     black_user_id = models.IntegerField()
-    difficulty_level = models.IntegerField(default=None)
+    difficulty = models.IntegerField(default=None)
+    ongoing = models.BooleanField()
