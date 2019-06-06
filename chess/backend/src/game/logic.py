@@ -5,9 +5,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
-
-from game.models import Games
-from move.models import Moves
+from django.views.decorators.csrf import csrf_exempt
 
 from .context import pychess
 from .context import Stockfish
@@ -17,6 +15,7 @@ from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.Move import Move, listToMoves
 from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
+from game.game import GameState
 from game.models import Games
 from move.models import Moves
 from user.user import get_user_info
@@ -27,11 +26,13 @@ BOARD_WIDTH = 8
 STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10-64"
 ONLINE_OPPONENT = "Online Opponent"
 AI = "Computer"
+AI_ID = 0
 
 
 global_board = Board(setup=True)
 
 
+@csrf_exempt
 def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
         Takes the appropriate information from `request` and creates a new
@@ -44,20 +45,9 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
             black_user_id: str
             id: int
     """
-    # user_id_1 = request.user.get_username()
-    # user_id_2 = _get_username_or_computer(request)
-    global global_board
-    # g = Games(request.user.get_username()
-    global_board = Board(setup=True)
-    return JsonResponse({"status": "success"})
-
-def _get_user_id_or_computer(request: WSGIRequest) -> int:
-    pass
-    # player = request.GET.get("opponent")
-
-def _get_user_id_from_username(username: str) -> int:
-    user_id = User.objects.filter(username__exact = username)
-    return user_id[0].id
+    game_state = GameState(request)
+    game = Games.objects.create(**game_state.items())
+    return JsonResponse({"status": "success", "game_id": game.id})
 
 
 def get_all_moves(request: WSGIRequest) -> JsonResponse:
