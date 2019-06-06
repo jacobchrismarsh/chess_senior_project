@@ -7,6 +7,7 @@ import { Slider } from 'material-ui-slider';
 import autoBind from 'react-autobind';
 import TextField from '@material-ui/core/TextField';
 import { WHITE, BLACK } from "../../Game/constants"
+import history from '../../../history';
 import $ from 'jquery';
 
 import "../dashboard.css";
@@ -60,11 +61,23 @@ export class LeftSidebar extends Component {
         difficulty: this.state.difficulty,
         color: this.state.color,
         opponentUsername: this.state.opponentUsername
+      },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
       }
     }).then(response => {
       // TODO route to a specific game id?
       if (response.status === 'success') {
-        window.location = "/game"
+        history.push('/game');
+        // window.location.
+        // window.location = "/game"
+        // this.props.router.push({
+        //   pathname: '/game',
+        //   state: {
+        //     color: this.state.color
+        //   }
+        // })
       }
     });
   }
