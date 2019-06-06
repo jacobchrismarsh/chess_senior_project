@@ -126,6 +126,20 @@ export default class Game extends React.Component {
     return squares;
   }
 
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  componentDidMount() {
+    // if your color is black then you wait for the opponent to go first
+    if (this.state.yourColor === BLACK) {
+      this.sleep(1000).then(() => {
+          this.getOpponentMove();
+        }
+      );
+    }
+  }
+
   // returns a boolean indication whether a move is valid
   checkIfMoveValid(index) {
     return this.state.squares[index].movable;
