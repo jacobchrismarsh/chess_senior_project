@@ -56,12 +56,7 @@ export default class Game extends React.Component {
   }
 
   componentDidMount() {
-    checkSignedIn().then(
-      response => {
-        if (!response.status) {
-          window.location ='/sign_in/'
-        }
-    });
+    checkSignedIn();
   }
 
   initBoard() {

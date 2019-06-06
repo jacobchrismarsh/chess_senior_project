@@ -24,7 +24,7 @@ class App extends Component {
     checkSignedIn().then(response => {
       this.setState({
         signedIn: true
-      })
+      });
     });
   }
   
