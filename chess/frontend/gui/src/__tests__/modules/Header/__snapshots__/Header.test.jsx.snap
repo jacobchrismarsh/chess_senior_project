@@ -7,27 +7,27 @@ exports[`modules/Header/Header.jsx should render the Header component 1`] = `
   <div>
     <Square
       key="0"
-      piece="wb.svg"
+      piece="wr.svg"
     />
     <Square
       key="1"
-      piece="bp.svg"
-    />
-    <Square
-      key="2"
-      piece="wn.svg"
-    />
-    <Square
-      key="3"
       piece="bq.svg"
     />
     <Square
+      key="2"
+      piece="wk.svg"
+    />
+    <Square
+      key="3"
+      piece="bb.svg"
+    />
+    <Square
       key="4"
-      piece="wn.svg"
+      piece="wr.svg"
     />
     <Square
       key="5"
-      piece="bk.svg"
+      piece="bb.svg"
     />
     <Square
       key="6"
@@ -35,7 +35,7 @@ exports[`modules/Header/Header.jsx should render the Header component 1`] = `
     />
     <Square
       key="7"
-      piece="bp.svg"
+      piece="br.svg"
     />
     <Square
       key="8"
@@ -51,23 +51,23 @@ exports[`modules/Header/Header.jsx should render the Header component 1`] = `
     />
     <Square
       key="11"
-      piece="br.svg"
+      piece="bq.svg"
     />
     <Square
       key="12"
-      piece="wb.svg"
+      piece="wn.svg"
     />
     <Square
       key="13"
-      piece="bb.svg"
+      piece="bn.svg"
     />
     <Square
       key="14"
-      piece="wb.svg"
+      piece="wn.svg"
     />
     <Square
       key="15"
-      piece="bp.svg"
+      piece="br.svg"
     />
   </div>
   <div
