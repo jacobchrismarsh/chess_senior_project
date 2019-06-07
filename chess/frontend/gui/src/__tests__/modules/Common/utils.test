@@ -1,0 +1,23 @@
+import * as React from 'react';
+import * as utils from '../../../modules/Common/utils';
+
+describe('modules/Common/utils.js', () => {
+  it('should make a request with the appropriate request attributes', () => {
+    let spy = jest.fn();
+    window.$ = jest.fn();
+    window.$ = { ajax: spy };
+
+    utils.checkSignedIn();
+
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        url: `http://127.0.0.1:8000/user/current_user/`,
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `JWT ${null}`
+        }
+      })
+    );
+  });
+});

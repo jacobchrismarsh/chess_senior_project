@@ -34,7 +34,8 @@ import "./game.css";
 
 export default class Game extends React.Component {
   constructor(props) {
-    super();
+    super(props);
+
     this.state = {
       squares: this.initBoard(),
       selected: NOT_SELECTED,
