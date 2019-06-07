@@ -1,34 +1,6 @@
 import React from 'react';
 import { shallow } from 'enzyme';
 import Game from "../../../modules/Game/Game";
-import {
-  Pawn,
-  Knight,
-  Rook,
-  Bishop,
-  Queen,
-  King,
-  Empty
-} from "../../../modules/Game/subcomponents/Pieces";
-import {
-  NOT_SELECTED,
-  BLACK_PAWN_INIT,
-  WHITE_PAWN_INIT,
-  BLACK_KNIGHT_INIT,
-  WHITE_KNIGHT_INIT,
-  BLACK_ROOK_INIT,
-  WHITE_ROOK_INIT,
-  BLACK_BISHOP_INIT,
-  WHITE_BISHOP_INIT,
-  BLACK_QUEEN_INIT,
-  WHITE_QUEEN_INIT,
-  BLACK_KING_INIT,
-  WHITE_KING_INIT,
-  WHITE,
-  BLACK,
-  TRANSLATE_POSITION,
-  ONE_MINUTE
-} from "../../../modules/Game/constants";
 
 describe("modules/Game/Game.jsx", () => {
   let game = null;
