@@ -1,0 +1,424 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modules/Game/Game.jsx should render the Game component 1`] = `
+<div
+  className="game-container"
+>
+  <div
+    className="spacer"
+  />
+  <PiecePromotion
+    color="White"
+    handleClick={[Function]}
+    show={false}
+  />
+  <LeftSidebar
+    black={Array []}
+    white={Array []}
+  />
+  <Board
+    blackTime={1559883316017}
+    handleClick={[Function]}
+    move={0}
+    squares={
+      Array [
+        Rook {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "br.svg",
+        },
+        Knight {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bn.svg",
+        },
+        Bishop {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bb.svg",
+        },
+        Queen {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bq.svg",
+        },
+        King {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bk.svg",
+        },
+        Bishop {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bb.svg",
+        },
+        Knight {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bn.svg",
+        },
+        Rook {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "br.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "Black",
+          "selected": false,
+          "svg": "bp.svg",
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Empty {
+          "movable": false,
+          "player": null,
+          "selected": false,
+          "svg": undefined,
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Pawn {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wp.svg",
+        },
+        Rook {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wr.svg",
+        },
+        Knight {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wn.svg",
+        },
+        Bishop {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wb.svg",
+        },
+        Queen {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wq.svg",
+        },
+        King {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wk.svg",
+        },
+        Bishop {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wb.svg",
+        },
+        Knight {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wn.svg",
+        },
+        Rook {
+          "movable": false,
+          "player": "White",
+          "selected": false,
+          "svg": "wr.svg",
+        },
+      ]
+    }
+    turn="White"
+    whiteTime={1559883316017}
+    yourColor="White"
+  />
+  <RightSidebar
+    count={0}
+    error=""
+    turn="White"
+  />
+  <div
+    className="spacer"
+  />
+</div>
+`;

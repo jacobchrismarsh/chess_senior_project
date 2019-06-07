@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modules/Game/subcomponents/Square should render the Square component 1`] = `
+<button
+  className="  square White"
+>
+  <img
+    alt=""
+  />
+</button>
+`;
