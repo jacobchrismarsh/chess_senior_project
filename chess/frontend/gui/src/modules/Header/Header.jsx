@@ -14,7 +14,6 @@ import whiteBishop from "../../cburnett/wb.svg";
 import whitePawn from "../../cburnett/wp.svg";
 import blackPawn from "../../cburnett/bp.svg";
 import { Square } from "../Game/subcomponents/Square";
-import $ from 'jquery';
 import "../Dashboard/dashboard.css";
 import "./header.css";
 

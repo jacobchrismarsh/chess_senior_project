@@ -1,0 +1,47 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modules/Home/Home.jsx should render the Home component 1`] = `
+<div
+  className="home-container"
+>
+  <br />
+  <br />
+  <div
+    className="home-item home-title"
+  >
+    Online Chess
+  </div>
+  <div
+    className="home-item"
+  >
+    <Square
+      piece="wp.svg"
+    />
+  </div>
+  <br />
+  <div
+    className="home-item home-button-container"
+  >
+    <WithStyles(ForwardRef(Button))
+      className="chess-button home-button-item"
+      color="primary"
+      onClick={[Function]}
+      size="medium"
+      variant="contained"
+    >
+      Sign In
+    </WithStyles(ForwardRef(Button))>
+    <div />
+    <div />
+    <WithStyles(ForwardRef(Button))
+      className="chess-button home-button-item"
+      color="primary"
+      onClick={[Function]}
+      size="medium"
+      variant="contained"
+    >
+      Create Account
+    </WithStyles(ForwardRef(Button))>
+  </div>
+</div>
+`;
