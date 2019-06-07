@@ -31,6 +31,7 @@ import {
 } from "./constants";
 import $ from "jquery";
 import "./game.css";
+import Chess from "chess.js";
 
 export default class Game extends React.Component {
   constructor(props) {
@@ -51,39 +52,39 @@ export default class Game extends React.Component {
       promotedPiece: null,
       yourColor: WHITE
     };
-
+    
     autoBind(this);
   }
-
+  
   initBoard() {
     // Not using a 2D array just for simplicity
     let squares = Array(64).fill(null);
-
+    
     // // Initiailizing the 'Black' Pawns
     for (let i = 0; i < BLACK_PAWN_INIT.length; i++) {
       squares[BLACK_PAWN_INIT[i]] = new Pawn(BLACK);
     }
-
+    
     // Initializing the 'White' Pawns
     for (let i = 0; i < WHITE_PAWN_INIT.length; i++) {
       squares[WHITE_PAWN_INIT[i]] = new Pawn(WHITE);
     }
-
+    
     // Initializing the 'Black' Knights
     for (let i = 0; i < BLACK_KNIGHT_INIT.length; i++) {
       squares[BLACK_KNIGHT_INIT[i]] = new Knight(BLACK);
     }
-
+    
     // Initializing the 'White' Knights
     for (let i = 0; i < WHITE_KNIGHT_INIT.length; i++) {
       squares[WHITE_KNIGHT_INIT[i]] = new Knight(WHITE);
     }
-
+    
     // Initializing the 'Black' Rooks
     for (let i = 0; i < BLACK_ROOK_INIT.length; i++) {
       squares[BLACK_ROOK_INIT[i]] = new Rook(BLACK);
     }
-
+    
     // Initialzigin the 'White' Rooks
     for (let i = 0; i < WHITE_ROOK_INIT.length; i++) {
       squares[WHITE_ROOK_INIT[i]] = new Rook(WHITE);
@@ -131,14 +132,94 @@ export default class Game extends React.Component {
     return new Promise(resolve => setTimeout(resolve, ms));
   }
 
-  componentDidMount() {
-    // if your color is black then you wait for the opponent to go first
-    if (this.state.yourColor === BLACK) {
-      this.sleep(1000).then(() => {
-          this.getOpponentMove();
-        }
-      );
+  translateFromApi(piece) {
+    switch(piece) {
+      case 'k':
+        return new King(BLACK);
+
+      case 'q':
+        return new Queen(BLACK);
+
+      case 'r':
+        return new Rook(BLACK);
+
+      case 'b':
+        return new Bishop(BLACK);
+
+      case 'n':
+        return new Knight(BLACK);
+
+      case 'p':
+        return new Pawn(BLACK);
+
+      case 'K':
+        return new King(WHITE);
+
+      case 'Q':
+        return new Queen(WHITE);
+
+      case 'R':
+        return new Rook(WHITE);
+
+      case 'B':
+        return new Bishop(WHITE);
+
+      case 'N':
+        return new Knight(WHITE);
+
+      case 'P':
+        return new Pawn(WHITE);
+      
+      case '.':
+        return new Empty(null);
     }
+  }
+
+  // stripping out the unnecessary parts of the board
+  asciiToSquares(ascii) {
+    let squares = Array(64).fill(null);
+
+    // there goes the whitespace
+    ascii = ascii.trim();
+
+    // removing all of the numbers from the string
+    ascii = ascii.replace(/[0-9]/g, '');
+
+    // removing all of the hyphens from the string
+    ascii = ascii.replace(/-/g, '');
+
+    // removing al of the '|'s from the string
+    ascii = ascii.replace(/\|/g, '');
+    // remove the last 'row' of characters from the board
+    ascii = ascii.substring(0, ascii.length - 33);
+
+    // removing the top 'row' of characters from the board
+    ascii = ascii.substring(4, ascii.length);
+
+    // there goes the rest of the spaces
+    ascii = ascii.replace(/\s/g, '');
+
+    for (let i = 0; i < ascii.length; i++) {
+      squares[i] = this.translateFromApi(ascii[i]);
+    }
+
+    return squares;
+  }
+
+  componentDidMount() {
+    // ping backend to see the state of the game
+    // let fen = from backend
+    // let chess = new Chess(fen);
+    // let board = chess.ascii();
+    // let squares = this.asciiToSquares(board);
+    // let capturedWhitePieces = from backend
+    // let capturedBlackPieces = from backend
+    // let turn = from backend
+    // let count = from backend
+    // let yourColor = from backend
+    // this.setState({
+    //   squares: squares
+    // });
   }
 
   // returns a boolean indication whether a move is valid
