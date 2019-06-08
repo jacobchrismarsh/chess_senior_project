@@ -13,4 +13,6 @@ db.sqlite3
 /chess/frontend/node_modules
 /chess/frontend/yarn.lock
 *.vscode
+node_modules/
+yarn.lock
 db.sqlite3
