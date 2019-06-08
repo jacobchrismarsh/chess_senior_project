@@ -526,6 +526,7 @@ export default class Game extends React.Component {
           whiteTime={this.state.whiteTime}
           blackTime={this.state.blackTime}
         />
+        
         <RightSidebar
           turn={this.state.turn}
           count={this.state.count}

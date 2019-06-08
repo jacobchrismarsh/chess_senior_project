@@ -12,12 +12,16 @@ exports[`modules/Game/Game.jsx should render the Game component 1`] = `
     handleClick={[Function]}
     show={false}
   />
+  <GameOver
+    show={false}
+    winner={null}
+  />
   <LeftSidebar
     black={Array []}
     white={Array []}
   />
   <Board
-    blackTime={1559883316017}
+    blackTime={1530518807007}
     handleClick={[Function]}
     move={0}
     squares={
@@ -409,7 +413,7 @@ exports[`modules/Game/Game.jsx should render the Game component 1`] = `
       ]
     }
     turn="White"
-    whiteTime={1559883316017}
+    whiteTime={1530518807007}
     yourColor="White"
   />
   <RightSidebar

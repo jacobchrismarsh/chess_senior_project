@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modules/Dashboard/subcomponents/LeftSidebar.jsx should render the LefttSidebar component 1`] = `
+<div
+  className="sidebar"
+>
+  <div
+    className="left-sidebar-container"
+  >
+    <div
+      className="left-sidebar-item color-black"
+    >
+      <ul />
+    </div>
+    <div
+      className="left-sidebar-item"
+    >
+      <ul />
+    </div>
+  </div>
+</div>
+`;
