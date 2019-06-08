@@ -1,6 +1,6 @@
 import React from "react";
 import autoBind from 'react-autobind';
-import { Board, LeftSidebar, RightSidebar, PiecePromotion } from "./subcomponents";
+import { Board, LeftSidebar, RightSidebar, PiecePromotion, GameOver } from "./subcomponents";
 import {
   Pawn,
   Knight,
@@ -50,7 +50,9 @@ export default class Game extends React.Component {
       blackTime: (Date.now() + (ONE_MINUTE * 10)),
       showPiecePromotion: false,
       promotedPiece: null,
-      yourColor: WHITE
+      yourColor: WHITE,
+      gameOver: false,
+      winner: null
     };
     
     autoBind(this);
@@ -493,6 +495,11 @@ export default class Game extends React.Component {
           show={this.state.showPiecePromotion}
           color={this.state.turn}
           handleClick={this.handlePiecePromotion}
+        />
+
+        <GameOver
+          show={this.state.gameOver}
+          winner={this.state.winner}
         />
 
         <LeftSidebar
