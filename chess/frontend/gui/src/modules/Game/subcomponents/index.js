@@ -4,3 +4,4 @@ export * from "./RightSidebar";
 export * from "./LeftSidebar";
 export * from "./Clock";
 export * from "./PiecePromotion";
+export * from "./GameOver";
