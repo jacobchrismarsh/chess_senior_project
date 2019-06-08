@@ -65,7 +65,9 @@ export class LeftSidebar extends Component {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('token')}`
       }
-    }).then(window.location.pathname = '/game')
+    }).then(response => {
+      window.location = `/game/${response.game_id}`;
+    });
   }
 
   render() {
