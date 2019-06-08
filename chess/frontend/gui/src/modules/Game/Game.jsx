@@ -388,20 +388,21 @@ export default class Game extends React.Component {
     let postMovePosition = preMovePosition;
     let capturedB = this.state.capturedBlackPieces;
     let capturedW = this.state.capturedWhitePieces;
-    // If the piece was captured and it is White's turn then the
-    // captured piece is black
-    if (capture && this.state.turn === WHITE) {
-      capturedB.push(preMovePosition[index]);
-    }
-    // If the piece was captured and it is Black's turn then the
-    // captured piece is white
-    else if (capture && this.state.turn === BLACK) {
-      capturedW.push(preMovePosition[index]);
-    }
 
     if (!this.checkIfMoveValid(index)) {
       this.setError("Cannot move piece there");
     } else {
+      // If the piece was captured and it is White's turn then the
+      // captured piece is black
+      if (capture && this.state.turn === WHITE) {
+        capturedB.push(preMovePosition[index]);
+      }
+      // If the piece was captured and it is Black's turn then the
+      // captured piece is white
+      else if (capture && this.state.turn === BLACK) {
+        capturedW.push(preMovePosition[index]);
+      }
+
       pieceToMove.deselectPiece();
       this.dehighlightMoves();
       this.makeMove(this.state.selected, index);
