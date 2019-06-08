@@ -6,6 +6,10 @@ describe("modules/Game/Game.jsx", () => {
   let game = null;
 
   beforeEach(() => {
+    const realDateNow = Date.now.bind(global.Date);
+    const dateNowStub = jest.fn(() => 1530518207007);
+    global.Date.now = dateNowStub;
+    
     game = shallow(<Game />);
   });
 

@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`modules/Game/subcomponents/GameOver.jsx should not render the GameOver components 1`] = `""`;
+
+exports[`modules/Game/subcomponents/GameOver.jsx should render the GameOver components 1`] = `
+<div
+  className="overlay"
+>
+  <div
+    className="overlay-container"
+  >
+    Game Over! 
+    Yeet
+     wins!
+  </div>
+</div>
+`;
