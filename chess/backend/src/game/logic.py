@@ -18,6 +18,7 @@ from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
 from game.game import GameState
 from game.models import Games
 from move.models import Moves
+from move.move import MoveState
 from user.user import get_user_info
 
 FROM_COORD = 0
@@ -47,6 +48,9 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
     """
     game_state = GameState(request)
     game = Games.objects.create(**game_state.items())
+    initial_move = MoveState()
+    initial_move.set_initial(game)
+    move = Moves.objects.create(**initial_move.items())
     return JsonResponse({"status": "success", "game_id": game.id})
 
 
@@ -103,7 +107,6 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 def make_move(request: WSGIRequest) -> JsonResponse:
     global global_board
-    print(_get_user_id_from_username(request.user.get_username()))
     player_color = WHITE
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
