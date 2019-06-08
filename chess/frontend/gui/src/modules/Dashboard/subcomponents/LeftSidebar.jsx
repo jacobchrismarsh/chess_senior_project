@@ -55,7 +55,7 @@ export class LeftSidebar extends Component {
     return $.ajax({
       url: "http://127.0.0.1:8000/game/create/",
       method: "GET",
-      date: {
+      data: {
         opponent: this.state.opponent,
         difficulty: this.state.difficulty,
         color: this.state.color,
