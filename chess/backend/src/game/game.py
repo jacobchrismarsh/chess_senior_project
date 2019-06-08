@@ -1,4 +1,3 @@
-import json
 from typing import Dict
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
@@ -33,16 +32,14 @@ class GameState:
         self.user_id_2 = user_id_2
 
     def _get_user_id_or_computer(self, request: WSGIRequest) -> int:
-        info = json.loads(request.body)
-        opponent = info.get("opponent")
+        opponent = request.GET.get("opponent")
         if opponent == AI:
             return AI_ID
         user = User.objects.get(username=opponent)
         return user.id
 
     def set_colors(self, request: WSGIRequest) -> None:
-        info = json.loads(request.body)
-        if info.get("color") == WHITE:
+        if request.GET.get("color") == WHITE:
             self.white_user_id = self.user_id_1
             self.black_user_id = self.user_id_2
         else:
@@ -50,8 +47,7 @@ class GameState:
             self.black_user_id = self.user_id_1
 
     def set_difficulty(self, request: WSGIRequest) -> None:
-        info = json.loads(request.body)
-        difficulty = info.get("difficulty")
+        difficulty = request.GET.get("difficulty")
         self.difficulty = difficulty
 
     def items(self) -> Dict:
