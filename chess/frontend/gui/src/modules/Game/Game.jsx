@@ -52,7 +52,8 @@ export default class Game extends React.Component {
       promotedPiece: null,
       yourColor: WHITE,
       gameOver: false,
-      winner: null
+      winner: null,
+      gameId: this.getGameIdFromUrl()
     };
     
     autoBind(this);
@@ -128,6 +129,11 @@ export default class Game extends React.Component {
     }
 
     return squares;
+  }
+
+  getGameIdFromUrl() {
+    let urlArray = window.location.pathname.split("/")
+    return parseInt(urlArray[urlArray.length - 1]);
   }
 
   sleep(ms) {
@@ -297,7 +303,10 @@ export default class Game extends React.Component {
         'Content-Type': 'application/json',
         'Authorization': `JWT ${localStorage.getItem('token')}`
       },
-      data: { index: TRANSLATE_POSITION[index] }
+      data: {
+        index: TRANSLATE_POSITION[index],
+        game_id: this.state.gameId
+      }
     }).then(response => {
       this.highlightMoves(response.moves);
     });
@@ -358,7 +367,8 @@ export default class Game extends React.Component {
       },
       data: { 
         from_coord: TRANSLATE_POSITION[from_coord],
-        to_coord: TRANSLATE_POSITION[to_coord]
+        to_coord: TRANSLATE_POSITION[to_coord],
+        game_id: this.state.gameId
       }
     }).then(response => {
       this.updateBoardWithMove(response)
@@ -374,7 +384,8 @@ export default class Game extends React.Component {
         'Authorization': `JWT ${localStorage.getItem('token')}`
       },
       data: {
-        player_color: this.state.turn
+        player_color: this.state.turn,
+        game_id: this.state.gameId
       }
     }).then(response => {
       this.updateBoardWithMove(response)
