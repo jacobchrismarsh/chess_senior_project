@@ -170,7 +170,7 @@ export default class Game extends React.Component {
       case 'P':
         return new Pawn(WHITE);
       
-      case '.':
+      default:
         return new Empty(null);
     }
   }
