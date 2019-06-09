@@ -50,7 +50,7 @@ def create_chess_game(request: WSGIRequest) -> JsonResponse:
     game = Games.objects.create(**game_state.items())
     initial_move = MoveState()
     initial_move.set_initial(game)
-    move = Moves.objects.create(**initial_move.items())
+    add_move_state_to_database(initial_move)
     return JsonResponse({"status": "success", "game_id": game.id})
 
 
@@ -70,8 +70,14 @@ def get_all_moves(request: WSGIRequest) -> JsonResponse:
 
 def _get_board(request: WSGIRequest) -> Board:
     """ This will eventually be fleshed out into accessing the Database """
-    global global_board
-    return global_board
+    game_id = request.GET.get("game_id")
+
+    most_recent_move = _get_most_recent_move(game_id)
+
+    game_board = Board()
+    game_board.board.applyFen(most_recent_move.post_move_fen)
+
+    return game_board
 
 
 def _get_potential_board_moves(from_coord: int, board: Board) -> List[Move]:
@@ -106,7 +112,6 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 
 def make_move(request: WSGIRequest) -> JsonResponse:
-    global global_board
     player_color = WHITE
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
@@ -116,7 +121,8 @@ def make_move(request: WSGIRequest) -> JsonResponse:
 
     pieces_moved += _check_for_castle(player_move, player_color)
 
-    global_board = board.move(player_move)
+    board = board.move(player_move)
+    record_move(board, player_move, request.GET.get("game_id"))
     return JsonResponse({"moves": pieces_moved})
 
 
@@ -161,17 +167,17 @@ def _opponent_is_ai(request: WSGIRequest) -> bool:
 
 
 def get_ai_move(request: WSGIRequest):
-    global global_board
     board = _get_board(request)
     stockfish_color = BLACK
 
     engine = initialize_stockfish_engine()
-    _set_chess_engine_board_fen_position(engine, global_board)
+    _set_chess_engine_board_fen_position(engine, board)
 
     best_move_as_san = engine.get_best_move()
     stockfish_move = _convert_SAN_str_to_move(best_move_as_san)
 
-    global_board = board.move(stockfish_move)
+    board = board.move(stockfish_move)
+    record_move(board, stockfish_move, request.GET.get("game_id"))
 
     from_coord, to_coord = _move_to_board_location(stockfish_move)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
@@ -200,3 +206,18 @@ def _convert_SAN_str_to_move(san: str) -> Move:
     from_coord, to_coord = _move_to_board_location(move)
     move = _get_move(from_coord, to_coord)
     return move
+
+def _get_most_recent_move(game_id: int) -> Moves:
+    moves = Moves.objects.filter(game_id_id=game_id)  # Django has weird name-mangling
+    return moves.order_by("-move_number")[0]
+
+def record_move(self, board: Board, move: Move, game_id: int):
+    most_recent_move = _get_most_recent_move(game_id)
+    move_state = MoveState()
+    move_state.set_state_from_prev_move(most_recent_move)      
+    move_state.post_move_fen = board.asFen()
+    move_state.set_move(move)
+    add_move_state_to_database(move_state)
+    
+def add_move_state_to_database(move: MoveState):
+    move = Moves.objects.create(**move.items())
