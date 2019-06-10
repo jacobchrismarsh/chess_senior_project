@@ -2,6 +2,7 @@ from typing import List, Dict, Tuple
 
 from django.contrib.auth.models import User
 from django.core.handlers.wsgi import WSGIRequest
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.http.response import JsonResponse
 from django.shortcuts import render
@@ -233,3 +234,36 @@ def record_move(board: Board, move: Move, game_id: int):
 def add_move_state_to_database(move: MoveState):
     new_move = Moves.objects.create(**move.items())
     new_move.save()
+
+
+def get_current_games(request: WSGIRequest) -> JsonResponse:
+    user = get_user_info(request)
+    all_games = Games.objects.filter(Q(user_id_1=user.id) | Q(user_id_2=user.id))
+
+    active_games = all_games.filter(ongoing=1)
+    game_list = []
+    for game in active_games:
+        game_list.append(build_game_status_dict(game, user))
+
+    return JsonResponse({"games": game_list})
+
+
+def build_game_status_dict(game: Games, user: User) -> Dict[str, str]:
+    most_recent_move = _get_most_recent_move(game.id)
+
+    game_dict = {}
+    game_dict["id"] = game.id
+    game_dict["color"] = WHITE if game.white_user_id == user.id else BLACK
+    game_dict["turn"] = BLACK if most_recent_move.turn == WHITE else WHITE
+    game_dict["count"] = most_recent_move.move_number
+
+    opponent_id = (
+        game.black_user_id if game.white_user_id == user.id else game.white_user_id
+    )
+    if opponent_id == AI_ID:
+        opponent = "Computer"
+    else:
+        opponent = f"Online Player - {opponent_id}"
+    game_dict["opponent"] = opponent
+
+    return game_dict
