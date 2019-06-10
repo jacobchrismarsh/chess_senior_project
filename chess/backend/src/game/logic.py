@@ -251,19 +251,18 @@ def get_current_games(request: WSGIRequest) -> JsonResponse:
 def build_game_status_dict(game: Games, user: User) -> Dict[str, str]:
     most_recent_move = _get_most_recent_move(game.id)
 
-    game_dict = {}
-    game_dict["id"] = game.id
-    game_dict["color"] = WHITE if game.white_user_id == user.id else BLACK
-    game_dict["turn"] = BLACK if most_recent_move.turn == WHITE else WHITE
-    game_dict["count"] = most_recent_move.move_number
-
     opponent_id = (
         game.black_user_id if game.white_user_id == user.id else game.white_user_id
     )
     if opponent_id == AI_ID:
-        opponent = "Computer"
+        opponent = AI
     else:
         opponent = f"Online Player - {opponent_id}"
-    game_dict["opponent"] = opponent
 
-    return game_dict
+    return {
+        "id": game.id,
+        "color": WHITE if game.white_user_id == user.id else BLACK,
+        "turn": BLACK if most_recent_move.turn == WHITE else WHITE,
+        "count": most_recent_move.move_number,
+        "opponent": opponent,
+    }
