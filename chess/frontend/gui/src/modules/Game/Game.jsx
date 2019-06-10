@@ -440,6 +440,12 @@ export default class Game extends React.Component {
   // to handle moving the pieces
   handleClick(index) {
     let newStateSquares = this.state.squares;
+
+    // if it isn't your turn then you have to wait
+    if (this.state.turn !== this.state.yourColor) {
+      return;
+    }
+
     // if the player currently has no piece selected
     if (this.state.selected === NOT_SELECTED) {
       // if the spot that was clicked was the current player's color
