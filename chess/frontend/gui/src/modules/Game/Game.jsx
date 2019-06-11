@@ -227,7 +227,6 @@ export default class Game extends React.Component {
         game_id: this.state.gameId
       }
     }).then(response => {
-      debugger;
       let { fen, turn, count, your_color } = response;
       let squares = this.asciiToSquares(new Chess(fen).ascii());
 
