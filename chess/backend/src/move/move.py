@@ -5,8 +5,8 @@ from game.models import Games
 from move.models import Moves
 from pychess.Utils.Move import Move
 
-# INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-INITIAL_FEN = "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1"
+INITIAL_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+# INITIAL_FEN = "RNBQKBNR/PPPPPPPP/8/8/8/8/pppppppp/rnbqkbnr w KQkq - 0 1"
 WHITE = "White"
 BLACK = "Black"
 
@@ -21,7 +21,7 @@ class MoveState:
         self.game_id: int
         self.turn: str
 
-    def set_state_from_prev_move(prev_move: Moves):
+    def set_state_from_prev_move(self, prev_move: Moves):
         self.white_user_id = prev_move.white_user_id
         self.black_user_id = prev_move.black_user_id
         self.move_number = prev_move.move_number + 1
@@ -29,7 +29,7 @@ class MoveState:
         self.game_id = prev_move.game_id
         self.turn = WHITE if prev_move.turn == BLACK else BLACK
 
-    def set_state_from_game(game: GameState):
+    def set_state_from_game(self, game: GameState):
         self.white_user = game.white_user_id
         self.black_user = game.black_user_id
 
@@ -43,16 +43,16 @@ class MoveState:
         self.game_id = game
         # We set the initial turn to black, so that the server will know that the
         # first real move belongs to white
-        self.turn = BLACK 
+        self.turn = BLACK
 
-    def set_fen(pre: str, post: str):
+    def set_fen(self, pre: str, post: str):
         self.pre_move_fen = pre
         self.post_move_fen = post
 
-    def set_move(move: Move):
-        self.move_algebraic = move.toSAN()
+    def set_move(self, move: str):
+        self.move_algebraic = move
 
-    def set_game_id(id: int):
+    def set_game_id(self, id: int):
         self.game_id = id
 
     def items(self) -> Dict:
