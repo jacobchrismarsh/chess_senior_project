@@ -35,7 +35,7 @@ class GameState:
         opponent = request.GET.get("opponent")
         if opponent == AI:
             return AI_ID
-        user = User.objects.get(username=opponent)
+        user = User.objects.get(username=request.GET.get("opponentUsername"))
         return user.id
 
     def set_colors(self, request: WSGIRequest) -> None:
