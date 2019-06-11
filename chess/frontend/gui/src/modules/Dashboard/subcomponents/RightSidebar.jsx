@@ -14,7 +14,7 @@ export class RightSidebar extends Component {
   }
 
   handleButton(event) {
-    window.location = `game/${event.target.id}`;
+    window.location = `/game/${event.target.id}`;
   }
 
   componentDidMount() {
