@@ -373,6 +373,8 @@ export default class Game extends React.Component {
       }
     }).then(response => {
       this.updateBoardWithMove(response)
+      // Finish off by pinging for the next move that I am going to recieve
+      this.getOpponentMove();
     });
   }
 
@@ -436,8 +438,6 @@ export default class Game extends React.Component {
         error: ""
       });
 
-      // Finish off by pinging for the next move that I am going to recieve
-      this.getOpponentMove();
     }
   }
 
