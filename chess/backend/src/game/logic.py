@@ -1,3 +1,4 @@
+import time
 from typing import List, Dict, Tuple
 
 from django.contrib.auth.models import User
@@ -16,7 +17,7 @@ from pychess.Utils.Cord import Cord
 from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
 from pychess.Utils.logic import legalMoveCount, getStatus
-from pychess.Utils.Move import Move, listToMoves, toSAN
+from pychess.Utils.Move import Move, listToMoves, parseSAN, toSAN
 from pychess.Utils.const import (
     KING_CASTLE,
     QUEEN_CASTLE,
@@ -190,11 +191,13 @@ def check_if_game_over(board: Board) -> str:
 def get_opponent_move(request: WSGIRequest) -> JsonResponse:
     if _opponent_is_ai(request):  # Player is AI
         return get_ai_move(request)
-    return JsonResponse({1: 2})
+    return wait_for_human_opponents_move(request)
 
 
 def _opponent_is_ai(request: WSGIRequest) -> bool:
-    return True
+    game_id = request.GET.get("game_id")
+    game = Games.objects.get(id=game_id)
+    return game.user_id_1 == AI_ID or game.user_id_2 == AI_ID
 
 
 def get_ai_move(request: WSGIRequest):
@@ -221,6 +224,29 @@ def get_ai_move(request: WSGIRequest):
 
     return JsonResponse({"moves": pieces_moved, "winner": check_if_game_over(board)})
 
+def wait_for_human_opponents_move(request: WSGIRequest) -> JsonResponse:
+    game_id = request.GET.get("game_id")
+    color_were_waiting_for = request.GET.get("color")
+
+    most_recent_move = _get_most_recent_move(game_id)
+    while most_recent_move.turn != color_were_waiting_for:
+        most_recent_move = _get_most_recent_move(game_id)
+        time.sleep(.2)
+
+    return figure_out_previously_moved_pieces(game_id)
+
+def figure_out_previously_moved_pieces(request: WSGIRequest) -> JsonResponse:
+    opponent_color = WHITE if request.GET.get("color") == WHITE_STR else BLACK
+    most_recent_move = _get_most_recent_move(game_id)
+    # old_board = Board(setup=most_recent_move.pre_move_fen)
+
+    old_move = _convert_SAN_str_to_move(most_recent_move.move_algebraic)
+    # current_board = old_board.move(old_move)
+
+    from_coord, to_coord = _move_to_board_location(old_move)
+    pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
+    pieces_moved += _check_for_castle(old_move, request.GET.get("color"))
+    return JsonResponse({"moves": pieces_moved})
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
     from_coord = int(request.GET.get("from_coord"))
