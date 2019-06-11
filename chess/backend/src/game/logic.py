@@ -31,6 +31,8 @@ STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10
 ONLINE_OPPONENT = "Online Opponent"
 AI = "Computer"
 AI_ID = 0
+WHITE_STR = 'White'
+BLACK_STR = 'Black'
 
 
 global_board = Board(setup=True)
@@ -261,8 +263,8 @@ def build_game_status_dict(game: Games, user: User) -> Dict[str, str]:
 
     return {
         "id": game.id,
-        "color": WHITE if game.white_user_id == user.id else BLACK,
-        "turn": BLACK if most_recent_move.turn == WHITE else WHITE,
+        "color": WHITE_STR if game.white_user_id == user.id else BLACK_STR,
+        "turn": BLACK_STR if most_recent_move.turn == WHITE_STR else WHITE_STR,
         "count": most_recent_move.move_number,
         "opponent": opponent,
     }
@@ -279,8 +281,8 @@ def get_game_info(reequest: WSGIRequest) -> JsonResponse:
             "fen": most_recent_move.post_move_fen,
             "captured_white_pieces": [],
             "captured_black_pieces": [],
-            "turn": WHITE if most_recent_move.turn == BLACK else WHITE,
+            "turn": WHITE_STR if most_recent_move.turn == BLACK_STR else WHITE_STR,
             "count": most_recent_move.move_number,
-            "your_color": WHITE if most_recent_move.white_user_id == user.id else BLACK,
+            "your_color": WHITE_STR if most_recent_move.white_user_id == user.id else BLACK_STR,
         }
     )
