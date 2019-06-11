@@ -940,7 +940,7 @@ class LBoard:
                         assert self.boards[WHITE][
                             piece
                         ], "self.boards doesn't match self.arBoard !!!"
-                        sign = reprSign[piece] if ascii else FAN_PIECES[WHITE][piece]
+                        sign = reprSign[piece] if ascii else FAN_PIECES[BLACK][piece]
                     else:
                         assert self.boards[BLACK][
                             piece
@@ -948,7 +948,7 @@ class LBoard:
                         sign = (
                             reprSign[piece].lower()
                             if ascii
-                            else FAN_PIECES[BLACK][piece]
+                            else FAN_PIECES[WHITE][piece]
                         )
                     b += sign
                 else:
