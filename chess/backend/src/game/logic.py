@@ -266,3 +266,21 @@ def build_game_status_dict(game: Games, user: User) -> Dict[str, str]:
         "count": most_recent_move.move_number,
         "opponent": opponent,
     }
+
+
+def get_game_info(reequest: WSGIRequest) -> JsonResponse:
+    game_id = request.GET.get("game_id")
+    user = get_user_info(request)
+    board = _get_board(request)
+    most_recent_move = _get_most_recent_move(game_id)
+
+    return JsonResponse(
+        {
+            "fen": most_recent_move.post_move_fen,
+            "captured_white_pieces": [],
+            "captured_black_pieces": [],
+            "turn": WHITE if most_recent_move.turn == BLACK else WHITE,
+            "count": most_recent_move.move_number,
+            "your_color": WHITE if most_recent_move.white_user_id == user.id else BLACK,
+        }
+    )
