@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { WHITE, BLACK } from "../../Game/constants"
 import Button from '@material-ui/core/Button';
 import "../dashboard.css";
+import $ from 'jquery';
 
 
 export class RightSidebar extends Component { 
@@ -13,31 +14,17 @@ export class RightSidebar extends Component {
   }
 
   componentDidMount() {
-    // TODO fetch data from backend, using mock data until then
-    this.setState({
-      games: [
-        {
-          id: 0,
-          color: WHITE,
-          turn: WHITE,
-          count: 13,
-          opponent: 'Computer'
-        },
-        {
-          id: 23,
-          color: BLACK,
-          turn: WHITE,
-          count: 63,
-          opponent: 'Online Opponent - 1234'
-        },
-        {
-          id: 33,
-          color: WHITE,
-          turn: BLACK,
-          count: 3,
-          opponent: 'Online Opponent - 234'
-        }
-      ]
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/get_current_games/",
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
+      }
+    }).then(response => {
+      this.setState({
+        games: response.games
+      });
     });
   }
 
