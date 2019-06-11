@@ -216,7 +216,7 @@ export default class Game extends React.Component {
 
   componentDidMount() {
     // ping backend to see the state of the game
-    return $.ajax({
+    $.ajax({
       url: "http://127.0.0.1:8000/game/get_game_info/",
       method: "GET",
       headers: {
@@ -237,6 +237,10 @@ export default class Game extends React.Component {
         yourColor: your_color
       });
     });
+
+    if (this.state.turn !== this.state.yourColor) {
+      this.getOpponentMove();
+    }
   }
 
   // returns a boolean indication whether a move is valid
