@@ -226,26 +226,35 @@ def get_ai_move(request: WSGIRequest):
 
 def wait_for_human_opponents_move(request: WSGIRequest) -> JsonResponse:
     game_id = request.GET.get("game_id")
-    color_were_waiting_for = request.GET.get("color")
+    color_were_waiting_for = request.GET.get("player_color")
+
+    print(color_were_waiting_for)
 
     most_recent_move = _get_most_recent_move(game_id)
     while most_recent_move.turn != color_were_waiting_for:
+        print('in while')
         most_recent_move = _get_most_recent_move(game_id)
-        time.sleep(.2)
+        print(most_recent_move)
+        time.sleep(1)
 
-    return figure_out_previously_moved_pieces(game_id)
+
+    print('sjflasdkjfjklsdjfldsfsjdlkfjalsjdfjasdfja')
+
+    return figure_out_previously_moved_pieces(request)
 
 def figure_out_previously_moved_pieces(request: WSGIRequest) -> JsonResponse:
-    opponent_color = WHITE if request.GET.get("color") == WHITE_STR else BLACK
+    game_id = request.GET.get('game_id')
+    opponent_color = WHITE if request.GET.get("player_color") == WHITE_STR else BLACK
     most_recent_move = _get_most_recent_move(game_id)
-    # old_board = Board(setup=most_recent_move.pre_move_fen)
+    old_board = Board(setup=most_recent_move.pre_move_fen)
+    print(old_board)
 
-    old_move = _convert_SAN_str_to_move(most_recent_move.move_algebraic)
+    old_move = _convert_SAN_str_to_move(most_recent_move.move_algebraic, old_board)
     # current_board = old_board.move(old_move)
 
     from_coord, to_coord = _move_to_board_location(old_move)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
-    pieces_moved += _check_for_castle(old_move, request.GET.get("color"))
+    pieces_moved += _check_for_castle(old_move, request.GET.get("player_color"))
     return JsonResponse({"moves": pieces_moved})
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
@@ -339,7 +348,7 @@ def get_game_info(request: WSGIRequest) -> JsonResponse:
             "fen": most_recent_move.post_move_fen,
             "captured_white_pieces": [],
             "captured_black_pieces": [],
-            "turn": WHITE_STR if most_recent_move.turn == BLACK_STR else WHITE_STR,
+            "turn": WHITE_STR if most_recent_move.turn == BLACK_STR else BLACK_STR,
             "count": most_recent_move.move_number,
             "your_color": WHITE_STR
             if most_recent_move.white_user_id == user.id

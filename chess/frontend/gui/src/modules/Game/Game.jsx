@@ -235,12 +235,14 @@ export default class Game extends React.Component {
         turn: turn,
         count: count,
         yourColor: your_color
+      }, () => {
+        if (this.state.turn !== this.state.yourColor) {
+          this.getOpponentMove();
+        }
       });
     });
 
-    if (this.state.turn !== this.state.yourColor) {
-      this.getOpponentMove();
-    }
+
   }
 
   // returns a boolean indication whether a move is valid
