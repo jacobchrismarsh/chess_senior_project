@@ -13,8 +13,7 @@ export class RightSidebar extends Component {
   }
 
   handleButton(event) {
-    let id = event.target.id;
-    console.log(id)
+    window.location = `game/${event.target.id;}`;
   }
 
   componentDidMount() {
