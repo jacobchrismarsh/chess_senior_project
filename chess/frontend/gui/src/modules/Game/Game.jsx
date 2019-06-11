@@ -358,7 +358,6 @@ export default class Game extends React.Component {
   }
 
   makeMove(from_coord, to_coord) {
-    debugger;
     return $.ajax({
       url: "http://127.0.0.1:8000/game/make_move/",
       method: "GET",
@@ -379,7 +378,6 @@ export default class Game extends React.Component {
   }
 
   getOpponentMove() {
-    debugger;
     return $.ajax({
       url: "http://127.0.0.1:8000/game/get_opponent_move/",
       method: "GET",
@@ -392,7 +390,6 @@ export default class Game extends React.Component {
         game_id: this.state.gameId
       }
     }).then(response => {
-      debugger;
       this.updateBoardWithMove(response)
     });
   }
@@ -423,9 +420,7 @@ export default class Game extends React.Component {
 
       pieceToMove.deselectPiece();
       this.dehighlightMoves();
-      debugger;
       this.makeMove(this.state.selected, index);
-      debugger;
       
       postMovePosition[index] = pieceToMove;
       
