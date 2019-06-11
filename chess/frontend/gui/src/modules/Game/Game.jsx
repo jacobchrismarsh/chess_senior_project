@@ -216,18 +216,28 @@ export default class Game extends React.Component {
 
   componentDidMount() {
     // ping backend to see the state of the game
-    // let fen = from backend
-    // let chess = new Chess(fen);
-    // let board = chess.ascii();
-    // let squares = this.asciiToSquares(board);
-    // let capturedWhitePieces = from backend
-    // let capturedBlackPieces = from backend
-    // let turn = from backend
-    // let count = from backend
-    // let yourColor = from backend
-    // this.setState({
-    //   squares: squares
-    // });
+    return $.ajax({
+      url: "http://127.0.0.1:8000/game/get_game_info/",
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `JWT ${localStorage.getItem('token')}`
+      },
+      data: {
+        game_id: this.state.gameId
+      }
+    }).then(response => {
+      debugger;
+      let { fen, turn, count, your_color } = response;
+      let squares = this.asciiToSquares(new Chess(fen).ascii());
+
+      this.setState({
+        squares: squares,
+        turn: turn,
+        count: count,
+        yourColor: your_color
+      });
+    });
   }
 
   // returns a boolean indication whether a move is valid

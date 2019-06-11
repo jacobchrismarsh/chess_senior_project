@@ -270,7 +270,7 @@ def build_game_status_dict(game: Games, user: User) -> Dict[str, str]:
     }
 
 
-def get_game_info(reequest: WSGIRequest) -> JsonResponse:
+def get_game_info(request: WSGIRequest) -> JsonResponse:
     game_id = request.GET.get("game_id")
     user = get_user_info(request)
     board = _get_board(request)
