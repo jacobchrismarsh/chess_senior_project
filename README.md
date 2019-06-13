@@ -5,7 +5,7 @@
 # Run front-end
 ## With Yarn installed 
 
-- `cd/chess/frontend/gui`
+- `cd /chess/frontend/gui`
 - `yarn`
 - `yarn start`
 
