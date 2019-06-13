@@ -15,8 +15,17 @@ from pychess.Utils.Board import Board
 from pychess.Utils.Cord import Cord
 from pychess.Utils.lutils.lmovegen import genAllMoves, newMove
 from pychess.Utils.lutils.lmove import parseAny
+from pychess.Utils.logic import legalMoveCount, getStatus
 from pychess.Utils.Move import Move, listToMoves, toSAN
-from pychess.Utils.const import KING_CASTLE, QUEEN_CASTLE, BLACK, WHITE, cordDic
+from pychess.Utils.const import (
+    KING_CASTLE,
+    QUEEN_CASTLE,
+    BLACK,
+    WHITE,
+    cordDic,
+    WHITEWON,
+    BLACKWON,
+)
 from game.game import GameState
 from game.models import Games
 from move.models import Moves
@@ -129,8 +138,9 @@ def make_move(request: WSGIRequest) -> JsonResponse:
     pieces_moved += _check_for_castle(player_move, player_color)
 
     board = board.move(player_move)
-    record_move(board, player_move, request.GET.get("game_id"))
-    return JsonResponse({"moves": pieces_moved})
+    record_move(board, player_move, game_id)
+
+    return JsonResponse({"moves": pieces_moved, "winner": check_if_game_over(board)})
 
 
 def _get_move(from_coord, to_coord, board: Board) -> Move:
@@ -161,6 +171,16 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
         from_coord, to_coord = cordDic["h1"], cordDic["f1"]
         return [{"from_coord": from_coord, "to_coord": to_coord}]
     return []
+
+
+def check_if_game_over(board: Board) -> str:
+    winner = ""
+    status, _ = getStatus(board)
+    if status == WHITEWON:
+        winner = WHITE_STR
+    elif status == BLACKWON:
+        winner = BLACK_STR
+    return winner
 
 
 def get_opponent_move(request: WSGIRequest) -> JsonResponse:
@@ -194,7 +214,7 @@ def get_ai_move(request: WSGIRequest):
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
     pieces_moved += _check_for_castle(stockfish_move, stockfish_color)
 
-    return JsonResponse({"moves": pieces_moved})
+    return JsonResponse({"moves": pieces_moved, "winner": check_if_game_over(board)})
 
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
