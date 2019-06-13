@@ -3,10 +3,10 @@
 ### Advised by Philip Nico 
 
 # Run front-end
-''' With Yarn installed '''
+## With Yarn installed 
 
-- move into the frontend/gui directory
-- yarn
-- yarn start
+- `cd/chess/frontend/gui`
+- `yarn`
+- `yarn start`
 
 # Run back-end
