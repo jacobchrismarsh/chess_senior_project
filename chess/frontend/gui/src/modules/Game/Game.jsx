@@ -341,6 +341,9 @@ export default class Game extends React.Component {
     let capturedW = this.state.capturedWhitePieces;
     let turn = this.state.turn
     let opponentColor = this.opponentColor();
+    let winner = response.winner;
+    let show = winner !== '';
+
     response.moves.forEach(move => {
       let from_coord_response = move.from_coord
       let to_coord_response = move.to_coord
@@ -366,7 +369,9 @@ export default class Game extends React.Component {
       squares: newStateSquares,
       turn: this.opponentColor(),
       capturedBlackPieces: capturedB,
-      capturedWhitePieces: capturedW
+      capturedWhitePieces: capturedW,
+      gameOver: show,
+      winner: winner
     });
   }
 

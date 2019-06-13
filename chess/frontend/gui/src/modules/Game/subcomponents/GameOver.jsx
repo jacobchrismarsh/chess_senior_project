@@ -12,7 +12,7 @@ export class GameOver extends React.Component {
 
     return (
       <div className="overlay">
-        <div className="overlay-container">
+        <div className="overlay-container game-over-text">
           Game Over! { winner } wins!
         </div>
       </div>

@@ -18,3 +18,7 @@
   align-items: center;
   margin-top: 10%;
 }
+
+.game-over-text {
+  font-size: 30px !important;
+}
