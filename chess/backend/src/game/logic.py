@@ -234,8 +234,7 @@ def wait_for_human_opponents_move(request: WSGIRequest) -> JsonResponse:
     while most_recent_move.turn != color_were_waiting_for:
         print('in while')
         most_recent_move = _get_most_recent_move(game_id)
-        print(most_recent_move)
-        time.sleep(1)
+        time.sleep(.5)
 
 
     print('sjflasdkjfjklsdjfldsfsjdlkfjalsjdfjasdfja')
@@ -247,14 +246,14 @@ def figure_out_previously_moved_pieces(request: WSGIRequest) -> JsonResponse:
     opponent_color = WHITE if request.GET.get("player_color") == WHITE_STR else BLACK
     most_recent_move = _get_most_recent_move(game_id)
     old_board = Board(setup=most_recent_move.pre_move_fen)
-    print(old_board)
 
     old_move = _convert_SAN_str_to_move(most_recent_move.move_algebraic, old_board)
-    # current_board = old_board.move(old_move)
+    current_board = old_board.move(old_move)
 
     from_coord, to_coord = _move_to_board_location(old_move)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
-    pieces_moved += _check_for_castle(old_move, request.GET.get("player_color"))
+    pieces_moved += _check_for_castle(old_move, opponent_color)
+
     return JsonResponse({"moves": pieces_moved})
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
