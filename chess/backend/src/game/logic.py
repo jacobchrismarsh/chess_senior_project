@@ -145,7 +145,9 @@ def make_move(request: WSGIRequest) -> JsonResponse:
     board = board.move(player_move)
     record_move(board, player_move, game_id)
 
-    return JsonResponse({"moves": pieces_moved, "winner": check_if_game_over(board)})
+    return JsonResponse(
+        {"moves": pieces_moved, "winner": check_if_game_over(board, game_id)}
+    )
 
 
 def _get_move(from_coord, to_coord, board: Board) -> Move:
@@ -178,13 +180,19 @@ def _white_check_castle(move: Move) -> List[Dict[int, int]]:
     return []
 
 
-def check_if_game_over(board: Board) -> str:
+def check_if_game_over(board: Board, game_id: int) -> str:
     winner = ""
     status, _ = getStatus(board)
     if status == WHITEWON:
         winner = WHITE_STR
     elif status == BLACKWON:
         winner = BLACK_STR
+
+    if winner != "":
+        game = Games.objects.get(id=game_id)
+        game.ongoing = False
+        game.save()
+
     return winner
 
 
@@ -222,27 +230,25 @@ def get_ai_move(request: WSGIRequest):
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
     pieces_moved += _check_for_castle(stockfish_move, stockfish_color)
 
-    return JsonResponse({"moves": pieces_moved, "winner": check_if_game_over(board)})
+    return JsonResponse(
+        {"moves": pieces_moved, "winner": check_if_game_over(board, game_id)}
+    )
+
 
 def wait_for_human_opponents_move(request: WSGIRequest) -> JsonResponse:
     game_id = request.GET.get("game_id")
     color_were_waiting_for = request.GET.get("player_color")
 
-    print(color_were_waiting_for)
-
     most_recent_move = _get_most_recent_move(game_id)
     while most_recent_move.turn != color_were_waiting_for:
-        print('in while')
         most_recent_move = _get_most_recent_move(game_id)
-        time.sleep(.5)
-
-
-    print('sjflasdkjfjklsdjfldsfsjdlkfjalsjdfjasdfja')
+        time.sleep(0.5)
 
     return figure_out_previously_moved_pieces(request)
 
+
 def figure_out_previously_moved_pieces(request: WSGIRequest) -> JsonResponse:
-    game_id = request.GET.get('game_id')
+    game_id = request.GET.get("game_id")
     opponent_color = WHITE if request.GET.get("player_color") == WHITE_STR else BLACK
     most_recent_move = _get_most_recent_move(game_id)
     old_board = Board(setup=most_recent_move.pre_move_fen)
@@ -254,7 +260,10 @@ def figure_out_previously_moved_pieces(request: WSGIRequest) -> JsonResponse:
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
     pieces_moved += _check_for_castle(old_move, opponent_color)
 
-    return JsonResponse({"moves": pieces_moved})
+    return JsonResponse(
+        {"moves": pieces_moved, "winner": check_if_game_over(board, game_id)}
+    )
+
 
 def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
     from_coord = int(request.GET.get("from_coord"))
