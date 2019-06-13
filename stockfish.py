@@ -48,7 +48,7 @@ class Stockfish:
         """ Changes the thinking time of the chess engine in milliseconds """
         self.__set_option("Minimum Thinking Time", milliseconds)
 
-    def change_difficulty(difficulty: int) -> None:
+    def change_difficulty(self, difficulty: int) -> None:
         """ Changes the difficulty of the engine, STILL UNSURE WHAT THIS MEANS """
         self.__set_option("Skill Level", difficulty)
 

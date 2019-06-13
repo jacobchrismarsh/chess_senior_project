@@ -40,8 +40,8 @@ STOCKFISH_ENGINE_LOC = "../../../mac_stockfish/stockfish-10-mac/Mac/stockfish-10
 ONLINE_OPPONENT = "Online Opponent"
 AI = "Computer"
 AI_ID = 0
-WHITE_STR = 'White'
-BLACK_STR = 'Black'
+WHITE_STR = "White"
+BLACK_STR = "Black"
 
 
 global_board = Board(setup=True)
@@ -127,8 +127,12 @@ def _move_to_board_location(move: Move) -> Tuple[int]:
 
 
 def make_move(request: WSGIRequest) -> JsonResponse:
-    player_color = WHITE
-    most_recent_move = _get_most_recent_move(request.GET.get("game_id"))
+    game_id = request.GET.get("game_id")
+    most_recent_move = _get_most_recent_move(game_id)
+
+    user = get_user_info(request)
+    player_color = WHITE if most_recent_move.white_user_id == user.id else BLACK
+
     board = _get_board(request)
     from_coord, to_coord = _get_coords_from_wsgi_request(request)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
@@ -194,21 +198,22 @@ def _opponent_is_ai(request: WSGIRequest) -> bool:
 
 
 def get_ai_move(request: WSGIRequest):
-    most_recent_move = _get_most_recent_move(request.GET.get("game_id"))
+    game_id = request.GET.get("game_id")
+    difficulty = get_difficulty_from_game(game_id)
+    most_recent_move = _get_most_recent_move(game_id)
     board = _get_board(request)
-    stockfish_color = BLACK
+    stockfish_color = BLACK if most_recent_move.black_user_id == AI_ID else WHITE
 
-    engine = initialize_stockfish_engine()
+    engine = initialize_stockfish_engine(difficulty)
     _set_chess_engine_board_fen_position(engine, board)
 
     best_move_as_san = engine.get_best_move()
-    most_recent_move = _get_most_recent_move(request.GET.get("game_id"))
-    # assert most_recent_move.post_move_fen == board.asFen()
+    most_recent_move = _get_most_recent_move(game_id)
 
     stockfish_move = _convert_SAN_str_to_move(best_move_as_san, board)
 
     board = board.move(stockfish_move)
-    record_move(board, stockfish_move, request.GET.get("game_id"))
+    record_move(board, stockfish_move, game_id)
 
     from_coord, to_coord = _move_to_board_location(stockfish_move)
     pieces_moved = [{"from_coord": from_coord, "to_coord": to_coord}]
@@ -224,8 +229,15 @@ def _get_coords_from_wsgi_request(request: WSGIRequest) -> Tuple[int, int]:
     return (from_coord, to_coord)
 
 
-def initialize_stockfish_engine() -> Stockfish:
-    return Stockfish(STOCKFISH_ENGINE_LOC)
+def initialize_stockfish_engine(difficulty: int) -> Stockfish:
+    engine = Stockfish(STOCKFISH_ENGINE_LOC)
+    engine.change_difficulty(difficulty)
+    return engine
+
+
+def get_difficulty_from_game(game_id: int) -> int:
+    game = Games.objects.get(id=game_id)
+    return game.difficulty
 
 
 def _set_chess_engine_board_fen_position(engine: Stockfish, board: Board) -> None:
@@ -303,6 +315,8 @@ def get_game_info(request: WSGIRequest) -> JsonResponse:
             "captured_black_pieces": [],
             "turn": WHITE_STR if most_recent_move.turn == BLACK_STR else WHITE_STR,
             "count": most_recent_move.move_number,
-            "your_color": WHITE_STR if most_recent_move.white_user_id == user.id else BLACK_STR,
+            "your_color": WHITE_STR
+            if most_recent_move.white_user_id == user.id
+            else BLACK_STR,
         }
     )
