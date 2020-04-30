@@ -11,7 +11,7 @@
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.14.0",
     "jest-enzyme": "^7.0.2",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "material-ui-slider": "^3.0.3",
     "react": "^16.8.6",
     "react-autobind": "^1.0.6",
